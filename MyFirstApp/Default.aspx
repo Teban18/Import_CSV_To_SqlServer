@@ -16,9 +16,7 @@
             <asp:ScriptReference Assembly="Telerik.Web.UI" Name="Telerik.Web.UI.Common.jQueryInclude.js" />
         </Scripts>
     </telerik:RadScriptManager>
-    <!-- New controls -->
-    <telerik:RadAjaxLoadingPanel ID="RadAjaxLoadingPanel1" runat="server"></telerik:RadAjaxLoadingPanel>
-    
+    <!-- New controls -->   
     <telerik:RadAjaxManager runat="server">
         <AjaxSettings>
             <telerik:AjaxSetting AjaxControlID="RadGrid2">
@@ -28,6 +26,8 @@
             </telerik:AjaxSetting>
         </AjaxSettings>
     </telerik:RadAjaxManager>
+
+    
 
     <telerik:RadGrid 
         runat="server"

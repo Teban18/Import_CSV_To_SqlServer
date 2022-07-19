@@ -44,7 +44,7 @@ public partial class Default : System.Web.UI.Page
             System.Diagnostics.Debug.WriteLine("tested item 2 : " + col );
         }*/
         //Read_File(@"C:\Users\MARIO RUEDA\Documents\cities.txt");
-        validator(Read_Table("dbo.TBempleado", "SqlServices").Item1, Read_Table("dbo.TBempleado", "SqlServices").Item2, Read_File(@"C:\Users\MARIO RUEDA\Documents\cities.txt"));
+        validator(Read_Table("dbo.TBempleado", "SqlServices").Item1, Read_Table("dbo.TBempleado", "SqlServices").Item2, Read_File(@"C:\Users\MARIO RUEDA\Documents\Libro1.csv"));
     }
 
     /*Read file and DB structure*/
@@ -83,21 +83,26 @@ public partial class Default : System.Web.UI.Page
     /* Validation of data */
     protected void validator(List<object> tablestructure, List<object> columnlength, string[] filedata)
     {
-        System.Diagnostics.Debug.WriteLine(columnlength.Count());
-        foreach (string line in filedata)
+        for (int li = 0; li < filedata.Count(); li++)
         {
-            string[] filecolumns = line.Split(',');
+            string[] filecolumns = filedata[li].Split(';');
             if (Is_Length_As(filecolumns.Count(), columnlength.Count()))
             {
-                for (int i = 0; i < filecolumns.Count(); i++)
+                System.Diagnostics.Debug.WriteLine("La fila " + li + " cumple con la longitud esperada : " + filecolumns.Count());
+                for (int ci = 0; ci < filecolumns.Count(); ci++)
                 {
-                    System.Diagnostics.Debug.WriteLine(filecolumns[i].Count());
-                    
+                    if (Is_Less_Than(filecolumns[ci].Count(), System.Convert.ToInt32(columnlength[ci])))
+                    {
+                        System.Diagnostics.Debug.WriteLine("La columna " + ci + " de la fila " + li + " con valor " + filecolumns[ci] + " cumple" );
+                    } else
+                    {
+                        System.Diagnostics.Debug.WriteLine("La columna " + ci + " de la fila " + li + " con valor " + filecolumns[ci] + " no cumple");
+                    }
                 }
             }       
             else
             {
-                
+                System.Diagnostics.Debug.WriteLine("La fila " + li + "No cumple con lo especificado");
             }
         }
     }
@@ -107,7 +112,7 @@ public partial class Default : System.Web.UI.Page
         return tablecolumns == filecolumns;
     } 
 
-    private bool Is_Less_Than (int tablecolumnlength, int filecolumnlength)
+    private bool Is_Less_Than (int filecolumnlength, int tablecolumnlength)
     {
         if (filecolumnlength <= tablecolumnlength) return true;
         return false;
