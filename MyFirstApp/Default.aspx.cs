@@ -1,26 +1,11 @@
 ﻿using System;
-using System.Web;
-using System.Web.UI;
-using System.Web.UI.WebControls;
-
-using System.Data;
 using System.Configuration;
-using System.Web.Security;
-using System.Web.UI.WebControls.WebParts;
-using System.Web.UI.HtmlControls;
 using Telerik.Web.UI;
 using System.Linq;
 using System.Collections.Generic;
 using System.Data.SqlClient;
-using System.Collections;
-using Telerik.Windows.Documents.Spreadsheet.FormatProviders.OpenXml.Xlsx;
 using System.IO;
-using Telerik.Windows.Documents.Spreadsheet.Model;
-using Telerik.Windows.Documents.Spreadsheet.Formatting.FormatStrings;
-using System.Activities.Statements;
-using System.Data.OleDb;
-using System.Net;
-using Telerik.Windows.Documents.Spreadsheet.FormatProviders;
+
 
 public partial class Default : System.Web.UI.Page 
 {
@@ -28,23 +13,47 @@ public partial class Default : System.Web.UI.Page
     {
         if (!IsPostBack)
         {
-            
+            Get_Tables("SqlServices");
         }
         
     }
 
-    protected void RadGrid2_NeedDataSource(object source, Telerik.Web.UI.GridNeedDataSourceEventArgs e)
+    //Flow of the logic 
+    protected void btnValidate_Click(object sender, EventArgs e)
     {
-        /*foreach (object line in Read_Table("dbo.TBempleado", "SqlServices").Item1)
+        notify1.Text = "";
+        try
         {
-            System.Diagnostics.Debug.WriteLine("tested item 1 : " + line);
+            validator(
+            Read_Table("", "SqlServices").Item1,
+            Read_Table(RadDropDownTables.SelectedItem.Text, "SqlServices").Item2,
+            Read_File(@"C:\Users\MARIO RUEDA\Documents\" + Return_File()),
+            char.Parse(RadTextBox1.Text)
+            );
+            notify1.Show();
+        } catch (Exception ex)
+        {
+            notify1.Text = ex.Message;
+            notify1.Show();
         }
-        foreach (object col in Read_Table("dbo.TBBanco", "SqlServices").Item2)
+    }
+
+    protected string Return_File()
+    {
+        try
         {
-            System.Diagnostics.Debug.WriteLine("tested item 2 : " + col );
-        }*/
-        //Read_File(@"C:\Users\MARIO RUEDA\Documents\cities.txt");
-        validator(Read_Table("dbo.TBempleado", "SqlServices").Item1, Read_Table("dbo.TBempleado", "SqlServices").Item2, Read_File(@"C:\Users\MARIO RUEDA\Documents\Libro1.csv"));
+            List<object> list = new List<object>();
+            foreach (UploadedFile f in RadAsyncUpload1.UploadedFiles)
+            {
+                list.Add(f.GetName());
+            }
+            return list.ElementAt(0).ToString();
+        } catch (Exception ex)
+        {
+            notify1.Text = ex.Message;
+            throw;
+        }
+        
     }
 
     /*Read file and DB structure*/
@@ -68,67 +77,98 @@ public partial class Default : System.Web.UI.Page
             conn.Close();
             return Tuple.Create(typeresults, lengthresults); 
         }
-        catch (Exception)
+        catch (Exception ex)
         {
+            notify1.Text = ex.Message;
             throw;
         }      
     } 
 
     private string[] Read_File(string path)
     {
-        string[] lines = File.ReadAllLines(path);
-        return lines;
+        try
+        {
+            string[] lines = File.ReadAllLines(path);
+            return lines;
+        } catch (Exception ex)
+        {
+            notify1.Text = ex.Message;
+            throw;
+        }
+        
     }
 
-    /* Validation of data */
-    protected void validator(List<object> tablestructure, List<object> columnlength, string[] filedata)
+    protected void validator(List<object> tablestructure, List<object> columnlength, string[] filedata, char spliter)
     {
         for (int li = 0; li < filedata.Count(); li++)
         {
-            string[] filecolumns = filedata[li].Split(';');
+            string[] filecolumns = filedata[li].Split(spliter);
             if (Is_Length_As(filecolumns.Count(), columnlength.Count()))
             {
-                System.Diagnostics.Debug.WriteLine("La fila " + li + " cumple con la longitud esperada : " + filecolumns.Count());
+                notify1.Text += "<p style='color:gray'>" +
+                    "La línea " + li + " <span style='color:green'> cumple </span>" +
+                    "</p>" +
+                    "";
                 for (int ci = 0; ci < filecolumns.Count(); ci++)
                 {
                     if (Is_Less_Than(filecolumns[ci].Count(), System.Convert.ToInt32(columnlength[ci])))
                     {
-                        System.Diagnostics.Debug.WriteLine("La columna " + ci + " de la fila " + li + " con valor " + filecolumns[ci] + " cumple" );
+                        notify1.Text += "<p style='color:gray'>" +
+                            "Línea " + li + ": La columna "+ci+" '" + filecolumns[ci] + "' <span style='color:green'> cumple </span>" +
+                            "</p>" +
+                            "";
                     } else
                     {
-                        System.Diagnostics.Debug.WriteLine("La columna " + ci + " de la fila " + li + " con valor " + filecolumns[ci] + " no cumple");
+                        notify1.Text += "<p style='color:gray'>" +
+                            "Línea " +li+ ": La columna "+ci+" '" + filecolumns[ci] + "' <span style='color:red'> no cumple </span>" +
+                            "</p>" +
+                            "";
                     }
                 }
             }       
             else
             {
-                System.Diagnostics.Debug.WriteLine("La fila " + li + "No cumple con lo especificado");
+                notify1.Text += "<p style='color:gray'>" +
+                    "La línea " + li + " <span style='color:red'> no cumple </span>" +
+                    "</p>" +
+                    "";
             }
         }
     }
 
-    private bool Is_Length_As (int tablecolumns, int filecolumns)
+    private bool Is_Length_As(int tablecolumns, int filecolumns)
     {
         return tablecolumns == filecolumns;
     } 
 
-    private bool Is_Less_Than (int filecolumnlength, int tablecolumnlength)
+    private bool Is_Less_Than(int filecolumnlength, int tablecolumnlength)
     {
         if (filecolumnlength <= tablecolumnlength) return true;
         return false;
     }
 
-    /*protected void RadGrid4_ItemCommand (object source, Telerik.Web.UI.GridCommandEventArgs e)
+    private void Get_Tables(string connsrt)
     {
-        if (e.CommandName == RadGrid.ExpandCollapseCommandName)
+        try
         {
-            foreach (GridItem item in e.Item.OwnerTableView.Items)
+            SqlConnection conn = new SqlConnection(ConfigurationManager.ConnectionStrings[connsrt].ConnectionString);
+            SqlCommand comm = new SqlCommand("SELECT t.name FROM Sys.Tables t", conn);
+            conn.Open();
+            using (SqlDataReader reader = comm.ExecuteReader())
             {
-                if (item.Expanded && item != e.Item)
+                while (reader.Read())
                 {
-                    item.Expanded = false;
+                    RadDropDownTables.Items.Add(reader[0].ToString());
+                    System.Diagnostics.Debug.WriteLine(reader[0]);
                 }
             }
+            conn.Close();
+            
         }
-    }*/
+        catch (Exception ex)
+        {
+            notify1.Text = ex.Message;
+            throw;
+        }
+    }
 }

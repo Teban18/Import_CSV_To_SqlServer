@@ -1,0 +1,64 @@
+﻿body {
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    font-size: 12px;
+    font-weight: normal;
+}
+
+.container .header {
+    font-weight:400;
+    font-size:1.4rem;
+    font-family: Calibri;
+}
+
+.container .logo {
+    width: 6rem;
+}
+
+.container {
+    padding: 1rem;
+    width: 14rem;
+    border: 1px solid #000000;
+    border-radius: 10px;
+    text-align: center;
+}
+
+.DropZone1 {
+    width: 12rem;
+    height: auto;
+    background-color: white;
+    border: 1px solid #00AAFF;
+    border-radius: 10px;
+    color: black;
+    text-align: center;
+}
+
+.RadNotification.rnRoundedCorners {
+    overflow-y: auto;
+    max-height: 600px;
+}
+
+.RadUpload .ruFakeInput {
+    display: none !important;
+}
+
+.grid1 {
+    margin: 0 0.8rem 0.8rem 0.8rem;
+    text-align: left;
+}
+
+.grid1 .ddlist {
+    width: 8rem;
+}
+
+.RadButton_WebBlue.rbButton.btn {
+    background-image: unset !important;
+    text-align: center;
+    width: 12rem;
+    margin: 2px auto;
+    padding: 1px;
+    border: 1px solid #999999;
+    background-color: #00AAFF;
+    border-radius: 12px;
+    box-shadow: rgb(150,150,150) 2px 3px 10px;
+    color: #FFFFFF;
+}
