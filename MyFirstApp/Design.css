@@ -4,17 +4,17 @@
     font-weight: normal;
 }
 
-.container .header {
+.menucontainer .header {
     font-weight:400;
     font-size:1.4rem;
     font-family: Calibri;
 }
 
-.container .logo {
+.menucontainer .logo {
     width: 6rem;
 }
 
-.container {
+.menucontainer {
     padding: 1rem;
     width: 14rem;
     border: 1px solid #000000;
@@ -34,6 +34,7 @@
 
 .RadNotification.rnRoundedCorners {
     overflow-y: auto;
+    width: auto;
     max-height: 600px;
 }
 
@@ -62,3 +63,5 @@
     box-shadow: rgb(150,150,150) 2px 3px 10px;
     color: #FFFFFF;
 }
+
+    

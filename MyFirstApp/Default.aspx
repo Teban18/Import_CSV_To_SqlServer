@@ -29,9 +29,19 @@
             </AjaxSettings>
         </telerik:RadAjaxManager>
 
-        <div class="container">
+        <div class="menucontainer">
             <span class="header">Importación de datos</span>
             <img class="logo" src="https://erp.tgdata.com.co/Imagenes/TGData.png" alt="Logo TGDATA"/>
+            <div class="grid1">
+                <telerik:RadButton 
+                    RenderMode="Lightweight" 
+                    CssClass="btn"
+                    ID="RadButton3"
+                    Skin="WebBlue"
+                    runat="server" 
+                    Text="Definir Estructura">
+                </telerik:RadButton>
+            </div>
             <div class="grid1">
                 <telerik:RadAsyncUpload 
                     RenderMode="Lightweight" 
@@ -39,11 +49,12 @@
                     ID="RadAsyncUpload1" 
                     Skin="WebBlue"
                     DropZones=".DropZone1"
-                />
+                    Localization-Select="Seleccionar archivos"
+                /> 
             </div> 
             <div class="grid1">
                 <div class="DropZone1">
-                    <p>O suelte aquí su archivo</p>
+                    <p>O arrastrelos aquí</p>
                     <p>📁</p>
                 </div>
             </div>
@@ -106,11 +117,10 @@
                             RenderMode="Lightweight" 
                             ID="notify1" 
                             runat="server" 
-                            Text="Initial text" processi
+                            Text="Initial text" 
                             Position="Center"
-                            AutoCloseDelay="0" 
-                            Width="600"  
-                            Title="Resultado" 
+                            AutoCloseDelay="0"   
+                            Title="Validación" 
                             EnableRoundedCorners="true">
                         </telerik:RadNotification>
                     </ContentTemplate>
@@ -127,6 +137,7 @@
                 </telerik:RadButton>
             </div>
         </div>
+
 
         <telerik:RadGrid 
             runat="server"
