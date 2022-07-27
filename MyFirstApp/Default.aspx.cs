@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.IO;
 using System.Web.UI.WebControls;
+using System.Data;
 
 public partial class Default : System.Web.UI.Page 
 {
@@ -14,28 +15,31 @@ public partial class Default : System.Web.UI.Page
         if (!IsPostBack)
         {
             Get_Tables("SqlServices");
+            strtxt = "";
         }
         
     }
 
+    public static string strtxt;
     //Flow of the logic 
     protected void btnValidate_Click(object sender, EventArgs e)
     {
-        notify1.Text = "";
+        //notify1.Text = "";
         try
         {
-            Structure_Validator(
+            /*Structure_Validator(
             Read_Table(RadDropDownTables.SelectedItem.Text, "SqlServices").Item1,
             Read_Table(RadDropDownTables.SelectedItem.Text, "SqlServices").Item2,
             Read_Table(RadDropDownTables.SelectedItem.Text, "SqlServices").Item3,
             Read_File(@"C:\Users\MARIO RUEDA\Documents\" + Return_File()),
             char.Parse(RadTextBox1.Text)
-            );
-            notify1.Show();
+            );*/
+
+            strtxt = "Bind";
+            RadGrid2.Rebind();
         } catch (Exception ex)
         {
-            notify1.Text = ex.Message;
-            notify1.Show();
+            
         }
     }
 
@@ -51,8 +55,8 @@ public partial class Default : System.Web.UI.Page
             return list.ElementAt(0).ToString();
         } catch (Exception ex)
         {
-            notify1.Text = ex.Message;
-            throw;
+            
+            return null;
         }
         
     }
@@ -82,8 +86,8 @@ public partial class Default : System.Web.UI.Page
         }
         catch (Exception ex)
         {
-            notify1.Text = ex.Message;
-            throw;
+            
+            return null;
         }      
     } 
 
@@ -95,47 +99,90 @@ public partial class Default : System.Web.UI.Page
             return lines;
         } catch (Exception ex)
         {
-            notify1.Text = ex.Message;
-            throw;
+            
+            return null;
         }
         
     }
 
-    protected void Structure_Validator(List<object> tablestructure, List<object> columnlength, List<object> isnullable, string[] filedata, char spliter)
+    protected DataTable Structure_Validator(List<object> tablestructure, List<object> columnlength, List<object> isnullable, string[] filedata, char spliter)
     {
-        List<object> lines = new List<object>();
-        notify1.Text += "<table style='border-collapse:collapse;text-align:center;max-width:80vw;'>";
-        for (int li = 0; li < filedata.Count(); li++)
+        try
         {
-            notify1.Text += "<tr style='border: 1px solid black'>";
-            notify1.Text += "<td style='border: 1px solid;padding:8px;'><p style='color:blue'>Línea " + (li+1)+"</td>";
-            string[] filecolumns = filedata[li].Split(spliter);
-            if (Is_Length_As(filecolumns.Count(), tablestructure.Count()))
+            DataTable dt = new DataTable();
+            for (int li = 0; li < filedata.Count(); li++)
             {
-                for (int ci = 0; ci < filecolumns.Count(); ci++)
+                DataRow newRow = dt.NewRow();
+                string[] filecolumns = filedata[li].Split(spliter);
+                if (Is_Length_As(filecolumns.Count(), tablestructure.Count()))
                 {
-                    if (Is_Nullable(System.Convert.ToInt32(isnullable[ci]), filecolumns[ci].Count()))
+                    for (int ci = 0; ci < filecolumns.Count(); ci++)
                     {
-                        if (Is_Less_Than(filecolumns[ci].Count(), System.Convert.ToInt32(columnlength[ci])))
+                        if (Has_Title(li))
                         {
-                            notify1.Text += "<td style='border: 1px solid;padding:8px;'><p style='color:grey'>" + filecolumns[ci] + "</p></td>";
-                            lines.Add(filecolumns[ci]);
-                        }
-                        else
+                            dt.Columns.Add(filecolumns[ci]);
+                        } else
                         {
-                            notify1.Text += "<td style='border: 1px solid;padding:8px;'><abbr style='text-decoration:underline red' title='El contenido supera el largo máximo de la columna en la BD'><p style='color:red'>" + filecolumns[ci] + "</abbr></p></td>";
-                        }
-                    } else
-                    {
-                        notify1.Text += "<td style='border: 1px solid;padding:8px;'><abbr style='text-decoration:underline red' title='Esta columna no puede estar vacía'><p style='color:red'> Error </abbr></p></td>";
+                            if (Is_Nullable(System.Convert.ToInt32(isnullable[ci]), filecolumns[ci].Count()))
+                            {
+                                if (Is_Less_Than(filecolumns[ci].Count(), System.Convert.ToInt32(columnlength[ci])))
+                                {
+                                    newRow[ci] = filecolumns[ci];
+                                }
+                                else
+                                {
+                                    newRow[ci] = filecolumns[ci];
+                                }
+                            }
+                            else
+                            {
+                                newRow[ci] = filecolumns[ci];
+                            }
+                        }    
                     }
                 }
-            }       
-            else
-            {
-                notify1.Text += "<td style='border: 1px solid;padding:8px;'><abbr style='text-decoration:underline red' title='Longitud de la fila no corresponde con longitud de la tabla'><p style='color:red'>Fila no válida</abbr></p></td>";   
+                else
+                {
+
+                }
+                dt.Rows.Add(newRow);
             }
-            notify1.Text += "</tr>";
+            return dt;
+        } catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine(ex.Message);
+            return null;
+        }
+        
+    }
+
+    protected void RadGrid2_NeedDataSource1(object source, Telerik.Web.UI.GridNeedDataSourceEventArgs e)
+    {
+        if (strtxt == "Bind")
+        {
+            /*DataTable dt = new DataTable();
+            for (int li = 0; li < 20; li++)
+            {
+                DataRow newRow = dt.NewRow();
+                for (int ci = 0; ci < 3; ci++)
+                {
+                    if (li == 0)
+                    {
+                        dt.Columns.Add("Hey" + ci);
+                    }
+                    newRow[ci] = ci;
+                    System.Diagnostics.Debug.WriteLine("Hola"+ci);
+                }
+                dt.Rows.Add(newRow);
+            }
+            RadGrid2.DataSource = dt;*/   
+            RadGrid2.DataSource = Structure_Validator(
+            Read_Table(RadDropDownTables.SelectedItem.Text, "SqlServices").Item1,
+            Read_Table(RadDropDownTables.SelectedItem.Text, "SqlServices").Item2,
+            Read_Table(RadDropDownTables.SelectedItem.Text, "SqlServices").Item3,
+            Read_File(@"C:\Users\MARIO RUEDA\Documents\" + Return_File()),
+            char.Parse(RadTextBox1.Text)
+            );
         }
     }
 
@@ -168,6 +215,48 @@ public partial class Default : System.Web.UI.Page
         return datatype;
     }
 
+    private bool Has_Title(int titleline)
+    {
+        if (titleline == 0) return true;
+        return false;
+    }
+
+    /*private void Online_Table(List<object> tablestructure, List<object> columnlength, List<object> isnullable, string[] filedata, char spliter, int filecount)
+    {
+        notify1.Text += "<table style='border-collapse:collapse;text-align:center;max-width:80vw;'>";
+        for (int li = 0; li < filecount; li++)
+        {
+            notify1.Text += "<tr style='border: 1px solid black'>";
+            notify1.Text += "<td style='border: 1px solid;padding:8px;'><p style='color:blue'>Línea " + (li + 1) + "</td>";
+            string[] filecolumns = filedata[li].Split(spliter);
+            if (Is_Length_As(filecolumns.Count(), tablestructure.Count()))
+            {
+                for (int ci = 0; ci < filecolumns.Count(); ci++)
+                {
+                    if (Is_Nullable(System.Convert.ToInt32(isnullable[ci]), filecolumns[ci].Count()))
+                    {
+                        if (Is_Less_Than(filecolumns[ci].Count(), System.Convert.ToInt32(columnlength[ci])))
+                        {
+                            notify1.Text += "<td style='border: 1px solid;padding:8px;'><p style='color:grey'>" + filecolumns[ci] + "</p></td>";
+                        }
+                        else
+                        {
+                            notify1.Text += "<td style='border: 1px solid;padding:8px;'><abbr style='text-decoration:underline red' title='El contenido supera el largo máximo de la columna en la BD'><p style='color:red'>" + filecolumns[ci] + "</abbr></p></td>";
+                        }
+                    }
+                    else
+                    {
+                        notify1.Text += "<td style='border: 1px solid;padding:8px;'><abbr style='text-decoration:underline red' title='Esta columna no puede estar vacía'><p style='color:red'> Error </abbr></p></td>";
+                    }
+                }
+            }
+            else
+            {
+                notify1.Text += "<td style='border: 1px solid;padding:8px;'><abbr style='text-decoration:underline red' title='Longitud de la fila no corresponde con longitud de la tabla'><p style='color:red'>Fila no válida</abbr></p></td>";
+            }
+            notify1.Text += "</tr>";
+        }
+    }*/
 
     private void Get_Tables(string connsrt)
     {
@@ -188,7 +277,7 @@ public partial class Default : System.Web.UI.Page
         }
         catch (Exception ex)
         {
-            notify1.Text = ex.Message;
+           
             throw;
         }
     }

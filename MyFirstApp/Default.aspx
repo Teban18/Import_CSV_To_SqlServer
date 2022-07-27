@@ -21,7 +21,7 @@
         <!-- New controls -->   
         <telerik:RadAjaxManager runat="server">
             <AjaxSettings>
-                <telerik:AjaxSetting AjaxControlID="RadGrid2">
+                <telerik:AjaxSetting AjaxControlID="RadButton1">
                     <UpdatedControls>
                         <telerik:AjaxUpdatedControl ControlID="RadGrid2" />
                     </UpdatedControls>
@@ -99,32 +99,15 @@
                 </telerik:RadDropDownList>
             </div>
             <div class="grid1">
-                 <asp:UpdatePanel 
-                    ID="panel2" 
+                <telerik:RadButton 
+                    RenderMode="Lightweight" 
+                    ID="RadButton1" 
+                    CssClass="btn"
                     runat="server"
-                    UpdateMode="Conditional">
-                    <ContentTemplate>
-                        <telerik:RadButton 
-                            RenderMode="Lightweight" 
-                            ID="RadButton1" 
-                            CssClass="btn"
-                            runat="server"
-                            Skin="WebBlue"
-                            OnClick="btnValidate_Click"
-                            Text="Validar Archivo">
-                        </telerik:RadButton>
-                        <telerik:RadNotification 
-                            RenderMode="Lightweight" 
-                            ID="notify1" 
-                            runat="server" 
-                            Text="Initial text" 
-                            Position="Center"
-                            AutoCloseDelay="0"   
-                            Title="Validación" 
-                            EnableRoundedCorners="true">
-                        </telerik:RadNotification>
-                    </ContentTemplate>
-                </asp:UpdatePanel>       
+                    Skin="WebBlue"
+                    OnClick="btnValidate_Click"
+                    Text="Validar Archivo">
+                </telerik:RadButton>              
             </div>
             <div class="grid1">
                 <telerik:RadButton 
@@ -146,6 +129,8 @@
             AllowPaging="true"
             AllowSorting="true" 
             PageSize="5"
+            OnNeedDataSource="RadGrid2_NeedDataSource1"
+            on
             AllowFilteringByColumn="true"
             >
             <ClientSettings>
@@ -154,7 +139,7 @@
                     >
                 </Scrolling>
                 <ClientEvents 
-                    OnGridCreated="GridCreated" 
+                    OnGridCreated="GridCreated"
                     />
             </ClientSettings>
             <MasterTableView
