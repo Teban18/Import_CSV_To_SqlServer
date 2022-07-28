@@ -15,32 +15,15 @@ public partial class Default : System.Web.UI.Page
         if (!IsPostBack)
         {
             Get_Tables("SqlServices");
-            strtxt = "";
         }
         
     }
 
     public static string strtxt;
-    //Flow of the logic 
     protected void btnValidate_Click(object sender, EventArgs e)
     {
-        //notify1.Text = "";
-        try
-        {
-            /*Structure_Validator(
-            Read_Table(RadDropDownTables.SelectedItem.Text, "SqlServices").Item1,
-            Read_Table(RadDropDownTables.SelectedItem.Text, "SqlServices").Item2,
-            Read_Table(RadDropDownTables.SelectedItem.Text, "SqlServices").Item3,
-            Read_File(@"C:\Users\MARIO RUEDA\Documents\" + Return_File()),
-            char.Parse(RadTextBox1.Text)
-            );*/
-
-            strtxt = "Bind";
-            RadGrid2.Rebind();
-        } catch (Exception ex)
-        {
-            
-        }
+        strtxt = "Bind";
+        RadGrid2.Rebind();
     }
 
     protected string Return_File()
@@ -106,60 +89,69 @@ public partial class Default : System.Web.UI.Page
     }
 
     protected DataTable Structure_Validator(List<object> tablestructure, List<object> columnlength, List<object> isnullable, string[] filedata, char spliter)
-    {
-        try
+    {   
+        DataTable dt = new DataTable();
+        dt.Clear();
+        var watch = System.Diagnostics.Stopwatch.StartNew();
+        for (int li = 0; li < filedata.Count(); li++)
         {
-            DataTable dt = new DataTable();
-            for (int li = 0; li < filedata.Count(); li++)
+            DataRow newRow = dt.NewRow();
+            string[] filecolumns = filedata[li].Split(spliter);
+            if (Is_Length_As(filecolumns.Count(), tablestructure.Count()))
             {
-                DataRow newRow = dt.NewRow();
-                string[] filecolumns = filedata[li].Split(spliter);
-                if (Is_Length_As(filecolumns.Count(), tablestructure.Count()))
+                for (int ci = 0; ci < filecolumns.Count(); ci++)
                 {
-                    for (int ci = 0; ci < filecolumns.Count(); ci++)
+                    if (Has_Title(li))
                     {
-                        if (Has_Title(li))
+                        dt.Columns.Add(filecolumns[ci]);
+                    } else
+                    {
+                        if (Is_Nullable(System.Convert.ToInt32(isnullable[ci]), filecolumns[ci].Count()))
                         {
-                            dt.Columns.Add(filecolumns[ci]);
-                        } else
-                        {
-                            if (Is_Nullable(System.Convert.ToInt32(isnullable[ci]), filecolumns[ci].Count()))
-                            {
-                                if (Is_Less_Than(filecolumns[ci].Count(), System.Convert.ToInt32(columnlength[ci])))
-                                {
-                                    newRow[ci] = filecolumns[ci];
-                                }
-                                else
-                                {
-                                    newRow[ci] = filecolumns[ci];
-                                }
-                            }
-                            else
+                            if (Is_Less_Than(filecolumns[ci].Count(), System.Convert.ToInt32(columnlength[ci])))
                             {
                                 newRow[ci] = filecolumns[ci];
+                            } else
+                            {
+                                newRow[ci] = "<abbr title='Error' style='text-decoration:none'><span style='color:red'> Error </span></abbr>";
                             }
-                        }    
-                    }
+                        } else
+                        {
+                            newRow[ci] = "<abbr title='Error' style='text-decoration:none'><span style='color:red'> Error </span></abbr>";
+                        }
+                    }    
                 }
-                else
-                {
-
-                }
-                dt.Rows.Add(newRow);
+            } else
+            {
+                newRow[0] = "Longitud inválida";
             }
-            return dt;
-        } catch (Exception ex)
-        {
-            System.Diagnostics.Debug.WriteLine(ex.Message);
-            return null;
+            dt.Rows.Add(newRow);
         }
-        
+        watch.Stop();
+        System.Diagnostics.Debug.WriteLine(watch.Elapsed.TotalSeconds);
+        return dt;
     }
 
     protected void RadGrid2_NeedDataSource1(object source, Telerik.Web.UI.GridNeedDataSourceEventArgs e)
     {
-        if (strtxt == "Bind")
+        try
         {
+            if (strtxt == "Bind")
+            {
+                RadGrid2.DataSource = Structure_Validator(
+                Read_Table(RadDropDownTables.SelectedItem.Text, "SqlServices").Item1,
+                Read_Table(RadDropDownTables.SelectedItem.Text, "SqlServices").Item2,
+                Read_Table(RadDropDownTables.SelectedItem.Text, "SqlServices").Item3,
+                Read_File(@"C:\Users\MARIO RUEDA\Documents\" + Return_File()),
+                char.Parse(RadTextBox1.Text)
+            );
+            }
+        } catch (Exception ex)
+        {
+            List<string> errlist = new List<string>();
+            errlist.Add(ex.Message);
+            RadGrid2.DataSource = errlist;
+        }
             /*DataTable dt = new DataTable();
             for (int li = 0; li < 20; li++)
             {
@@ -176,14 +168,6 @@ public partial class Default : System.Web.UI.Page
                 dt.Rows.Add(newRow);
             }
             RadGrid2.DataSource = dt;*/   
-            RadGrid2.DataSource = Structure_Validator(
-            Read_Table(RadDropDownTables.SelectedItem.Text, "SqlServices").Item1,
-            Read_Table(RadDropDownTables.SelectedItem.Text, "SqlServices").Item2,
-            Read_Table(RadDropDownTables.SelectedItem.Text, "SqlServices").Item3,
-            Read_File(@"C:\Users\MARIO RUEDA\Documents\" + Return_File()),
-            char.Parse(RadTextBox1.Text)
-            );
-        }
     }
 
     private bool Is_Length_As(int tablecolumns, int filecolumns)

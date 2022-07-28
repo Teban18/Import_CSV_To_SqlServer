@@ -14,11 +14,28 @@
     width: 6rem;
 }
 
+.container {
+    display: flex;
+    gap: 1vw;
+    flex-flow:row wrap;
+}
+
 .menucontainer {
     padding: 1rem;
     width: 14rem;
+    height: auto;
+    max-height: 586.391px;
     border: 1px solid #000000;
     border-radius: 10px;
+    text-align: center;
+}
+
+.validationcontainer {
+    padding: 1rem;
+    width: 60vw;
+    height:auto;
+    border: 1px solid #000000;
+    border-radius: 20px;
     text-align: center;
 }
 
