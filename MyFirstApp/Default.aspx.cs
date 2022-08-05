@@ -5,8 +5,8 @@ using System.Linq;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.IO;
-using System.Web.UI.WebControls;
 using System.Data;
+using Newtonsoft.Json.Linq;
 
 public partial class Default : System.Web.UI.Page 
 {
@@ -14,7 +14,7 @@ public partial class Default : System.Web.UI.Page
     {
         if (!IsPostBack)
         {
-            Get_Tables("SqlServices");
+            Get_Option_Name("SqlServices");
         }
         
     }
@@ -22,113 +22,78 @@ public partial class Default : System.Web.UI.Page
     public static string strtxt;
     protected void btnValidate_Click(object sender, EventArgs e)
     {
-        strtxt = "Bind";
-        RadGrid2.Rebind();
+        try
+        {
+            strtxt = "Bind";
+            RadGrid2.Rebind();
+            
+        } catch (Exception ex)
+        {
+            List<string> errlist = new List<string>();
+            errlist.Add("Error");
+            errlist.Add("Descripción del error: "+ex.Message);
+            RadGrid2.DataSource = errlist;
+        }
     }
 
     protected string Return_File()
     {
-        try
+        List<object> list = new List<object>();
+        foreach (UploadedFile f in RadAsyncUpload1.UploadedFiles)
         {
-            List<object> list = new List<object>();
-            foreach (UploadedFile f in RadAsyncUpload1.UploadedFiles)
-            {
-                list.Add(f.GetName());
-            }
-            return list.ElementAt(0).ToString();
-        } catch (Exception ex)
-        {
-            
-            return null;
+            list.Add(f.GetName());
         }
-        
+        return list.ElementAt(0).ToString();
     }
- 
+
     private Tuple<List<object>, List<object>, List<object>> Read_Table(string dbtable, string connstr)
     {
-        try
+        SqlConnection conn = new SqlConnection(ConfigurationManager.ConnectionStrings[connstr].ConnectionString);
+        SqlCommand comm = new SqlCommand("SELECT t.name, c.max_length, c.is_nullable FROM sys.columns c JOIN sys.types t ON c.user_type_id = t.user_type_id WHERE c.object_id = Object_id('"+dbtable+"')", conn);
+        conn.Open();
+        List<object> typeresults = new List<object>();
+        List<object> lengthresults = new List<object>();
+        List<object> nullableresults = new List<object>();
+        using (SqlDataReader reader = comm.ExecuteReader())
         {
-            SqlConnection conn = new SqlConnection(ConfigurationManager.ConnectionStrings[connstr].ConnectionString);
-            SqlCommand comm = new SqlCommand("SELECT t.name, c.max_length, c.is_nullable FROM sys.columns c JOIN sys.types t ON c.user_type_id = t.user_type_id WHERE c.object_id = Object_id('"+dbtable+"')", conn);
-            //SqlCommand comm = new SqlCommand("SELECT DATA_TYPE,IS_NULLABLE,CHARACTER_MAXIMUM_LENGTH FROM BD_TGData.INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = '"+dbtable+"'; ", conn);
-            conn.Open();
-            List<object> typeresults = new List<object>();
-            List<object> lengthresults = new List<object>();
-            List<object> nullableresults = new List<object>();
-            using (SqlDataReader reader = comm.ExecuteReader())
+            while (reader.Read())
             {
-                while (reader.Read())
-                {
-                    typeresults.Add(reader[0]);
-                    lengthresults.Add(reader[1]);
-                    nullableresults.Add(reader[2]);
-                }
+                typeresults.Add(reader[0]);
+                lengthresults.Add(reader[1]);
+                nullableresults.Add(reader[2]);
             }
-            conn.Close();
-            return Tuple.Create(typeresults, lengthresults, nullableresults); 
         }
-        catch (Exception ex)
-        {
-            
-            return null;
-        }      
+        conn.Close();
+        return Tuple.Create(typeresults, lengthresults, nullableresults);   
     } 
 
     private string[] Read_File(string path)
-    {
-        try
-        {
-            string[] lines = File.ReadAllLines(path);
-            return lines;
-        } catch (Exception ex)
-        {
-            
-            return null;
-        }
-        
+    { 
+        string[] lines = File.ReadAllLines(path);
+        return lines;   
     }
 
-    protected DataTable Structure_Validator(List<object> tablestructure, List<object> columnlength, List<object> isnullable, string[] filedata, char spliter)
-    {   
+    protected DataTable Load_Table(string[] filedata, char spliter, JToken types)
+    {
         DataTable dt = new DataTable();
-        dt.Clear();
-        var watch = System.Diagnostics.Stopwatch.StartNew();
-        for (int li = 0; li < filedata.Count(); li++)
+        for (int li = 0; li < filedata.Length; li++)
         {
-            DataRow newRow = dt.NewRow();
-            string[] filecolumns = filedata[li].Split(spliter);
-            if (Is_Length_As(filecolumns.Count(), tablestructure.Count()))
+            DataRow dr = dt.NewRow();
+            string[] filecolumns = filedata[li].Split(spliter); 
+            for (int ci = 0; ci < filecolumns.Length; ci++)
             {
-                for (int ci = 0; ci < filecolumns.Count(); ci++)
+                if (li == 0)
                 {
-                    if (Has_Title(li))
-                    {
-                        dt.Columns.Add(filecolumns[ci]);
-                    } else
-                    {
-                        if (Is_Nullable(System.Convert.ToInt32(isnullable[ci]), filecolumns[ci].Count()))
-                        {
-                            if (Is_Less_Than(filecolumns[ci].Count(), System.Convert.ToInt32(columnlength[ci])))
-                            {
-                                newRow[ci] = filecolumns[ci];
-                            } else
-                            {
-                                newRow[ci] = "<abbr title='Error' style='text-decoration:none'><span style='color:red'> Error </span></abbr>";
-                            }
-                        } else
-                        {
-                            newRow[ci] = "<abbr title='Error' style='text-decoration:none'><span style='color:red'> Error </span></abbr>";
-                        }
-                    }    
+                    dt.Columns.Add(new DataColumn { ColumnName = filecolumns[ci], DataType = Get_Type(typeAlias, types[ci].ToString()) });
                 }
-            } else
-            {
-                newRow[0] = "Longitud inválida";
+                else
+                {
+                    dr[ci] = filecolumns[ci];
+                }
             }
-            dt.Rows.Add(newRow);
+            dt.Rows.Add(dr);
         }
-        watch.Stop();
-        System.Diagnostics.Debug.WriteLine(watch.Elapsed.TotalSeconds);
+        dt.Rows.RemoveAt(0);
         return dt;
     }
 
@@ -138,137 +103,111 @@ public partial class Default : System.Web.UI.Page
         {
             if (strtxt == "Bind")
             {
-                RadGrid2.DataSource = Structure_Validator(
-                Read_Table(RadDropDownTables.SelectedItem.Text, "SqlServices").Item1,
-                Read_Table(RadDropDownTables.SelectedItem.Text, "SqlServices").Item2,
-                Read_Table(RadDropDownTables.SelectedItem.Text, "SqlServices").Item3,
-                Read_File(@"C:\Users\MARIO RUEDA\Documents\" + Return_File()),
-                char.Parse(RadTextBox1.Text)
-            );
+                foreach (JObject jp in Json_Parameters()["dicttables"])
+                {
+                    if (jp["name"].ToString() == RadDropDownTables.SelectedItem.Text.ToString())
+                    {
+                        RadGrid2.DataSource = Load_Table(Read_File(@"C:\Users\MARIO RUEDA\Documents\" + Return_File()), char.Parse(RadTextBox1.Text), jp["types"]);
+                    }
+                }
+                RadGrid2.MasterTableView.Caption = "La primera fila de su archivo es tomada como el encabezado de la tabla";
             }
         } catch (Exception ex)
         {
+            RadGrid2.MasterTableView.Caption = "Oops :(";
             List<string> errlist = new List<string>();
-            errlist.Add(ex.Message);
+            errlist.Add("Error");
+            errlist.Add("Descripción del error: "+ex.Message);
             RadGrid2.DataSource = errlist;
         }
-            /*DataTable dt = new DataTable();
-            for (int li = 0; li < 20; li++)
-            {
-                DataRow newRow = dt.NewRow();
-                for (int ci = 0; ci < 3; ci++)
-                {
-                    if (li == 0)
-                    {
-                        dt.Columns.Add("Hey" + ci);
-                    }
-                    newRow[ci] = ci;
-                    System.Diagnostics.Debug.WriteLine("Hola"+ci);
-                }
-                dt.Rows.Add(newRow);
-            }
-            RadGrid2.DataSource = dt;*/   
     }
 
-    private bool Is_Length_As(int tablecolumns, int filecolumns)
-    {
-        return tablecolumns == filecolumns;
-    } 
-
-    private bool Is_Less_Than(int filecolumnlength, int tablecolumnlength)
-    {
-        if (filecolumnlength <= tablecolumnlength) return true;
-        return false;
-    }
-
-    private bool Is_Nullable(int nullablevalue, int filecolum)
-    {
-        if (nullablevalue == 0 && filecolum > 0) return true;
-        else if (nullablevalue == 0 && filecolum == 0) return false;
-        else if (nullablevalue == 1 && filecolum > 0) return true;
-        else if (nullablevalue == 1 && filecolum == 0) return true;
-        return false;
-    }
-
-    private Dictionary<string,string> Is_Same_Type() 
-    {
-        Dictionary<string, string> datatype = new Dictionary<string, string>();
-        datatype.Add("bigint", "int");
-        datatype.Add("varchar", "char");
-        datatype.Add("bit", "bool");
-        return datatype;
-    }
-
-    private bool Has_Title(int titleline)
-    {
-        if (titleline == 0) return true;
-        return false;
-    }
-
-    /*private void Online_Table(List<object> tablestructure, List<object> columnlength, List<object> isnullable, string[] filedata, char spliter, int filecount)
-    {
-        notify1.Text += "<table style='border-collapse:collapse;text-align:center;max-width:80vw;'>";
-        for (int li = 0; li < filecount; li++)
-        {
-            notify1.Text += "<tr style='border: 1px solid black'>";
-            notify1.Text += "<td style='border: 1px solid;padding:8px;'><p style='color:blue'>Línea " + (li + 1) + "</td>";
-            string[] filecolumns = filedata[li].Split(spliter);
-            if (Is_Length_As(filecolumns.Count(), tablestructure.Count()))
-            {
-                for (int ci = 0; ci < filecolumns.Count(); ci++)
-                {
-                    if (Is_Nullable(System.Convert.ToInt32(isnullable[ci]), filecolumns[ci].Count()))
-                    {
-                        if (Is_Less_Than(filecolumns[ci].Count(), System.Convert.ToInt32(columnlength[ci])))
-                        {
-                            notify1.Text += "<td style='border: 1px solid;padding:8px;'><p style='color:grey'>" + filecolumns[ci] + "</p></td>";
-                        }
-                        else
-                        {
-                            notify1.Text += "<td style='border: 1px solid;padding:8px;'><abbr style='text-decoration:underline red' title='El contenido supera el largo máximo de la columna en la BD'><p style='color:red'>" + filecolumns[ci] + "</abbr></p></td>";
-                        }
-                    }
-                    else
-                    {
-                        notify1.Text += "<td style='border: 1px solid;padding:8px;'><abbr style='text-decoration:underline red' title='Esta columna no puede estar vacía'><p style='color:red'> Error </abbr></p></td>";
-                    }
-                }
-            }
-            else
-            {
-                notify1.Text += "<td style='border: 1px solid;padding:8px;'><abbr style='text-decoration:underline red' title='Longitud de la fila no corresponde con longitud de la tabla'><p style='color:red'>Fila no válida</abbr></p></td>";
-            }
-            notify1.Text += "</tr>";
-        }
-    }*/
-
-    private void Get_Tables(string connsrt)
+    private void Get_Option_Name(string connsrt)
     {
         try
         {
-            SqlConnection conn = new SqlConnection(ConfigurationManager.ConnectionStrings[connsrt].ConnectionString);
-            SqlCommand comm = new SqlCommand("SELECT t.name FROM Sys.Tables t", conn);
-            conn.Open();
-            using (SqlDataReader reader = comm.ExecuteReader())
+            foreach (JObject jp in Json_Parameters()["dicttables"])
             {
-                while (reader.Read())
-                {
-                    RadDropDownTables.Items.Add(reader[0].ToString());
-                }
+                RadDropDownTables.Items.Add(jp["name"].ToString());
             }
-            conn.Close();
-            
         }
         catch (Exception ex)
         {
-           
-            throw;
+            RadGrid2.MasterTableView.Caption = "Oops :(";
+            List<string> errlist = new List<string>();
+            errlist.Add("Error");
+            errlist.Add("Descripción del error: " + ex.Message);
+            RadGrid2.DataSource = errlist;
         }
     }
 
-    public List<object> Data_Processor (List<object> validlines)
+    static Dictionary<string, Type> typeAlias = new Dictionary<string, Type>
     {
-        return validlines;
+        { "bool" , typeof(bool) },
+        { "byte" , typeof(byte) },
+        { "char" , typeof(char) },
+        { "decimal" , typeof(decimal) },
+        { "double" , typeof(double) },
+        { "float" , typeof(float) },
+        { "int32" , typeof(Int32) },
+        { "int64" , typeof(Int64) },
+        { "long" , typeof(long) },
+        { "object" , typeof(object) },
+        { "sbyte" , typeof(sbyte) },
+        { "short" , typeof(short) },
+        { "string" , typeof(string) },
+        { "uint" , typeof(uint) },
+        { "ulong" , typeof(ulong) },
+        { "void" , typeof(void) }
+    };
+
+    private System.Type Get_Type(Dictionary<string, Type> typealias, string typecolumn)
+    {
+        return typeAlias[typecolumn];
+    }
+
+    private JObject Json_Parameters()
+    {
+        string jsondata = @"{
+            'dicttables': [
+                {
+                    'name':'contabilidad',
+                    'types': [
+                        'decimal',
+                        'string',
+                        'string',
+                        'string',
+                        'string',
+                        'string',
+                        'string',
+                        'string',
+                        'string',
+                        'string'
+                    ],
+                    'tables': {
+                        'TBEMPLEADO':'',
+                        'TBCLIENTE':''
+                    }
+                }
+            ]
+        }";
+        return JObject.Parse(jsondata);
+    }
+
+    protected void Get_Tables(string connsrt)
+    {
+        SqlConnection conn = new SqlConnection(ConfigurationManager.ConnectionStrings[connsrt].ConnectionString);
+        SqlCommand comm = new SqlCommand("SELECT t.name FROM Sys.Tables t", conn);
+        conn.Open();
+        using (SqlDataReader reader = comm.ExecuteReader())
+        {
+            while (reader.Read())
+            {
+                System.Diagnostics.Debug.Write(reader[0].ToString());
+                RadDropDownOption.Items.Add(reader[0].ToString());
+            }
+        }
+        conn.Close(); 
     }
     
 }

@@ -33,7 +33,7 @@
 .validationcontainer {
     padding: 1rem;
     width: 60vw;
-    height:auto;
+    height: auto;
     border: 1px solid #000000;
     border-radius: 20px;
     text-align: center;
@@ -75,10 +75,13 @@
     margin: 2px auto;
     padding: 1px;
     border: 1px solid #999999;
-    background-color: #00AAFF;
+    background-color: #6b849d;
     border-radius: 12px;
     box-shadow: rgb(150,150,150) 2px 3px 10px;
     color: #FFFFFF;
 }
 
+.RadGrid .rgCommandRow .t-button {
+    display:none;
+}
     

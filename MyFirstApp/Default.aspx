@@ -31,20 +31,9 @@
         </telerik:RadAjaxManager> 
 
         <div class="container">   
-        
             <div class="menucontainer">
                 <span class="header">Importación de datos</span>
                 <img class="logo" src="https://erp.tgdata.com.co/Imagenes/TGData.png" alt="Logo TGDATA"/>
-                <div class="grid1">
-                    <telerik:RadButton 
-                        RenderMode="Lightweight" 
-                        CssClass="btn"
-                        ID="RadButton3"
-                        Skin="WebBlue"
-                        runat="server" 
-                        Text="Definir Estructura">
-                    </telerik:RadButton>
-                </div>
                 <div class="grid1">
                     <telerik:RadAsyncUpload 
                         RenderMode="Lightweight" 
@@ -90,7 +79,7 @@
                         ID="Label2" 
                         Skin="WebBlue"
                         runat="server" 
-                        Text="Tabla BD">
+                        Text="Tipo de cargue">
                     </asp:Label>
                     <telerik:RadDropDownList 
                         RenderMode="Lightweight" 
@@ -110,17 +99,7 @@
                         Skin="WebBlue"
                         OnClick="btnValidate_Click"
                         Text="Validar Archivo">
-                    </telerik:RadButton>              
-                </div>
-                <div class="grid1">
-                    <telerik:RadButton 
-                        RenderMode="Lightweight" 
-                        CssClass="btn"
-                        ID="RadButton2"
-                        Skin="WebBlue"
-                        runat="server" 
-                        Text="Procesar">
-                    </telerik:RadButton>
+                    </telerik:RadButton>        
                 </div>
             </div>
 
@@ -132,8 +111,7 @@
                         Skin="WebBlue"
                         AllowPaging="true"
                         AutoGenerateColumns="false"
-                        PageSize="13"
-                        ShowFooter="True"
+                        PageSize="10"
                         OnNeedDataSource="RadGrid2_NeedDataSource1"
                         AllowFilteringByColumn="true"
                         >
@@ -146,14 +124,51 @@
                             </Scrolling>
                         </ClientSettings>
                         <MasterTableView
+                            CommandItemDisplay="top"
                             AutoGenerateColumns="true" 
                             >
+                            
                             <Columns>
                             </Columns> 
+
+                            <CommandItemTemplate>
+                                <telerik:RadButton 
+                                    RenderMode="Lightweight" 
+                                    Skin="WebBlue" 
+                                    ID="RadButton4" 
+                                    runat="server" 
+                                    Text="Procesar archivo" 
+                                    ButtonType="StandardButton" 
+                                    UseSubmitBehavior="true"/>
+                            </CommandItemTemplate>
+
                         </MasterTableView>
                     </telerik:RadGrid>
                 </telerik:RadAjaxPanel>
             </div>
+
+            <div class="menucontainer">
+                <span class="header">Crear tipo de cargue</span>
+                <img class="logo" src="https://erp.tgdata.com.co/Imagenes/TGData.png" alt="Logo TGDATA"/>
+                <div class="grid1">
+                    <asp:Label 
+                        RenderMode="Lightweight" 
+                        ID="Label4" 
+                        Skin="WebBlue"
+                        runat="server" 
+                        Text="Tipo de cargue">
+                    </asp:Label>
+                    <telerik:RadDropDownList 
+                        RenderMode="Lightweight" 
+                        ID="RadDropDownOption" 
+                        CssClass="ddlist"
+                        runat="server"  
+                        DropDownHeight="200px" 
+                        Skin="WebBlue">
+                    </telerik:RadDropDownList>
+                </div>
+            </div>
+
         </div>
 
         <script type="text/javascript">
