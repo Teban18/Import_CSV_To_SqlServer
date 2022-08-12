@@ -7,6 +7,7 @@ using System.Data.SqlClient;
 using System.IO;
 using System.Data;
 using Newtonsoft.Json.Linq;
+using System.Web.UI.WebControls;
 
 public partial class Default : System.Web.UI.Page 
 {
@@ -46,7 +47,7 @@ public partial class Default : System.Web.UI.Page
         return list.ElementAt(0).ToString();
     }
 
-    private Tuple<List<object>, List<object>, List<object>> Read_Table(string dbtable, string connstr)
+    /*private Tuple<List<object>, List<object>, List<object>> Read_Table(string dbtable, string connstr)
     {
         SqlConnection conn = new SqlConnection(ConfigurationManager.ConnectionStrings[connstr].ConnectionString);
         SqlCommand comm = new SqlCommand("SELECT t.name, c.max_length, c.is_nullable FROM sys.columns c JOIN sys.types t ON c.user_type_id = t.user_type_id WHERE c.object_id = Object_id('"+dbtable+"')", conn);
@@ -65,7 +66,7 @@ public partial class Default : System.Web.UI.Page
         }
         conn.Close();
         return Tuple.Create(typeresults, lengthresults, nullableresults);   
-    } 
+    }*/ 
 
     private string[] Read_File(string path)
     { 
@@ -73,7 +74,7 @@ public partial class Default : System.Web.UI.Page
         return lines;   
     }
 
-    protected DataTable Load_Table(string[] filedata, char spliter, JToken types)
+    protected DataTable Load_Table(string[] filedata, char spliter, List<object> types)
     {
         DataTable dt = new DataTable();
         for (int li = 0; li < filedata.Length; li++)
@@ -103,14 +104,8 @@ public partial class Default : System.Web.UI.Page
         {
             if (strtxt == "Bind")
             {
-                foreach (JObject jp in Json_Parameters()["dicttables"])
-                {
-                    if (jp["name"].ToString() == RadDropDownTables.SelectedItem.Text.ToString())
-                    {
-                        RadGrid2.DataSource = Load_Table(Read_File(@"C:\Users\MARIO RUEDA\Documents\" + Return_File()), char.Parse(RadTextBox1.Text), jp["types"]);
-                    }
-                }
-                RadGrid2.MasterTableView.Caption = "La primera fila de su archivo es tomada como el encabezado de la tabla";
+               RadGrid2.DataSource = Load_Table(Read_File(@"C:\Users\MARIO RUEDA\Documents\" + Return_File()), char.Parse(RadTextBox1.Text), Get_Option_Types("SqlServices"));
+               RadGrid2.MasterTableView.Caption = "La primera fila de su archivo es tomada como el encabezado de la tabla";
             }
         } catch (Exception ex)
         {
@@ -122,14 +117,39 @@ public partial class Default : System.Web.UI.Page
         }
     }
 
+    private List<object> Get_Option_Types(string connsrt)
+    {
+        System.Diagnostics.Debug.Write(RadDropDownTables.SelectedItem.Text);
+        SqlConnection conn = new SqlConnection(ConfigurationManager.ConnectionStrings[connsrt].ConnectionString);
+        SqlCommand comm = new SqlCommand("SELECT a.CAMP_TIPO FROM TBCAMPOS_CARGUE AS a INNER JOIN TBOPCION_CARGUE AS b ON a.OP_CODIGO = b.OPC_CODIGO WHERE b.OPC_CODIGO ="+RadDropDownTables.SelectedItem.Text, conn);
+        conn.Open();
+        List<object> typeresults = new List<object>();
+        using (SqlDataReader reader = comm.ExecuteReader())
+        {
+            while (reader.Read())
+            {
+                typeresults.Add(reader[0]);
+            }
+        }
+        conn.Close();
+        return typeresults;
+    }
+
     private void Get_Option_Name(string connsrt)
     {
         try
         {
-            foreach (JObject jp in Json_Parameters()["dicttables"])
+            SqlConnection conn = new SqlConnection(ConfigurationManager.ConnectionStrings[connsrt].ConnectionString);
+            SqlCommand comm = new SqlCommand("SELECT OPC_CODIGO, OPC_NOMBRE FROM TBOPCION_CARGUE", conn);
+            conn.Open();
+            using (SqlDataReader reader = comm.ExecuteReader())
             {
-                RadDropDownTables.Items.Add(jp["name"].ToString());
+                while (reader.Read())
+                {
+                    RadDropDownTables.Items.Add(reader[0].ToString());
+                }
             }
+            conn.Close();
         }
         catch (Exception ex)
         {
@@ -166,12 +186,15 @@ public partial class Default : System.Web.UI.Page
         return typeAlias[typecolumn];
     }
 
-    private JObject Json_Parameters()
+    /*private JObject Json_Parameters()
     {
         string jsondata = @"{
             'dicttables': [
                 {
                     'name':'contabilidad',
+                    'code':'cont1',
+                    'storedprocedures':'',
+                    'typeofload':'',
                     'types': [
                         'decimal',
                         'string',
@@ -192,9 +215,9 @@ public partial class Default : System.Web.UI.Page
             ]
         }";
         return JObject.Parse(jsondata);
-    }
+    }*/
 
-    protected void Get_Tables(string connsrt)
+    /*protected void Get_Tables(string connsrt)
     {
         SqlConnection conn = new SqlConnection(ConfigurationManager.ConnectionStrings[connsrt].ConnectionString);
         SqlCommand comm = new SqlCommand("SELECT t.name FROM Sys.Tables t", conn);
@@ -208,6 +231,6 @@ public partial class Default : System.Web.UI.Page
             }
         }
         conn.Close(); 
-    }
-    
+    }*/
+
 }
