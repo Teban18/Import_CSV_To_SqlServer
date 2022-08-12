@@ -119,9 +119,8 @@ public partial class Default : System.Web.UI.Page
 
     private List<object> Get_Option_Types(string connsrt)
     {
-        System.Diagnostics.Debug.Write(RadDropDownTables.SelectedItem.Text);
         SqlConnection conn = new SqlConnection(ConfigurationManager.ConnectionStrings[connsrt].ConnectionString);
-        SqlCommand comm = new SqlCommand("SELECT a.CAMP_TIPO FROM TBCAMPOS_CARGUE AS a INNER JOIN TBOPCION_CARGUE AS b ON a.OP_CODIGO = b.OPC_CODIGO WHERE b.OPC_CODIGO ="+RadDropDownTables.SelectedItem.Text, conn);
+        SqlCommand comm = new SqlCommand("SELECT a.CAMP_TIPO FROM TBCAMPOS_CARGUE AS a RIGHT JOIN TBOPCION_CARGUE AS b ON a.OP_CODIGO = b.OPC_CODIGO WHERE b.OPC_CODIGO ="+RadDropDownTables.SelectedItem.Text, conn);
         conn.Open();
         List<object> typeresults = new List<object>();
         using (SqlDataReader reader = comm.ExecuteReader())
