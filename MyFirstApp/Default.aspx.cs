@@ -16,6 +16,7 @@ public partial class Default : System.Web.UI.Page
         if (!IsPostBack)
         {
             Get_Option_Name("SqlServices");
+            Get_Creation_PrepareLoading("SqlServices");
         }
         
     }
@@ -26,9 +27,9 @@ public partial class Default : System.Web.UI.Page
         try
         {
             strtxt = "Bind";
-            RadGrid2.Rebind();
-            
-        } catch (Exception ex)
+            RadGrid2.Rebind();   
+        } 
+        catch (Exception ex)
         {
             List<string> errlist = new List<string>();
             errlist.Add("Error");
@@ -101,11 +102,12 @@ public partial class Default : System.Web.UI.Page
     protected void RadGrid2_NeedDataSource1(object source, Telerik.Web.UI.GridNeedDataSourceEventArgs e)
     {
         try
+
         {
             if (strtxt == "Bind")
             {
-               RadGrid2.DataSource = Load_Table(Read_File(@"C:\Users\MARIO RUEDA\Documents\" + Return_File()), char.Parse(RadTextBox1.Text), Get_Option_Types("SqlServices"));
-               RadGrid2.MasterTableView.Caption = "La primera fila de su archivo es tomada como el encabezado de la tabla";
+                RadGrid2.DataSource = Load_Table(Read_File(@"C:\Users\MARIO RUEDA\Documents\" + Return_File()), char.Parse(RadTextBox1.Text), Get_Option_Types("SqlServices"));    
+                RadGrid2.MasterTableView.Caption = "La primera fila de su archivo es tomada como el encabezado de la tabla";
             }
         } catch (Exception ex)
         {
@@ -120,7 +122,7 @@ public partial class Default : System.Web.UI.Page
     private List<object> Get_Option_Types(string connsrt)
     {
         SqlConnection conn = new SqlConnection(ConfigurationManager.ConnectionStrings[connsrt].ConnectionString);
-        SqlCommand comm = new SqlCommand("SELECT a.CAMP_TIPO FROM TBCAMPOS_CARGUE AS a RIGHT JOIN TBOPCION_CARGUE AS b ON a.OP_CODIGO = b.OPC_CODIGO WHERE b.OPC_CODIGO ="+RadDropDownTables.SelectedItem.Text, conn);
+        SqlCommand comm = new SqlCommand("SELECT a.CAMP_TIPO FROM TBCAMPOS_CARGUE AS a RIGHT JOIN TBOPCION_CARGUE AS b ON a.OP_CODIGO = b.OPC_CODIGO WHERE b.OPC_CODIGO ="+RadDropDownTables.SelectedItem.Value, conn);
         conn.Open();
         List<object> typeresults = new List<object>();
         using (SqlDataReader reader = comm.ExecuteReader())
@@ -136,28 +138,17 @@ public partial class Default : System.Web.UI.Page
 
     private void Get_Option_Name(string connsrt)
     {
-        try
+        SqlConnection conn = new SqlConnection(ConfigurationManager.ConnectionStrings[connsrt].ConnectionString);
+        SqlCommand comm = new SqlCommand("SELECT OPC_CODIGO, OPC_NOMBRE FROM TBOPCION_CARGUE", conn);
+        conn.Open();
+        using (SqlDataReader reader = comm.ExecuteReader())
         {
-            SqlConnection conn = new SqlConnection(ConfigurationManager.ConnectionStrings[connsrt].ConnectionString);
-            SqlCommand comm = new SqlCommand("SELECT OPC_CODIGO, OPC_NOMBRE FROM TBOPCION_CARGUE", conn);
-            conn.Open();
-            using (SqlDataReader reader = comm.ExecuteReader())
+            while (reader.Read())
             {
-                while (reader.Read())
-                {
-                    RadDropDownTables.Items.Add(reader[0].ToString());
-                }
+                RadDropDownTables.Items.Add(new DropDownListItem(reader[1].ToString(), reader[0].ToString()));
             }
-            conn.Close();
         }
-        catch (Exception ex)
-        {
-            RadGrid2.MasterTableView.Caption = "Oops :(";
-            List<string> errlist = new List<string>();
-            errlist.Add("Error");
-            errlist.Add("Descripción del error: " + ex.Message);
-            RadGrid2.DataSource = errlist;
-        }
+        conn.Close();   
     }
 
     static Dictionary<string, Type> typeAlias = new Dictionary<string, Type>
@@ -184,52 +175,66 @@ public partial class Default : System.Web.UI.Page
     {
         return typeAlias[typecolumn];
     }
+  
 
-    /*private JObject Json_Parameters()
-    {
-        string jsondata = @"{
-            'dicttables': [
-                {
-                    'name':'contabilidad',
-                    'code':'cont1',
-                    'storedprocedures':'',
-                    'typeofload':'',
-                    'types': [
-                        'decimal',
-                        'string',
-                        'string',
-                        'string',
-                        'string',
-                        'string',
-                        'string',
-                        'string',
-                        'string',
-                        'string'
-                    ],
-                    'tables': {
-                        'TBEMPLEADO':'',
-                        'TBCLIENTE':''
-                    }
-                }
-            ]
-        }";
-        return JObject.Parse(jsondata);
-    }*/
+    /*   Creation Module   */
 
-    /*protected void Get_Tables(string connsrt)
+
+
+    private void Get_Creation_PrepareLoading(string connsrt)
     {
         SqlConnection conn = new SqlConnection(ConfigurationManager.ConnectionStrings[connsrt].ConnectionString);
-        SqlCommand comm = new SqlCommand("SELECT t.name FROM Sys.Tables t", conn);
+        SqlCommand comm = new SqlCommand("SELECT AC_CODIGO, AC_NOMBRE FROM TBALMACENAMIENTO_CARGUE", conn);
         conn.Open();
         using (SqlDataReader reader = comm.ExecuteReader())
         {
             while (reader.Read())
             {
-                System.Diagnostics.Debug.Write(reader[0].ToString());
-                RadDropDownOption.Items.Add(reader[0].ToString());
+                RadDropDownTipeLoad.Items.Add(new DropDownListItem(reader[1].ToString(), reader[0].ToString()));
             }
         }
-        conn.Close(); 
-    }*/
+        conn.Close();
+    }
+
+    protected void btnCreate_Click(object sender, EventArgs e)
+    {
+        try
+        {
+            if (validatorRB3.IsValid && validatorRB4.IsValid && validatorRB5.IsValid)
+            {
+                Store_Creation_TypeLoading("SqlServices", RadTextBox3.Text.ToString(), Int32.Parse(RadDropDownTipeLoad.SelectedItem.Value));
+
+            }
+            else
+            {
+                System.Diagnostics.Debug.Write("problem");
+            }
+        }
+        catch 
+        {
+            System.Diagnostics.Debug.Write("");
+        }
+    }
+
+    private void Store_Creation_TypeLoading(string connsrt, string name, int loadall)
+    {
+        SqlConnection conn = new SqlConnection(ConfigurationManager.ConnectionStrings[connsrt].ConnectionString);
+        SqlCommand comm = new SqlCommand("INSERT INTO dbo.TBOPCION_CARGUE(OPC_NOMBRE, OPC_CARGATODO) VALUES(@name, @loadall)", conn);
+        comm.Parameters.AddWithValue("@name", name);
+        comm.Parameters.AddWithValue("@loadall", loadall);
+        conn.Open();
+        comm.ExecuteNonQuery();
+        conn.Close();
+    }
+
+    private void Store_Creation_Procedures()
+    {
+
+    }
+
+    private void Store_Creation_Fields()
+    {
+
+    }
 
 }

@@ -11,6 +11,10 @@
     font-family: Calibri;
 }
 
+.header .headertitle {
+    color: #35343a;
+}
+
 .DropZone1 {
     height: auto;
     background-color: white;

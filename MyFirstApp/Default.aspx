@@ -27,6 +27,11 @@
                         <telerik:AjaxUpdatedControl ControlID="RadGrid2" LoadingPanelID="RadAjaxLoadingPanel1" />
                     </UpdatedControls>
                 </telerik:AjaxSetting>
+                <telerik:AjaxSetting AjaxControlID="RadButton2">
+                    <UpdatedControls>
+                        <telerik:AjaxUpdatedControl ControlID="RadButton2" LoadingPanelID="RadAjaxLoadingPanel1" />
+                    </UpdatedControls>
+                </telerik:AjaxSetting>
             </AjaxSettings>
         </telerik:RadAjaxManager> 
 
@@ -35,7 +40,9 @@
                 <telerik:LayoutRow>
                     <Content>
                         <div class="header">
-                            <img class="logo" src="https://erp.tgdata.com.co/Imagenes/TGData.png" alt="Logo TGDATA" width="150"/>
+                            <span class="headertitle">Importación de Datos</span>
+                            <br/>
+                            <img class="logo" src="https://erp.tgdata.com.co/Imagenes/TGData.png" alt="Logo TGDATA" width="100"/>
                         </div>
                     </Content>
                 </telerik:LayoutRow>
@@ -48,7 +55,7 @@
                                         <telerik:LayoutRow>
                                             <Content>
                                                 <div class="header">
-                                                    <span class="header">Importación de datos</span>
+                                                    
                                                 </div>
                                             </Content>
                                         </telerik:LayoutRow>
@@ -56,7 +63,7 @@
                                             <Columns>
                                                 <telerik:LayoutColumn Span="12" SpanXs="12" SpanSm="12">
                                                     <div class="col">
-                                                        <telerik:RadAsyncUpload RenderMode="Lightweight" runat="server" ID="RadAsyncUpload1" Skin="WebBlue" DropZones=".DropZone1" Localization-Select="Seleccionar archivo"/> 
+                                                        <telerik:RadAsyncUpload RenderMode="Lightweight" runat="server" ID="RadAsyncUpload1" Skin="WebBlue" DropZones=".DropZone1" Localization-Select="Cargar archivo"/> 
                                                     </div>
                                                 </telerik:LayoutColumn>
                                                 <telerik:LayoutColumn Span="12" SpanXs="12" SpanSm="12">
@@ -117,12 +124,42 @@
                         </telerik:LayoutColumn>
                         <telerik:LayoutColumn Span="12" SpanXs="12" SpanSm="12">
                             <div class="col">
-                                <telerik:radpagelayout id="RadPageLayout1" runat="server" gridtype="Fluid">
+                            </div>
+                        </telerik:LayoutColumn>
+                    </Columns>
+                </telerik:LayoutRow>
+                <telerik:LayoutRow>
+                    <Content>
+                        <div class="footer">
+
+                        </div>
+                    </Content>
+                </telerik:LayoutRow>
+            </Rows>
+        </telerik:radpagelayout>
+
+        <hr/>
+
+        <telerik:RadPageLayout ID="RadPageLayout4" runat="server" GridType="Fluid" CssClass="borderCssClass">
+            <Rows>
+                <telerik:LayoutRow>
+                    <Content>
+                        <div class="header">
+                            <span class="headertitle">Creación de Cargue</span>
+                            <br/>
+                            <img class="logo" src="https://erp.tgdata.com.co/Imagenes/TGData.png" alt="Logo TGDATA" width="100"/>
+                        </div>
+                    </Content>
+                </telerik:LayoutRow>
+                <telerik:LayoutRow >
+                    <Columns>
+                        <telerik:LayoutColumn Span="4" SpanXs="12" SpanSm="12">
+                            <div class="col">
+                                <telerik:radpagelayout id="RadPageLayout5" runat="server" gridtype="Fluid">
                                     <Rows>
                                         <telerik:LayoutRow>
                                             <Content>
                                                 <div class="header">
-                                                    <img class="logo" src="https://erp.tgdata.com.co/Imagenes/TGData.png" alt="Logo TGDATA"/>
                                                 </div>
                                             </Content>
                                         </telerik:LayoutRow>
@@ -130,30 +167,65 @@
                                             <Columns>
                                                 <telerik:LayoutColumn Span="6" SpanXs="6" SpanSm="6">
                                                     <div class="col">
-                                                        <asp:Label RenderMode="Lightweight" ID="Label4" Skin="WebBlue" runat="server" Text="Nombre del cargue"></asp:Label>
+                                                        <asp:Label RenderMode="Lightweight" ID="Label3" Skin="WebBlue" runat="server" Text="Nombre del cargue"></asp:Label>
                                                     </div>
                                                 </telerik:LayoutColumn>
                                                 <telerik:LayoutColumn Span="6" SpanXs="6" SpanSm="6">
                                                     <div class="col">
                                                         <telerik:RadTextBox RenderMode="Lightweight" runat="server" ID="RadTextBox3" Skin="WebBlue" Width="" EmptyMessage=""></telerik:RadTextBox>
-                                                        <asp:RequiredFieldValidator runat="server" ControlToValidate="RadTextBox3" ErrorMessage="Ingrese un valor" ForeColor="red"></asp:RequiredFieldValidator>
+                                                        <asp:RequiredFieldValidator runat="server" ID="validatorRB3" ControlToValidate="RadTextBox3" ErrorMessage="Ingrese un valor" ForeColor="red"></asp:RequiredFieldValidator>
                                                     </div>
                                                 </telerik:LayoutColumn>
                                                 <telerik:LayoutColumn Span="6" SpanXs="6" SpanSm="6">
                                                     <div class="col">
-                                                        <asp:Label RenderMode="Lightweight" ID="Label5" Skin="WebBlue" runat="server" Text="Tipo de cargue"></asp:Label>    
+                                                        <asp:Label RenderMode="Lightweight" ID="Label6" Skin="WebBlue" runat="server" Text="Tipo de cargue"></asp:Label>    
                                                     </div>
                                                 </telerik:LayoutColumn>
                                                 <telerik:LayoutColumn Span="6" SpanXs="6" SpanSm="6">
                                                     <div class="col">
-                                                        <telerik:RadTextBox RenderMode="Lightweight" runat="server" ID="RadTextBox4" Skin="WebBlue" Width="" EmptyMessage=""></telerik:RadTextBox>    
+                                                        <telerik:RadDropDownList RenderMode="Lightweight" ID="RadDropDownTipeLoad" CssClass="ddlist" runat="server" DropDownHeight="" Skin="WebBlue"></telerik:RadDropDownList>
+                                                    </div>
+                                                </telerik:LayoutColumn>
+                                                <telerik:LayoutColumn Span="6" SpanXs="6" SpanSm="6">
+                                                    <div class="col">
+                                                        <asp:Label RenderMode="Lightweight" ID="Label4" Skin="WebBlue" runat="server" Text="Campos para el cargue"></asp:Label>    
+                                                    </div>
+                                                </telerik:LayoutColumn>
+                                                <telerik:LayoutColumn Span="6" SpanXs="6" SpanSm="6">
+                                                    <div class="col">
+                                                        <telerik:RadTextBox RenderMode="Lightweight" runat="server" ID="RadTextBox2" Skin="WebBlue" Width="" EmptyMessage=""></telerik:RadTextBox>  
+                                                        <asp:RequiredFieldValidator runat="server" ID="validatorRB2" ControlToValidate="RadTextBox2" ErrorMessage="Ingrese un valor" ForeColor="red"></asp:RequiredFieldValidator>
+                                                    </div>
+                                                </telerik:LayoutColumn>
+                                                <telerik:LayoutColumn Span="6" SpanXs="6" SpanSm="6">
+                                                    <div class="col">
+                                                        <asp:Label RenderMode="Lightweight" ID="Label5" Skin="WebBlue" runat="server" Text="Rutina Validación"></asp:Label>    
+                                                    </div>
+                                                </telerik:LayoutColumn>
+                                                <telerik:LayoutColumn Span="6" SpanXs="6" SpanSm="6">
+                                                    <div class="col">
+                                                        <telerik:RadTextBox RenderMode="Lightweight" runat="server" ID="RadTextBox4" Skin="WebBlue" Width="" TextMode="MultiLine" EmptyMessage="ej: xxxx-xxxx"></telerik:RadTextBox>  
+                                                        <asp:RequiredFieldValidator runat="server" ID="validatorRB4" ControlToValidate="RadTextBox4" ErrorMessage="Ingrese un valor" ForeColor="red"></asp:RequiredFieldValidator> 
+                                                    </div>
+                                                </telerik:LayoutColumn>
+                                                <telerik:LayoutColumn Span="6" SpanXs="6" SpanSm="6">
+                                                    <div class="col">
+                                                        <asp:Label RenderMode="Lightweight" ID="Label7" Skin="WebBlue" runat="server" Text="SP Almacenamiento"></asp:Label>    
+                                                    </div>
+                                                </telerik:LayoutColumn>
+                                                <telerik:LayoutColumn Span="6" SpanXs="6" SpanSm="6">
+                                                    <div class="col">
+                                                        <telerik:RadTextBox RenderMode="Lightweight" runat="server" ID="RadTextBox5" Skin="WebBlue" Width="" TextMode="MultiLine" EmptyMessage="ej: xxxx-xxxx"></telerik:RadTextBox>  
+                                                        <asp:RequiredFieldValidator runat="server" ID="validatorRB5" ControlToValidate="RadTextBox5" ErrorMessage="Ingrese un valor" ForeColor="red"></asp:RequiredFieldValidator> 
                                                     </div>
                                                 </telerik:LayoutColumn>
                                             </Columns>
                                         </telerik:LayoutRow>
                                         <telerik:LayoutRow>
                                             <Content>
-                                                <div class="footer">Footer</div>
+                                                <div class="footer">
+                                                     <telerik:RadButton RenderMode="Lightweight" ID="RadButton2" CssClass="btn" OnClick="btnCreate_Click" runat="server" Skin="WebBlue" Text="Crear Cargue"></telerik:RadButton>
+                                                </div>
                                             </Content>
                                         </telerik:LayoutRow>
                                     </Rows>
@@ -164,11 +236,14 @@
                 </telerik:LayoutRow>
                 <telerik:LayoutRow>
                     <Content>
-                        <div class="footer">Footer</div>
+                        <div class="footer">
+
+                        </div>
                     </Content>
                 </telerik:LayoutRow>
             </Rows>
-        </telerik:radpagelayout>
+        </telerik:RadPageLayout>    
+
         <script type="text/javascript">
             //Put your JavaScript code here.
             function GridCreated(sender, args) {
