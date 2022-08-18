@@ -199,7 +199,7 @@
                                                 </telerik:LayoutColumn>
                                                 <telerik:LayoutColumn Span="6" SpanXs="6" SpanSm="6">
                                                     <div class="col">
-                                                        <asp:Label RenderMode="Lightweight" ID="Label5" Skin="WebBlue" runat="server" Text="Rutina Validación"></asp:Label>    
+                                                        <asp:Label RenderMode="Lightweight" ID="Label5" Skin="WebBlue" runat="server" Text="Validación"></asp:Label>    
                                                     </div>
                                                 </telerik:LayoutColumn>
                                                 <telerik:LayoutColumn Span="6" SpanXs="6" SpanSm="6">
@@ -210,7 +210,7 @@
                                                 </telerik:LayoutColumn>
                                                 <telerik:LayoutColumn Span="6" SpanXs="6" SpanSm="6">
                                                     <div class="col">
-                                                        <asp:Label RenderMode="Lightweight" ID="Label7" Skin="WebBlue" runat="server" Text="SP Almacenamiento"></asp:Label>    
+                                                        <asp:Label RenderMode="Lightweight" ID="Label7" Skin="WebBlue" runat="server" Text="Almacenamiento"></asp:Label>    
                                                     </div>
                                                 </telerik:LayoutColumn>
                                                 <telerik:LayoutColumn Span="6" SpanXs="6" SpanSm="6">

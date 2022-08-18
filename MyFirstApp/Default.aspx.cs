@@ -50,22 +50,6 @@ public partial class Default : System.Web.UI.Page
 
     /*private Tuple<List<object>, List<object>, List<object>> Read_Table(string dbtable, string connstr)
     {
-        SqlConnection conn = new SqlConnection(ConfigurationManager.ConnectionStrings[connstr].ConnectionString);
-        SqlCommand comm = new SqlCommand("SELECT t.name, c.max_length, c.is_nullable FROM sys.columns c JOIN sys.types t ON c.user_type_id = t.user_type_id WHERE c.object_id = Object_id('"+dbtable+"')", conn);
-        conn.Open();
-        List<object> typeresults = new List<object>();
-        List<object> lengthresults = new List<object>();
-        List<object> nullableresults = new List<object>();
-        using (SqlDataReader reader = comm.ExecuteReader())
-        {
-            while (reader.Read())
-            {
-                typeresults.Add(reader[0]);
-                lengthresults.Add(reader[1]);
-                nullableresults.Add(reader[2]);
-            }
-        }
-        conn.Close();
         return Tuple.Create(typeresults, lengthresults, nullableresults);   
     }*/ 
 
@@ -176,10 +160,7 @@ public partial class Default : System.Web.UI.Page
         return typeAlias[typecolumn];
     }
   
-
     /*   Creation Module   */
-
-
 
     private void Get_Creation_PrepareLoading(string connsrt)
     {
@@ -202,37 +183,47 @@ public partial class Default : System.Web.UI.Page
         {
             if (validatorRB3.IsValid && validatorRB4.IsValid && validatorRB5.IsValid)
             {
-                Store_Creation_TypeLoading("SqlServices", RadTextBox3.Text.ToString(), Int32.Parse(RadDropDownTipeLoad.SelectedItem.Value));
-
+                Creation_Type("SqlServices", RadTextBox3.Text.ToString(), Int32.Parse(RadDropDownTipeLoad.SelectedItem.Value), RadTextBox4.Text.ToString(), RadTextBox5.Text.ToString(), 0);
+                /*EXEC SP_SAVELOADTYPE @Nombre_carga = 'TESTSP', @Tipo_carga = 1, @Nombre_pa_valida = 'TESTSP_VAL', @Nombre_pa_almacena ='TESTSP_ALMA', @scope = 0;*/
             }
             else
             {
                 System.Diagnostics.Debug.Write("problem");
             }
         }
-        catch 
+        catch (Exception ex)
         {
-            System.Diagnostics.Debug.Write("");
+            System.Diagnostics.Debug.Write(ex.Message);
         }
     }
 
-    private void Store_Creation_TypeLoading(string connsrt, string name, int loadall)
+    private void Creation_Type(string connsrt, string name, int typeload, string spvalidate, string spstore, int init)
     {
         SqlConnection conn = new SqlConnection(ConfigurationManager.ConnectionStrings[connsrt].ConnectionString);
-        SqlCommand comm = new SqlCommand("INSERT INTO dbo.TBOPCION_CARGUE(OPC_NOMBRE, OPC_CARGATODO) VALUES(@name, @loadall)", conn);
-        comm.Parameters.AddWithValue("@name", name);
-        comm.Parameters.AddWithValue("@loadall", loadall);
+        SqlCommand comm = new SqlCommand("SP_SAVELOADTYPE", conn);
+        comm.CommandType = CommandType.StoredProcedure;
+        comm.Parameters.AddWithValue("@Nombre_carga", name);
+        comm.Parameters.AddWithValue("@Tipo_carga", typeload);
+        comm.Parameters.AddWithValue("@Nombre_pa_valida", spvalidate);
+        comm.Parameters.AddWithValue("@Nombre_pa_almacena", spstore);
+        comm.Parameters.AddWithValue("@scope", init);
         conn.Open();
         comm.ExecuteNonQuery();
         conn.Close();
     }
 
-    private void Store_Creation_Procedures()
+    /*private void Store_Creation_Procedures(string connsrt, string namespv, string namesps)
     {
+        SqlConnection conn = new SqlConnection(ConfigurationManager.ConnectionStrings[connsrt].ConnectionString);
+        SqlCommand comm = new SqlCommand("insert into dbo.TBPROCEDIMIENTOS_CARGUE(OP_CODIGO, NOMBRE_PROC_VALIDA, NOMBRE_PROC_ALMACENA) values(SCOPE_IDENTITY(), @validate, @store)", conn);
+        comm.Parameters.AddWithValue("@validate", namespv);
+        comm.Parameters.AddWithValue("@store", namesps);
+        conn.Open();
+        comm.ExecuteNonQuery();
+        conn.Close();
+    }*/
 
-    }
-
-    private void Store_Creation_Fields()
+    private void Store_Creation_Fields(string connsrt)
     {
 
     }
