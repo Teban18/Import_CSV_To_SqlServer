@@ -70,7 +70,7 @@ public partial class Default : System.Web.UI.Page
             {
                 if (li == 0)
                 {
-                    dt.Columns.Add(new DataColumn { ColumnName = filecolumns[ci], DataType = Get_Type(typeAlias, types[ci].ToString()) });
+                    dt.Columns.Add(new DataColumn { ColumnName = filecolumns[ci], DataType = Get_Type(typeAlias, types[ci].ToString()), AllowDBNull=true });
                 }
                 else
                 {
@@ -90,7 +90,7 @@ public partial class Default : System.Web.UI.Page
         {
             if (strtxt == "Bind")
             {
-                RadGrid2.DataSource = Load_Table(Read_File(@"C:\Users\MARIO RUEDA\Documents\" + Return_File()), char.Parse(RadTextBox1.Text), Get_Option_Types("SqlServices"));    
+                RadGrid2.DataSource = Load_Table(Read_File(@"C:\Users\MARIO RUEDA\Documents\cargues\" + Return_File()), char.Parse(RadTextBox1.Text), Get_Option_Types("SqlServices"));    
                 RadGrid2.MasterTableView.Caption = "La primera fila de su archivo es tomada como el encabezado de la tabla";
             }
         } catch (Exception ex)
@@ -181,10 +181,10 @@ public partial class Default : System.Web.UI.Page
     {
         try
         {
-            if (validatorRB3.IsValid && validatorRB4.IsValid && validatorRB5.IsValid)
+            if (validatorRB2.IsValid && validatorRB3.IsValid && validatorRB4.IsValid && validatorRB5.IsValid && validatorRB6.IsValid && validatorRB7.IsValid && validatorRB8.IsValid)
             {
-                Creation_Type("SqlServices", RadTextBox3.Text.ToString(), Int32.Parse(RadDropDownTipeLoad.SelectedItem.Value), RadTextBox4.Text.ToString(), RadTextBox5.Text.ToString(), 0);
-                /*EXEC SP_SAVELOADTYPE @Nombre_carga = 'TESTSP', @Tipo_carga = 1, @Nombre_pa_valida = 'TESTSP_VAL', @Nombre_pa_almacena ='TESTSP_ALMA', @scope = 0;*/
+                Creation_Type("SqlServices", RadTextBox3.Text.ToString(), Int32.Parse(RadDropDownTipeLoad.SelectedItem.Value), RadTextBox4.Text.ToString(), RadTextBox5.Text.ToString(), char.Parse(RadTextBox6.Text), RadTextBox2.Text.ToString(), RadTextBox7.Text.ToString(), RadTextBox8.Text.ToString(), 0);
+                /*INSERT INTO dbo.TBCAMPOS_CARGUE(OP_CODIGO,CAMP_TIPO,CAMP_POSICION,CAMP_DESCRIPCION) select @scope , value FROM STRING_SPLIT(@campos,@spliter), value FROM STRING_SPLIT(@posicion,@spliter), value FROM STRING_SPLIT(@descripcion,@spliter);*/
             }
             else
             {
@@ -197,7 +197,7 @@ public partial class Default : System.Web.UI.Page
         }
     }
 
-    private void Creation_Type(string connsrt, string name, int typeload, string spvalidate, string spstore, int init)
+    private void Creation_Type(string connsrt, string name, int typeload, string spvalidate, string spstore, char spliter, string fields, string position, string description, int init)
     {
         SqlConnection conn = new SqlConnection(ConfigurationManager.ConnectionStrings[connsrt].ConnectionString);
         SqlCommand comm = new SqlCommand("SP_SAVELOADTYPE", conn);
@@ -206,26 +206,14 @@ public partial class Default : System.Web.UI.Page
         comm.Parameters.AddWithValue("@Tipo_carga", typeload);
         comm.Parameters.AddWithValue("@Nombre_pa_valida", spvalidate);
         comm.Parameters.AddWithValue("@Nombre_pa_almacena", spstore);
+        comm.Parameters.AddWithValue("@spliter", spliter);
+        comm.Parameters.AddWithValue("@campos", fields);
+        comm.Parameters.AddWithValue("@posicion", position);
+        comm.Parameters.AddWithValue("@descripcion", description);
         comm.Parameters.AddWithValue("@scope", init);
         conn.Open();
         comm.ExecuteNonQuery();
         conn.Close();
-    }
-
-    /*private void Store_Creation_Procedures(string connsrt, string namespv, string namesps)
-    {
-        SqlConnection conn = new SqlConnection(ConfigurationManager.ConnectionStrings[connsrt].ConnectionString);
-        SqlCommand comm = new SqlCommand("insert into dbo.TBPROCEDIMIENTOS_CARGUE(OP_CODIGO, NOMBRE_PROC_VALIDA, NOMBRE_PROC_ALMACENA) values(SCOPE_IDENTITY(), @validate, @store)", conn);
-        comm.Parameters.AddWithValue("@validate", namespv);
-        comm.Parameters.AddWithValue("@store", namesps);
-        conn.Open();
-        comm.ExecuteNonQuery();
-        conn.Close();
-    }*/
-
-    private void Store_Creation_Fields(string connsrt)
-    {
-
     }
 
 }
