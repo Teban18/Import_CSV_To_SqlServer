@@ -70,7 +70,7 @@ public partial class Default : System.Web.UI.Page
             {
                 if (li == 0)
                 {
-                    dt.Columns.Add(new DataColumn { ColumnName = filecolumns[ci], DataType = Get_Type(typeAlias, types[ci].ToString()), AllowDBNull=true });
+                    dt.Columns.Add(new DataColumn { ColumnName = filecolumns[ci], DataType = Get_Type(typeAlias, types[ci].ToString()), AllowDBNull=false });
                 }
                 else
                 {
@@ -181,10 +181,9 @@ public partial class Default : System.Web.UI.Page
     {
         try
         {
-            if (validatorRB2.IsValid && validatorRB3.IsValid && validatorRB4.IsValid && validatorRB5.IsValid && validatorRB6.IsValid && validatorRB7.IsValid && validatorRB8.IsValid)
+            if (validatorRB2.IsValid && validatorRB3.IsValid && validatorRB4.IsValid && validatorRB5.IsValid && validatorRB6.IsValid && validatorRB7.IsValid && validatorRB8.IsValid && validatorRB9.IsValid && validatorRB11.IsValid)
             {
-                Creation_Type("SqlServices", RadTextBox3.Text.ToString(), Int32.Parse(RadDropDownTipeLoad.SelectedItem.Value), RadTextBox4.Text.ToString(), RadTextBox5.Text.ToString(), char.Parse(RadTextBox6.Text), RadTextBox2.Text.ToString(), RadTextBox7.Text.ToString(), RadTextBox8.Text.ToString(), 0);
-                /*INSERT INTO dbo.TBCAMPOS_CARGUE(OP_CODIGO,CAMP_TIPO,CAMP_POSICION,CAMP_DESCRIPCION) select @scope , value FROM STRING_SPLIT(@campos,@spliter), value FROM STRING_SPLIT(@posicion,@spliter), value FROM STRING_SPLIT(@descripcion,@spliter);*/
+                Creation_Type("SqlServices", RadTextBox3.Text.ToString(), Int32.Parse(RadDropDownTipeLoad.SelectedItem.Value), RadTextBox4.Text.ToString(), RadTextBox5.Text.ToString(), char.Parse(RadTextBox6.Text), RadTextBox2.Text.ToString(), RadTextBox7.Text.ToString(), RadTextBox8.Text.ToString(), RadTextBox9.Text.ToString(), RadTextBox10.Text.ToString(), RadTextBox11.Text.ToString(), 0);
             }
             else
             {
@@ -197,7 +196,7 @@ public partial class Default : System.Web.UI.Page
         }
     }
 
-    private void Creation_Type(string connsrt, string name, int typeload, string spvalidate, string spstore, char spliter, string fields, string position, string description, int init)
+    private void Creation_Type(string connsrt, string name, int typeload, string spvalidate, string spstore, char spliter, string fields, string position, string description, string length, string format, string acceptnull, int init)
     {
         SqlConnection conn = new SqlConnection(ConfigurationManager.ConnectionStrings[connsrt].ConnectionString);
         SqlCommand comm = new SqlCommand("SP_SAVELOADTYPE", conn);
@@ -210,6 +209,9 @@ public partial class Default : System.Web.UI.Page
         comm.Parameters.AddWithValue("@campos", fields);
         comm.Parameters.AddWithValue("@posicion", position);
         comm.Parameters.AddWithValue("@descripcion", description);
+        comm.Parameters.AddWithValue("@longitud", length);
+        comm.Parameters.AddWithValue("@formato", format);
+        comm.Parameters.AddWithValue("@nulo", acceptnull);
         comm.Parameters.AddWithValue("@scope", init);
         conn.Open();
         comm.ExecuteNonQuery();

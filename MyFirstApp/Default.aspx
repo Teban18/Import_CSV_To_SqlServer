@@ -200,7 +200,7 @@
                                                 </telerik:LayoutColumn>
                                                 <telerik:LayoutColumn Span="6" SpanXs="6" SpanSm="6">
                                                     <div class="col">
-                                                        <asp:Label RenderMode="Lightweight" ID="Label4" Skin="WebBlue" runat="server" Text="Campos para el cargue"></asp:Label>    
+                                                        <asp:Label RenderMode="Lightweight" ID="Label4" Skin="WebBlue" runat="server" Text="Tipo de dato"></asp:Label>    
                                                     </div>
                                                 </telerik:LayoutColumn>
                                                 <telerik:LayoutColumn Span="6" SpanXs="6" SpanSm="6">
@@ -233,6 +233,39 @@
                                                 </telerik:LayoutColumn>
                                                 <telerik:LayoutColumn Span="6" SpanXs="6" SpanSm="6">
                                                     <div class="col">
+                                                        <asp:Label RenderMode="Lightweight" ID="Label11" Skin="WebBlue" runat="server" Text="Longitud"></asp:Label>    
+                                                    </div>
+                                                </telerik:LayoutColumn>
+                                                <telerik:LayoutColumn Span="6" SpanXs="6" SpanSm="6">
+                                                    <div class="col">
+                                                        <telerik:RadTextBox RenderMode="Lightweight" runat="server" ID="RadTextBox9" Skin="WebBlue" Width="" EmptyMessage="8,7"></telerik:RadTextBox>  
+                                                        <asp:RequiredFieldValidator runat="server" ID="validatorRB9" ControlToValidate="RadTextBox9" ErrorMessage="Ingrese un valor" ForeColor="red"></asp:RequiredFieldValidator>
+                                                    </div>
+                                                </telerik:LayoutColumn>
+                                                <telerik:LayoutColumn Span="6" SpanXs="6" SpanSm="6">
+                                                    <div class="col">
+                                                        <asp:Label RenderMode="Lightweight" ID="Label12" Skin="WebBlue" runat="server" Text="Formato"></asp:Label>    
+                                                    </div>
+                                                </telerik:LayoutColumn>
+                                                <telerik:LayoutColumn Span="6" SpanXs="6" SpanSm="6">
+                                                    <div class="col">
+                                                        <telerik:RadTextBox RenderMode="Lightweight" runat="server" ID="RadTextBox10" Skin="WebBlue" Width="" EmptyMessage="YYYY-MM-DD,YYYY-MM-DD"></telerik:RadTextBox>  
+                                                        <asp:RequiredFieldValidator runat="server" ID="validatorRB10" ControlToValidate="RadTextBox10" ErrorMessage="Ingrese un valor" ForeColor="red"></asp:RequiredFieldValidator>
+                                                    </div>
+                                                </telerik:LayoutColumn>
+                                                <telerik:LayoutColumn Span="6" SpanXs="6" SpanSm="6">
+                                                    <div class="col">
+                                                        <asp:Label RenderMode="Lightweight" ID="Label13" Skin="WebBlue" runat="server" Text="Acepta nulo"></asp:Label>    
+                                                    </div>
+                                                </telerik:LayoutColumn>
+                                                <telerik:LayoutColumn Span="6" SpanXs="6" SpanSm="6">
+                                                    <div class="col">
+                                                        <telerik:RadTextBox RenderMode="Lightweight" runat="server" ID="RadTextBox11" Skin="WebBlue" Width="" EmptyMessage="false,true"></telerik:RadTextBox>  
+                                                        <asp:RequiredFieldValidator runat="server" ID="validatorRB11" ControlToValidate="RadTextBox11" ErrorMessage="Ingrese un valor" ForeColor="red"></asp:RequiredFieldValidator>
+                                                    </div>
+                                                </telerik:LayoutColumn>
+                                                <telerik:LayoutColumn Span="6" SpanXs="6" SpanSm="6">
+                                                    <div class="col">
                                                         <asp:Label RenderMode="Lightweight" ID="Label5" Skin="WebBlue" runat="server" Text="Validación"></asp:Label>    
                                                     </div>
                                                 </telerik:LayoutColumn>
@@ -258,7 +291,23 @@
                                         <telerik:LayoutRow>
                                             <Content>
                                                 <div class="footer">
-                                                     <telerik:RadButton RenderMode="Lightweight" ID="RadButton2" CssClass="btn" OnClick="btnCreate_Click" runat="server" Skin="WebBlue" Text="Crear Cargue"></telerik:RadButton>
+                                                    <telerik:RadButton RenderMode="Lightweight" ID="RadButton2" CssClass="btn" OnClick="btnCreate_Click" runat="server" Skin="WebBlue" Text="Crear Cargue"></telerik:RadButton>
+
+                                                    <telerik:RadWindow RenderMode="Lightweight" ID="modalPopup" runat="server" Width="360px" Height="365px" Modal="true" OffsetElementID="main" OnClientShow="setCustomPosition" Style="z-index: 100001;">
+                                                        <ContentTemplate>
+                                                            <div style="padding: 10px; text-align: center;">
+                                                                <telerik:RadButton RenderMode="Lightweight" ID="rbToggleModality" Text="Toggle modality" OnClientClicked="togglePopupModality"
+                                                                    AutoPostBack="false" runat="server" Height="65px" />
+                                                            </div>
+                                                            <p style="text-align: center;">
+                                                                RadWindow is designed with keyboard support in mind - try tabbing
+                                                                    before and after removing the modal background. While the popup is modal
+                                                                    you cannot focus the text area, once the modality is removed the text area will
+                                                                    be the first thing to receive focus because it has tabIndex=1.
+                                                            </p>
+                                                        </ContentTemplate>
+                                                    </telerik:RadWindow>
+
                                                 </div>
                                             </Content>
                                         </telerik:LayoutRow>
