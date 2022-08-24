@@ -8,6 +8,7 @@ using System.IO;
 using System.Data;
 using Newtonsoft.Json.Linq;
 using System.Web.UI.WebControls;
+using System.Text;
 
 public partial class Default : System.Web.UI.Page 
 {
@@ -20,6 +21,8 @@ public partial class Default : System.Web.UI.Page
         }
         
     }
+
+    /* ----------------------------------  Validation Module  ---------------------------------------------  */
 
     public static string strtxt;
     protected void btnValidate_Click(object sender, EventArgs e)
@@ -48,18 +51,13 @@ public partial class Default : System.Web.UI.Page
         return list.ElementAt(0).ToString();
     }
 
-    /*private Tuple<List<object>, List<object>, List<object>> Read_Table(string dbtable, string connstr)
-    {
-        return Tuple.Create(typeresults, lengthresults, nullableresults);   
-    }*/ 
-
     private string[] Read_File(string path)
     { 
         string[] lines = File.ReadAllLines(path);
         return lines;   
     }
 
-    protected DataTable Load_Table(string[] filedata, char spliter, List<object> types)
+    protected DataTable Load_Table(string[] filedata, char spliter, Tuple<List<object>, List<object>> data)
     {
         DataTable dt = new DataTable();
         for (int li = 0; li < filedata.Length; li++)
@@ -70,7 +68,7 @@ public partial class Default : System.Web.UI.Page
             {
                 if (li == 0)
                 {
-                    dt.Columns.Add(new DataColumn { ColumnName = filecolumns[ci], DataType = Get_Type(typeAlias, types[ci].ToString()), AllowDBNull=false });
+                    dt.Columns.Add(new DataColumn { ColumnName = filecolumns[ci], DataType = Get_Type(typeAlias, data.Item1[ci].ToString()), AllowDBNull= bool.Parse(data.Item2[ci].ToString())});
                 }
                 else
                 {
@@ -92,6 +90,8 @@ public partial class Default : System.Web.UI.Page
             {
                 RadGrid2.DataSource = Load_Table(Read_File(@"C:\Users\MARIO RUEDA\Documents\cargues\" + Return_File()), char.Parse(RadTextBox1.Text), Get_Option_Types("SqlServices"));    
                 RadGrid2.MasterTableView.Caption = "La primera fila de su archivo es tomada como el encabezado de la tabla";
+               
+
             }
         } catch (Exception ex)
         {
@@ -103,21 +103,23 @@ public partial class Default : System.Web.UI.Page
         }
     }
 
-    private List<object> Get_Option_Types(string connsrt)
+    private Tuple<List<object>, List<object>> Get_Option_Types(string connsrt)
     {
         SqlConnection conn = new SqlConnection(ConfigurationManager.ConnectionStrings[connsrt].ConnectionString);
-        SqlCommand comm = new SqlCommand("SELECT a.CAMP_TIPO FROM TBCAMPOS_CARGUE AS a RIGHT JOIN TBOPCION_CARGUE AS b ON a.OP_CODIGO = b.OPC_CODIGO WHERE b.OPC_CODIGO ="+RadDropDownTables.SelectedItem.Value, conn);
+        SqlCommand comm = new SqlCommand("SELECT a.CAMP_TIPO, a.CAMP_NULO FROM TBCAMPOS_CARGUE AS a RIGHT JOIN TBOPCION_CARGUE AS b ON a.OP_CODIGO = b.OPC_CODIGO WHERE b.OPC_CODIGO ="+RadDropDownTables.SelectedItem.Value, conn);
         conn.Open();
         List<object> typeresults = new List<object>();
+        List<object> nuleresults = new List<object>();
         using (SqlDataReader reader = comm.ExecuteReader())
         {
             while (reader.Read())
             {
                 typeresults.Add(reader[0]);
+                nuleresults.Add(reader[1]);
             }
         }
         conn.Close();
-        return typeresults;
+        return Tuple.Create(typeresults,nuleresults);
     }
 
     private void Get_Option_Name(string connsrt)
@@ -139,11 +141,11 @@ public partial class Default : System.Web.UI.Page
     {
         { "bool" , typeof(bool) },
         { "byte" , typeof(byte) },
-        { "char" , typeof(char) },
+        { "char" , typeof(string) },
         { "decimal" , typeof(decimal) },
         { "double" , typeof(double) },
         { "float" , typeof(float) },
-        { "int32" , typeof(Int32) },
+        { "int32" , typeof(string) },
         { "int64" , typeof(Int64) },
         { "long" , typeof(long) },
         { "object" , typeof(object) },
@@ -159,8 +161,40 @@ public partial class Default : System.Web.UI.Page
     {
         return typeAlias[typecolumn];
     }
-  
-    /*   Creation Module   */
+
+    /* --------------------------------  Processing module  -------------------------------------------- */
+
+    protected void btnProcess_Click(object sender, EventArgs e)
+    {
+        try
+        {
+            foreach (DataRow row in Load_Table(Read_File(@"C:\Users\MARIO RUEDA\Documents\cargues\" + Return_File()), char.Parse(RadTextBox1.Text), Get_Option_Types("SqlServices")).Rows)
+            {
+                StringBuilder sb = new StringBuilder();
+                send_Valdation("SqlServices", sb.AppendLine(string.Join(",", row.ItemArray)));
+            }
+            
+        } 
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.Write(ex.Message);
+        }
+    }
+
+    private void send_Valdation(string connsrt, StringBuilder line)
+    {
+        SqlConnection conn = new SqlConnection(ConfigurationManager.ConnectionStrings[connsrt].ConnectionString);
+        SqlCommand comm = new SqlCommand("SP_PruebaValidacion", conn);
+        comm.CommandType = CommandType.StoredProcedure;
+        comm.Parameters.AddWithValue("@codigo", connsrt).Direction = ParameterDirection.Output;
+        conn.Open();
+        comm.ExecuteNonQuery();
+        string a = comm.Parameters["@codigo"].Value.ToString();
+        conn.Close();
+        System.Diagnostics.Debug.Write("line :" + line);
+    }
+
+    /* ----------------------------------  Creation Module  ----------------------------------------------  */
 
     private void Get_Creation_PrepareLoading(string connsrt)
     {

@@ -32,6 +32,11 @@
                         <telerik:AjaxUpdatedControl ControlID="RadButton2" LoadingPanelID="RadAjaxLoadingPanel1" />
                     </UpdatedControls>
                 </telerik:AjaxSetting>
+                <telerik:AjaxSetting AjaxControlID="RadButton3">
+                    <UpdatedControls>
+                        <telerik:AjaxUpdatedControl ControlID="RadButton3" LoadingPanelID="RadAjaxLoadingPanel1" />
+                    </UpdatedControls>
+                </telerik:AjaxSetting>
             </AjaxSettings>
         </telerik:RadAjaxManager> 
 
@@ -98,11 +103,18 @@
                                             </Columns>
                                         </telerik:LayoutRow>
                                         <telerik:LayoutRow>
-                                            <Content>
-                                                <div class="footer">
-                                                    <telerik:RadButton RenderMode="Lightweight" ID="RadButton1" CssClass="btn" runat="server" Skin="WebBlue" OnClick="btnValidate_Click" Text="Validar Archivo"></telerik:RadButton>  
-                                                </div>
-                                            </Content>
+                                            <Columns>
+                                                <telerik:LayoutColumn Span="12" SpanXs="12" SpanSm="12">
+                                                    <div class="col">
+                                                        <telerik:RadButton RenderMode="Lightweight" ID="RadButton1" CssClass="btn" runat="server" Skin="WebBlue" OnClick="btnValidate_Click" Text="Validar Archivo"></telerik:RadButton>
+                                                    </div>
+                                                </telerik:LayoutColumn>
+                                                <telerik:LayoutColumn Span="12" SpanXs="12" SpanSm="12">
+                                                    <div class="col">
+                                                        <telerik:RadButton RenderMode="Lightweight" ID="RadButton3" CssClass="btn" runat="server" Skin="WebBlue" OnClick="btnProcess_Click" Text="Procesar Archivo"></telerik:RadButton>   
+                                                    </div>
+                                                </telerik:LayoutColumn>
+                                            </Columns>
                                         </telerik:LayoutRow>
                                     </Rows>
                                 </telerik:radpagelayout>
@@ -292,22 +304,6 @@
                                             <Content>
                                                 <div class="footer">
                                                     <telerik:RadButton RenderMode="Lightweight" ID="RadButton2" CssClass="btn" OnClick="btnCreate_Click" runat="server" Skin="WebBlue" Text="Crear Cargue"></telerik:RadButton>
-
-                                                    <telerik:RadWindow RenderMode="Lightweight" ID="modalPopup" runat="server" Width="360px" Height="365px" Modal="true" OffsetElementID="main" OnClientShow="setCustomPosition" Style="z-index: 100001;">
-                                                        <ContentTemplate>
-                                                            <div style="padding: 10px; text-align: center;">
-                                                                <telerik:RadButton RenderMode="Lightweight" ID="rbToggleModality" Text="Toggle modality" OnClientClicked="togglePopupModality"
-                                                                    AutoPostBack="false" runat="server" Height="65px" />
-                                                            </div>
-                                                            <p style="text-align: center;">
-                                                                RadWindow is designed with keyboard support in mind - try tabbing
-                                                                    before and after removing the modal background. While the popup is modal
-                                                                    you cannot focus the text area, once the modality is removed the text area will
-                                                                    be the first thing to receive focus because it has tabIndex=1.
-                                                            </p>
-                                                        </ContentTemplate>
-                                                    </telerik:RadWindow>
-
                                                 </div>
                                             </Content>
                                         </telerik:LayoutRow>

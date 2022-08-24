@@ -18,8 +18,7 @@
 .DropZone1 {
     height: auto;
     background-color: white;
-    border: 1px solid #00AAFF;
-    border-radius: 10px;
+    border: 1px solid #6e8aa8;
     color: black;
     text-align: center;
     margin-top: 15px;
@@ -32,18 +31,9 @@
     max-height: 600px;
 }
 
-
 .RadButton_WebBlue.rbButton.btn {
-    background-image: unset !important;
     text-align: center;
-    width: 8rem;
-    margin: 50px auto;
-    padding: 1px;
-    border: 1px solid #999999;
-    background-color: #6b849d;
-    border-radius: 12px;
-    box-shadow: rgb(150,150,150) 2px 3px 10px;
-    color: #FFFFFF;
+    margin-top: 1rem;
 }
 
 .RadGrid .rgCommandRow .t-button {
