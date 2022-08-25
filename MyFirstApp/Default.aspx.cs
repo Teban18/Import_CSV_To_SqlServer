@@ -170,8 +170,8 @@ public partial class Default : System.Web.UI.Page
         {
             foreach (DataRow row in Load_Table(Read_File(@"C:\Users\MARIO RUEDA\Documents\cargues\" + Return_File()), char.Parse(RadTextBox1.Text), Get_Option_Types("SqlServices")).Rows)
             {
-                StringBuilder sb = new StringBuilder();
-                send_Valdation("SqlServices", sb.AppendLine(string.Join(",", row.ItemArray)));
+                
+                send_Processing_Data("SqlServices",row,char.Parse(RadTextBox1.Text),"SP_VALIDALINEA",0);
             }
             
         } 
@@ -181,17 +181,20 @@ public partial class Default : System.Web.UI.Page
         }
     }
 
-    private void send_Valdation(string connsrt, StringBuilder line)
+    private void send_Processing_Data(string connsrt, DataRow row ,char spliter, string procedure, int output)
     {
+        StringBuilder sb = new StringBuilder();
         SqlConnection conn = new SqlConnection(ConfigurationManager.ConnectionStrings[connsrt].ConnectionString);
-        SqlCommand comm = new SqlCommand("SP_PruebaValidacion", conn);
+        SqlCommand comm = new SqlCommand(procedure, conn);
         comm.CommandType = CommandType.StoredProcedure;
-        comm.Parameters.AddWithValue("@codigo", connsrt).Direction = ParameterDirection.Output;
+        comm.Parameters.AddWithValue("@spliter", spliter);
+        comm.Parameters.AddWithValue("@linea", sb.AppendLine(string.Join(spliter.ToString(), row.ItemArray)).ToString());
+        comm.Parameters.AddWithValue("@resultado", output).Direction = ParameterDirection.Output;
         conn.Open();
         comm.ExecuteNonQuery();
-        string a = comm.Parameters["@codigo"].Value.ToString();
+        int a = (int)comm.Parameters["@resultado"].Value;
         conn.Close();
-        System.Diagnostics.Debug.Write("line :" + line);
+        System.Diagnostics.Debug.Write(a);
     }
 
     /* ----------------------------------  Creation Module  ----------------------------------------------  */

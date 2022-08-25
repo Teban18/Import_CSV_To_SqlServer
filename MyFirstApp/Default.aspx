@@ -34,7 +34,7 @@
                 </telerik:AjaxSetting>
                 <telerik:AjaxSetting AjaxControlID="RadButton3">
                     <UpdatedControls>
-                        <telerik:AjaxUpdatedControl ControlID="RadButton3" LoadingPanelID="RadAjaxLoadingPanel1" />
+                        <telerik:AjaxUpdatedControl ControlID="RadGrid2" LoadingPanelID="RadAjaxLoadingPanel1" />
                     </UpdatedControls>
                 </telerik:AjaxSetting>
             </AjaxSettings>
@@ -106,12 +106,7 @@
                                             <Columns>
                                                 <telerik:LayoutColumn Span="12" SpanXs="12" SpanSm="12">
                                                     <div class="col">
-                                                        <telerik:RadButton RenderMode="Lightweight" ID="RadButton1" CssClass="btn" runat="server" Skin="WebBlue" OnClick="btnValidate_Click" Text="Validar Archivo"></telerik:RadButton>
-                                                    </div>
-                                                </telerik:LayoutColumn>
-                                                <telerik:LayoutColumn Span="12" SpanXs="12" SpanSm="12">
-                                                    <div class="col">
-                                                        <telerik:RadButton RenderMode="Lightweight" ID="RadButton3" CssClass="btn" runat="server" Skin="WebBlue" OnClick="btnProcess_Click" Text="Procesar Archivo"></telerik:RadButton>   
+                                                        <telerik:RadButton RenderMode="Lightweight" ID="RadButton1" CssClass="btnvalid" runat="server" Skin="WebBlue" OnClick="btnValidate_Click" Text="Validar Archivo"></telerik:RadButton>
                                                     </div>
                                                 </telerik:LayoutColumn>
                                             </Columns>
@@ -123,12 +118,15 @@
                         <telerik:LayoutColumn Span="8" SpanXs="12" SpanSm="12">
                             <div class="col">
                                 <telerik:RadAjaxPanel ID="RadAjaxPanel1" runat="server" LoadingPanelID="RadAjaxLoadingPanel1">
-                                    <telerik:RadGrid runat="server" ID="RadGrid2" Skin="WebBlue" AllowPaging="true" AutoGenerateColumns="false" PageSize="10" OnNeedDataSource="RadGrid2_NeedDataSource1" AllowFilteringByColumn="true">
+                                    <telerik:RadGrid runat="server" ID="RadGrid2" Skin="WebBlue" AllowPaging="true" AutoGenerateColumns="false" PageSize="10" OnNeedDataSource="RadGrid2_NeedDataSource1" AllowFilteringByColumn="true" >
                                         <ClientSettings>
                                             <Scrolling AllowScroll="true" ScrollHeight="" UseStaticHeaders="false"></Scrolling>
                                         </ClientSettings>
                                         <MasterTableView CommandItemDisplay="top" AutoGenerateColumns="true">
-                                            <Columns></Columns> 
+                                            <CommandItemTemplate>
+                                                <asp:Button ID="processingbtn" Text="Procesar datos" runat="server" OnClick="btnProcess_Click"></asp:Button>
+                                            </CommandItemTemplate>   
+                                            <Columns></Columns>
                                         </MasterTableView>
                                     </telerik:RadGrid>
                                 </telerik:RadAjaxPanel>

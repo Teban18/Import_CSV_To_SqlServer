@@ -31,9 +31,9 @@
     max-height: 600px;
 }
 
-.RadButton_WebBlue.rbButton.btn {
+.RadButton_WebBlue.rbButton {
     text-align: center;
-    margin-top: 1rem;
+    margin: 1.5rem;
 }
 
 .RadGrid .rgCommandRow .t-button {
