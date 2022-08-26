@@ -105,8 +105,39 @@
                                         <telerik:LayoutRow>
                                             <Columns>
                                                 <telerik:LayoutColumn Span="12" SpanXs="12" SpanSm="12">
-                                                    <div class="col">
+                                                    <div class="col" style="margin-top:2rem;margin-bottom:2rem;">
                                                         <telerik:RadButton RenderMode="Lightweight" ID="RadButton1" CssClass="btnvalid" runat="server" Skin="WebBlue" OnClick="btnValidate_Click" Text="Validar Archivo"></telerik:RadButton>
+                                                        <telerik:RadButton RenderMode="Lightweight" ID="RadButton3" CssClass="btnvalid" runat="server" Skin="WebBlue" OnClick="btnProcess_Click" Text="Procesar Archivo"></telerik:RadButton>
+                                                        <telerik:RadButton RenderMode="Lightweight" ID="RadButton4" CssClass="btnvalid" runat="server" Skin="WebBlue" OnClick="btnValidate_Click" Text="Guardar Archivo"></telerik:RadButton>
+                                                    </div>
+                                                </telerik:LayoutColumn>
+                                                <telerik:LayoutColumn Span="12" SpanXs="12" SpanSm="12">
+                                                    <div class="col" style="margin-top:2rem;margin-bottom:2rem;">
+                                                        <telerik:RadCard runat="server" Skin="WebBlue">
+                                                            <telerik:CardHeaderComponent runat="server">
+                                                                <telerik:CardTitleComponent runat="server" Content="Rome"></telerik:CardTitleComponent>
+                                                                <telerik:CardSubtitleComponent runat="server" Content="Capital of Italy"></telerik:CardSubtitleComponent>
+                                                            </telerik:CardHeaderComponent>
+                                                            <telerik:CardImageComponent runat="server" src="../Images/rome.jpg"></telerik:CardImageComponent>
+                                                            <telerik:CardBodyComponent runat="server">
+                                                                <p>Rome is a sprawling, cosmopolitan city with nearly 3,000 years of globally influential art, architecture and culture on display.</p>
+                                                                <p>Ancient ruins such as the Forum and the Colosseum evoke the power of the former Roman Empire. </p>
+                                                            </telerik:CardBodyComponent>
+                                                            <telerik:CardActionsContainerComponent runat="server" CardActionsAlignment="Stretched">
+                                                                <telerik:CardActionComponent runat="server">
+                                                                    <telerik:RadLinkButton EnableEmbeddedSkins="false" CssClass="k-button k-flat k-primary" Font-Size="14px" runat="server" Text="Map"></telerik:RadLinkButton>
+                                                                </telerik:CardActionComponent>
+                                                                <telerik:CardActionComponent runat="server">
+                                                                    <telerik:RadLinkButton EnableEmbeddedSkins="false" CssClass="k-button k-flat k-primary" Font-Size="14px" runat="server" Text="Weather"></telerik:RadLinkButton>
+                                                                </telerik:CardActionComponent>
+                                                            </telerik:CardActionsContainerComponent>
+                                                            <telerik:CardFooterComponent runat="server">
+                                                                <telerik:RadLinkButton EnableEmbeddedSkins="false" runat="server" Font-Size="14px" CssClass="k-button k-flat k-button-icon" Icon-CssClass="p-icon p-i-facebook">
+                                                                </telerik:RadLinkButton>
+                                                                <telerik:RadLinkButton EnableEmbeddedSkins="false" runat="server" Font-Size="14px" CssClass="k-button k-flat k-button-icon" Icon-CssClass="p-icon p-i-pinterest"></telerik:RadLinkButton>
+                                                                <telerik:RadLinkButton EnableEmbeddedSkins="false" runat="server" Font-Size="14px" CssClass="k-button k-flat k-button-icon" Icon-CssClass="p-icon p-i-twitter"></telerik:RadLinkButton>
+                                                            </telerik:CardFooterComponent>
+                                                        </telerik:RadCard>
                                                     </div>
                                                 </telerik:LayoutColumn>
                                             </Columns>
@@ -122,10 +153,7 @@
                                         <ClientSettings>
                                             <Scrolling AllowScroll="true" ScrollHeight="" UseStaticHeaders="false"></Scrolling>
                                         </ClientSettings>
-                                        <MasterTableView CommandItemDisplay="top" AutoGenerateColumns="true">
-                                            <CommandItemTemplate>
-                                                <asp:Button ID="processingbtn" Text="Procesar datos" runat="server" OnClick="btnProcess_Click"></asp:Button>
-                                            </CommandItemTemplate>   
+                                        <MasterTableView CommandItemDisplay="top" AutoGenerateColumns="true"> 
                                             <Columns></Columns>
                                         </MasterTableView>
                                     </telerik:RadGrid>
@@ -300,7 +328,7 @@
                                         </telerik:LayoutRow>
                                         <telerik:LayoutRow>
                                             <Content>
-                                                <div class="footer">
+                                                <div class="footer" style="margin-top:2rem;margin-bottom:2rem;">
                                                     <telerik:RadButton RenderMode="Lightweight" ID="RadButton2" CssClass="btn" OnClick="btnCreate_Click" runat="server" Skin="WebBlue" Text="Crear Cargue"></telerik:RadButton>
                                                 </div>
                                             </Content>

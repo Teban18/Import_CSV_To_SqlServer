@@ -57,13 +57,13 @@ public partial class Default : System.Web.UI.Page
         return lines;   
     }
 
-    protected DataTable Load_Table(string[] filedata, char spliter, Tuple<List<object>, List<object>> data)
+    protected DataTable Load_Table(string[] filedata, Tuple<List<object>, List<object>> data)
     {
         DataTable dt = new DataTable();
         for (int li = 0; li < filedata.Length; li++)
         {
             DataRow dr = dt.NewRow();
-            string[] filecolumns = filedata[li].Split(spliter); 
+            string[] filecolumns = filedata[li].Split(get_Spliter()); 
             for (int ci = 0; ci < filecolumns.Length; ci++)
             {
                 if (li == 0)
@@ -88,10 +88,8 @@ public partial class Default : System.Web.UI.Page
         {
             if (strtxt == "Bind")
             {
-                RadGrid2.DataSource = Load_Table(Read_File(@"C:\Users\MARIO RUEDA\Documents\cargues\" + Return_File()), char.Parse(RadTextBox1.Text), Get_Option_Types("SqlServices"));    
+                RadGrid2.DataSource = Load_Table(Read_File(@"C:\Users\MARIO RUEDA\Documents\cargues\" + Return_File()), Get_Option_Types("SqlServices"));    
                 RadGrid2.MasterTableView.Caption = "La primera fila de su archivo es tomada como el encabezado de la tabla";
-               
-
             }
         } catch (Exception ex)
         {
@@ -168,10 +166,10 @@ public partial class Default : System.Web.UI.Page
     {
         try
         {
-            foreach (DataRow row in Load_Table(Read_File(@"C:\Users\MARIO RUEDA\Documents\cargues\" + Return_File()), char.Parse(RadTextBox1.Text), Get_Option_Types("SqlServices")).Rows)
+            foreach (DataRow row in Load_Table(Read_File(@"C:\Users\MARIO RUEDA\Documents\cargues\" + Return_File()), Get_Option_Types("SqlServices")).Rows)
             {
-                
-                send_Processing_Data("SqlServices",row,char.Parse(RadTextBox1.Text),"SP_VALIDALINEA",0);
+                StringBuilder sb = new StringBuilder();
+                send_Processing_Data("SqlServices", sb.AppendLine(string.Join(get_Spliter().ToString(), row.ItemArray)).ToString(), "SP_VALIDALINEA",0);
             }
             
         } 
@@ -181,14 +179,19 @@ public partial class Default : System.Web.UI.Page
         }
     }
 
-    private void send_Processing_Data(string connsrt, DataRow row ,char spliter, string procedure, int output)
+    private char get_Spliter()
     {
-        StringBuilder sb = new StringBuilder();
+        return char.Parse(RadTextBox1.Text);
+    }
+
+    private void send_Processing_Data(string connsrt, string line, string procedure, int output)
+    {
         SqlConnection conn = new SqlConnection(ConfigurationManager.ConnectionStrings[connsrt].ConnectionString);
         SqlCommand comm = new SqlCommand(procedure, conn);
         comm.CommandType = CommandType.StoredProcedure;
-        comm.Parameters.AddWithValue("@spliter", spliter);
-        comm.Parameters.AddWithValue("@linea", sb.AppendLine(string.Join(spliter.ToString(), row.ItemArray)).ToString());
+        comm.Parameters.AddWithValue("@linea", line);
+        comm.Parameters.AddWithValue("@spliter", get_Spliter());
+        comm.Parameters.AddWithValue("@idsesion", "asdas123sdasd");
         comm.Parameters.AddWithValue("@resultado", output).Direction = ParameterDirection.Output;
         conn.Open();
         comm.ExecuteNonQuery();
@@ -220,7 +223,7 @@ public partial class Default : System.Web.UI.Page
         {
             if (validatorRB2.IsValid && validatorRB3.IsValid && validatorRB4.IsValid && validatorRB5.IsValid && validatorRB6.IsValid && validatorRB7.IsValid && validatorRB8.IsValid && validatorRB9.IsValid && validatorRB11.IsValid)
             {
-                Creation_Type("SqlServices", RadTextBox3.Text.ToString(), Int32.Parse(RadDropDownTipeLoad.SelectedItem.Value), RadTextBox4.Text.ToString(), RadTextBox5.Text.ToString(), char.Parse(RadTextBox6.Text), RadTextBox2.Text.ToString(), RadTextBox7.Text.ToString(), RadTextBox8.Text.ToString(), RadTextBox9.Text.ToString(), RadTextBox10.Text.ToString(), RadTextBox11.Text.ToString(), 0);
+                Creation_Type("SqlServices", RadTextBox3.Text.ToString(), Int32.Parse(RadDropDownTipeLoad.SelectedItem.Value), RadTextBox4.Text.ToString(), RadTextBox5.Text.ToString(), RadTextBox2.Text.ToString(), RadTextBox7.Text.ToString(), RadTextBox8.Text.ToString(), RadTextBox9.Text.ToString(), RadTextBox10.Text.ToString(), RadTextBox11.Text.ToString(), 0);
             }
             else
             {
@@ -233,7 +236,12 @@ public partial class Default : System.Web.UI.Page
         }
     }
 
-    private void Creation_Type(string connsrt, string name, int typeload, string spvalidate, string spstore, char spliter, string fields, string position, string description, string length, string format, string acceptnull, int init)
+    private char get_Spliter_Creation()
+    {
+        return char.Parse(RadTextBox6.Text);
+    }
+
+    private void Creation_Type(string connsrt, string name, int typeload, string spvalidate, string spstore, string fields, string position, string description, string length, string format, string acceptnull, int init)
     {
         SqlConnection conn = new SqlConnection(ConfigurationManager.ConnectionStrings[connsrt].ConnectionString);
         SqlCommand comm = new SqlCommand("SP_SAVELOADTYPE", conn);
@@ -242,7 +250,7 @@ public partial class Default : System.Web.UI.Page
         comm.Parameters.AddWithValue("@Tipo_carga", typeload);
         comm.Parameters.AddWithValue("@Nombre_pa_valida", spvalidate);
         comm.Parameters.AddWithValue("@Nombre_pa_almacena", spstore);
-        comm.Parameters.AddWithValue("@spliter", spliter);
+        comm.Parameters.AddWithValue("@spliter", get_Spliter_Creation());
         comm.Parameters.AddWithValue("@campos", fields);
         comm.Parameters.AddWithValue("@posicion", position);
         comm.Parameters.AddWithValue("@descripcion", description);
