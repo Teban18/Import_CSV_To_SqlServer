@@ -30,7 +30,7 @@ public partial class Default : System.Web.UI.Page
         try
         {
             strtxt = "Bind";
-            RadGrid2.Rebind();   
+            RadGrid2.Rebind();
         } 
         catch (Exception ex)
         {
@@ -84,12 +84,13 @@ public partial class Default : System.Web.UI.Page
     protected void RadGrid2_NeedDataSource1(object source, Telerik.Web.UI.GridNeedDataSourceEventArgs e)
     {
         try
-
         {
             if (strtxt == "Bind")
             {
                 RadGrid2.DataSource = Load_Table(Read_File(@"C:\Users\MARIO RUEDA\Documents\cargues\" + Return_File()), Get_Option_Types("SqlServices"));    
                 RadGrid2.MasterTableView.Caption = "La primera fila de su archivo es tomada como el encabezado de la tabla";
+                RadButton3.Enabled = true;
+                importstatus.Text = "Importado";
             }
         } catch (Exception ex)
         {
@@ -98,6 +99,8 @@ public partial class Default : System.Web.UI.Page
             errlist.Add("Error");
             errlist.Add("Descripción del error: "+ex.Message);
             RadGrid2.DataSource = errlist;
+            RadButton3.Enabled = false;
+            importstatus.Text = "No Importado";
         }
     }
 
@@ -166,15 +169,18 @@ public partial class Default : System.Web.UI.Page
     {
         try
         {
+            totallines.Text = Load_Table(Read_File(@"C:\Users\MARIO RUEDA\Documents\cargues\" + Return_File()), Get_Option_Types("SqlServices")).Rows.Count.ToString();
+            spvalidate.Text = Get_Procedures("SqlServices").Item1[0].ToString();
             foreach (DataRow row in Load_Table(Read_File(@"C:\Users\MARIO RUEDA\Documents\cargues\" + Return_File()), Get_Option_Types("SqlServices")).Rows)
             {
                 StringBuilder sb = new StringBuilder();
-                send_Processing_Data("SqlServices", sb.AppendLine(string.Join(get_Spliter().ToString(), row.ItemArray)).ToString(), "SP_VALIDALINEA",0);
+                send_Processing_Data("SqlServices", sb.AppendLine(string.Join(get_Spliter().ToString(), row.ItemArray)).ToString(), Get_Procedures("SqlServices").Item1[0].ToString(), 0);
             }
-            
         } 
         catch (Exception ex)
         {
+            totallines.Text = "0";
+            spvalidate.Text = "x";
             System.Diagnostics.Debug.Write(ex.Message);
         }
     }
@@ -198,6 +204,25 @@ public partial class Default : System.Web.UI.Page
         int a = (int)comm.Parameters["@resultado"].Value;
         conn.Close();
         System.Diagnostics.Debug.Write(a);
+    }
+
+    private Tuple<List<object>, List<object>> Get_Procedures(string connsrt)
+    {
+        SqlConnection conn = new SqlConnection(ConfigurationManager.ConnectionStrings[connsrt].ConnectionString);
+        SqlCommand comm = new SqlCommand("SELECT a.NOMBRE_PROC_VALIDA, a.NOMBRE_PROC_ALMACENA FROM TBPROCEDIMIENTOS_CARGUE AS a RIGHT JOIN TBOPCION_CARGUE AS b ON a.OP_CODIGO = b.OPC_CODIGO WHERE b.OPC_CODIGO =" + RadDropDownTables.SelectedItem.Value, conn);
+        conn.Open();
+        List<object> pvalidate = new List<object>();
+        List<object> pstore = new List<object>();
+        using (SqlDataReader reader = comm.ExecuteReader())
+        {
+            while (reader.Read())
+            {
+                pvalidate.Add(reader[0]);
+                pstore.Add(reader[1]);
+            }
+        }
+        conn.Close();
+        return Tuple.Create(pvalidate, pstore);
     }
 
     /* ----------------------------------  Creation Module  ----------------------------------------------  */
