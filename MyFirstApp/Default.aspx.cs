@@ -87,20 +87,22 @@ public partial class Default : System.Web.UI.Page
         {
             if (strtxt == "Bind")
             {
+                RadGrid2.Visible = true;
                 RadGrid2.DataSource = Load_Table(Read_File(@"C:\Users\MARIO RUEDA\Documents\cargues\" + Return_File()), Get_Option_Types("SqlServices"));    
                 RadGrid2.MasterTableView.Caption = "La primera fila de su archivo es tomada como el encabezado de la tabla";
                 RadButton3.Enabled = true;
-                importstatus.Text = "Importado";
+                importstatus.Text = "Pre-validado";
             }
         } catch (Exception ex)
         {
+            RadGrid2.Visible = true;
             RadGrid2.MasterTableView.Caption = "Oops :(";
             List<string> errlist = new List<string>();
             errlist.Add("Error");
             errlist.Add("Descripción del error: "+ex.Message);
             RadGrid2.DataSource = errlist;
             RadButton3.Enabled = false;
-            importstatus.Text = "No Importado";
+            importstatus.Text = "No Pre-validado";
         }
     }
 
@@ -164,11 +166,13 @@ public partial class Default : System.Web.UI.Page
     }
 
     /* --------------------------------  Processing module  -------------------------------------------- */
-
+    public static string strtxt2;
     protected void btnProcess_Click(object sender, EventArgs e)
     {
         try
         {
+            strtxt2 = "Bind";
+            RadGrid3.Rebind();
             totallines.Text = Load_Table(Read_File(@"C:\Users\MARIO RUEDA\Documents\cargues\" + Return_File()), Get_Option_Types("SqlServices")).Rows.Count.ToString();
             spvalidate.Text = Get_Procedures("SqlServices").Item1[0].ToString();
             foreach (DataRow row in Load_Table(Read_File(@"C:\Users\MARIO RUEDA\Documents\cargues\" + Return_File()), Get_Option_Types("SqlServices")).Rows)
@@ -188,6 +192,32 @@ public partial class Default : System.Web.UI.Page
     private char get_Spliter()
     {
         return char.Parse(RadTextBox1.Text);
+    }
+
+    protected void RadGrid3_NeedDataSource1(object source, Telerik.Web.UI.GridNeedDataSourceEventArgs e)
+    {
+        try
+        {
+            if (strtxt2 == "Bind")
+            {
+                RadGrid3.Visible = true;
+                RadGrid3.DataSource = Load_Table(Read_File(@"C:\Users\MARIO RUEDA\Documents\cargues\" + Return_File()), Get_Option_Types("SqlServices"));
+                RadGrid3.MasterTableView.Caption = "La primera fila de su archivo es tomada como el encabezado de la tabla";
+                RadButton4.Enabled = true;
+                validstatus.Text = "Validado";
+            }
+        }
+        catch (Exception ex)
+        {
+            RadGrid2.Visible = true;
+            RadGrid2.MasterTableView.Caption = "Oops :(";
+            List<string> errlist = new List<string>();
+            errlist.Add("Error");
+            errlist.Add("Descripción del error: " + ex.Message);
+            RadGrid2.DataSource = errlist;
+            RadButton3.Enabled = false;
+            validstatus.Text = "No validado";
+        }
     }
 
     private void send_Processing_Data(string connsrt, string line, string procedure, int output)

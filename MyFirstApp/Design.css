@@ -41,6 +41,6 @@
     display:none;
 }
 
-.RadCard_WebBlue .k-card-subtitle.titlecard {
+.k-card-header .k-card-title + .k-card-subtitle {
     color: white;
 }
