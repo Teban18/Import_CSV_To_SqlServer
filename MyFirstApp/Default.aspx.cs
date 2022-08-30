@@ -22,7 +22,7 @@ public partial class Default : System.Web.UI.Page
         
     }
 
-    /* ----------------------------------  Validation Module  ---------------------------------------------  */
+    /* ----------------------------------  Pre-Validation Module  ---------------------------------------------  */
 
     public static string strtxt;
     protected void btnValidate_Click(object sender, EventArgs e)
@@ -57,7 +57,7 @@ public partial class Default : System.Web.UI.Page
         return lines;   
     }
 
-    protected DataTable Load_Table(string[] filedata, Tuple<List<object>, List<object>> data)
+    protected DataTable Load_Prevalidation_Table(string[] filedata, Tuple<List<object>, List<object>> data)
     {
         DataTable dt = new DataTable();
         for (int li = 0; li < filedata.Length; li++)
@@ -88,15 +88,13 @@ public partial class Default : System.Web.UI.Page
             if (strtxt == "Bind")
             {
                 RadGrid2.Visible = true;
-                RadGrid2.DataSource = Load_Table(Read_File(@"C:\Users\MARIO RUEDA\Documents\cargues\" + Return_File()), Get_Option_Types("SqlServices"));    
-                RadGrid2.MasterTableView.Caption = "La primera fila de su archivo es tomada como el encabezado de la tabla";
+                RadGrid2.DataSource = Load_Prevalidation_Table(Read_File(@"C:\Users\MARIO RUEDA\Documents\cargues\" + Return_File()), Get_Option_Types("SqlServices"));    
                 RadButton3.Enabled = true;
                 importstatus.Text = "Pre-validado";
             }
         } catch (Exception ex)
         {
             RadGrid2.Visible = true;
-            RadGrid2.MasterTableView.Caption = "Oops :(";
             List<string> errlist = new List<string>();
             errlist.Add("Error");
             errlist.Add("Descripción del error: "+ex.Message);
@@ -165,33 +163,55 @@ public partial class Default : System.Web.UI.Page
         return typeAlias[typecolumn];
     }
 
-    /* --------------------------------  Processing module  -------------------------------------------- */
+
+    /* --------------------------------  Validation module  -------------------------------------------- */
+    
+    
     public static string strtxt2;
     protected void btnProcess_Click(object sender, EventArgs e)
     {
         try
         {
             strtxt2 = "Bind";
-            RadGrid3.Rebind();
-            totallines.Text = Load_Table(Read_File(@"C:\Users\MARIO RUEDA\Documents\cargues\" + Return_File()), Get_Option_Types("SqlServices")).Rows.Count.ToString();
-            spvalidate.Text = Get_Procedures("SqlServices").Item1[0].ToString();
-            foreach (DataRow row in Load_Table(Read_File(@"C:\Users\MARIO RUEDA\Documents\cargues\" + Return_File()), Get_Option_Types("SqlServices")).Rows)
-            {
-                StringBuilder sb = new StringBuilder();
-                send_Processing_Data("SqlServices", sb.AppendLine(string.Join(get_Spliter().ToString(), row.ItemArray)).ToString(), Get_Procedures("SqlServices").Item1[0].ToString(), 0);
-            }
+            RadGrid3.Rebind(); 
         } 
         catch (Exception ex)
         {
+            System.Diagnostics.Debug.Write(ex.Message);
             totallines.Text = "0";
             spvalidate.Text = "x";
-            System.Diagnostics.Debug.Write(ex.Message);
+            totalvalidlines.Text = "0";
         }
     }
 
     private char get_Spliter()
     {
         return char.Parse(RadTextBox1.Text);
+    }
+
+    protected List<object> Load_Validation_Table(List<object> listvalidation, int countervalid, int counterinvalid, int counter)
+    {
+        totallines.Text = Load_Prevalidation_Table(Read_File(@"C:\Users\MARIO RUEDA\Documents\cargues\" + Return_File()), Get_Option_Types("SqlServices")).Rows.Count.ToString();
+        spvalidate.Text = Get_Procedures("SqlServices").Item1[0].ToString();
+        foreach (DataRow row in Load_Prevalidation_Table(Read_File(@"C:\Users\MARIO RUEDA\Documents\cargues\" + Return_File()), Get_Option_Types("SqlServices")).Rows)
+        {
+            StringBuilder sb = new StringBuilder();
+            if (send_Processing_Data("SqlServices", sb.AppendLine(string.Join(get_Spliter().ToString(), row.ItemArray)).ToString(), Get_Procedures("SqlServices").Item1[0].ToString()).Item1 == 0)
+            {
+                countervalid += 1;
+                listvalidation.Add("Línea " + counter + " validada");
+            }
+            else
+            {
+                counterinvalid += 1;
+                listvalidation.Add("Línea " + counter + " no validada, causa " + send_Processing_Data("SqlServices", sb.AppendLine(string.Join(get_Spliter().ToString(), row.ItemArray)).ToString(), Get_Procedures("SqlServices").Item1[0].ToString()).Item2);
+            }
+            counter++;
+        }
+        RadButton4.Enabled = true;
+        totalvalidlines.Text = countervalid.ToString();
+        totalinvalidlines.Text = counterinvalid.ToString();
+        return listvalidation;
     }
 
     protected void RadGrid3_NeedDataSource1(object source, Telerik.Web.UI.GridNeedDataSourceEventArgs e)
@@ -201,26 +221,23 @@ public partial class Default : System.Web.UI.Page
             if (strtxt2 == "Bind")
             {
                 RadGrid3.Visible = true;
-                RadGrid3.DataSource = Load_Table(Read_File(@"C:\Users\MARIO RUEDA\Documents\cargues\" + Return_File()), Get_Option_Types("SqlServices"));
-                RadGrid3.MasterTableView.Caption = "La primera fila de su archivo es tomada como el encabezado de la tabla";
-                RadButton4.Enabled = true;
+                RadGrid3.DataSource = Load_Validation_Table(new List<object>(), 0, 0, 1);
                 validstatus.Text = "Validado";
             }
         }
         catch (Exception ex)
         {
-            RadGrid2.Visible = true;
-            RadGrid2.MasterTableView.Caption = "Oops :(";
+            RadGrid3.Visible = true;
             List<string> errlist = new List<string>();
             errlist.Add("Error");
             errlist.Add("Descripción del error: " + ex.Message);
-            RadGrid2.DataSource = errlist;
-            RadButton3.Enabled = false;
+            RadGrid3.DataSource = errlist;
+            RadButton4.Enabled = false;
             validstatus.Text = "No validado";
         }
     }
 
-    private void send_Processing_Data(string connsrt, string line, string procedure, int output)
+    private Tuple<Int32, string> send_Processing_Data(string connsrt, string line, string procedure)
     {
         SqlConnection conn = new SqlConnection(ConfigurationManager.ConnectionStrings[connsrt].ConnectionString);
         SqlCommand comm = new SqlCommand(procedure, conn);
@@ -228,12 +245,14 @@ public partial class Default : System.Web.UI.Page
         comm.Parameters.AddWithValue("@linea", line);
         comm.Parameters.AddWithValue("@spliter", get_Spliter());
         comm.Parameters.AddWithValue("@idsesion", "asdas123sdasd");
-        comm.Parameters.AddWithValue("@resultado", output).Direction = ParameterDirection.Output;
+        comm.Parameters.Add("@resultado", SqlDbType.Int, -1).Direction = ParameterDirection.Output;
+        comm.Parameters.Add("@log", SqlDbType.VarChar, -1).Direction = ParameterDirection.Output;
         conn.Open();
         comm.ExecuteNonQuery();
-        int a = (int)comm.Parameters["@resultado"].Value;
+        int result = (int)comm.Parameters["@resultado"].Value;
+        string logg = comm.Parameters["@log"].Value.ToString();
         conn.Close();
-        System.Diagnostics.Debug.Write(a);
+        return Tuple.Create(result, logg);  
     }
 
     private Tuple<List<object>, List<object>> Get_Procedures(string connsrt)

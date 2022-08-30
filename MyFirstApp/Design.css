@@ -11,10 +11,6 @@
     font-family: Calibri;
 }
 
-.header .headertitle {
-    color: #35343a;
-}
-
 .DropZone1 {
     height: auto;
     background-color: white;
@@ -25,20 +21,10 @@
     margin-bottom: 50px;
 }
 
-.RadNotification.rnRoundedCorners {
-    overflow-y: auto;
-    width: auto;
-    max-height: 600px;
-}
-
 .RadButton_WebBlue.rbButton {
     text-align: center;
     width: 100%;
     height: 46px;
-}
-
-.RadGrid .rgCommandRow .t-button {
-    display:none;
 }
 
 .k-card-header .k-card-title + .k-card-subtitle {
