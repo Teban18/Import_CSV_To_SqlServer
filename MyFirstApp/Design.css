@@ -30,3 +30,15 @@
 .k-card-header .k-card-title + .k-card-subtitle {
     color: white;
 }
+
+.RadInputDisabled a, .RadInputDisabled .riTextBox {
+    opacity:1 !important;
+}
+
+.k-card-action {
+    flex: 1 !important;
+}
+
+#RadButton1Panel, #RadButton3Panel, #RadButton4Panel, #RadButton5Panel {
+    width: 100%;
+}
