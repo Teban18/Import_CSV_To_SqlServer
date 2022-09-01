@@ -9,6 +9,7 @@ using System.Data;
 using Newtonsoft.Json.Linq;
 using System.Web.UI.WebControls;
 using System.Text;
+using System.Web.UI.HtmlControls;
 
 public partial class Default : System.Web.UI.Page 
 {
@@ -57,7 +58,7 @@ public partial class Default : System.Web.UI.Page
         return lines;   
     }
 
-    protected DataTable Load_Prevalidation_Table(string[] filedata, Tuple<List<object>, List<object>> data)
+    protected DataTable Load_Prevalidation_Table(string[] filedata, Tuple<List<object>, List<object>, List<object>, List<object>, List<object>, List<object>> data)
     {
         DataTable dt = new DataTable();
         for (int li = 0; li < filedata.Length; li++)
@@ -111,23 +112,31 @@ public partial class Default : System.Web.UI.Page
         }
     }
 
-    private Tuple<List<object>, List<object>> Get_Option_Types(string connsrt)
+    private Tuple<List<object>, List<object>, List<object>, List<object>, List<object>, List<object>> Get_Option_Types(string connsrt)
     {
         SqlConnection conn = new SqlConnection(ConfigurationManager.ConnectionStrings[connsrt].ConnectionString);
-        SqlCommand comm = new SqlCommand("SELECT a.CAMP_TIPO, a.CAMP_NULO FROM TBCAMPOS_CARGUE AS a RIGHT JOIN TBOPCION_CARGUE AS b ON a.OP_CODIGO = b.OPC_CODIGO WHERE b.OPC_CODIGO ="+RadDropDownTables.SelectedItem.Value, conn);
+        SqlCommand comm = new SqlCommand("SELECT a.CAMP_TIPO, a.CAMP_NULO, a.CAMP_POSICION, a.CAMP_DESCRIPCION, a.CAMP_LONGITUD, a.CAMP_FORMATO FROM TBCAMPOS_CARGUE AS a RIGHT JOIN TBOPCION_CARGUE AS b ON a.OP_CODIGO = b.OPC_CODIGO WHERE b.OPC_CODIGO =" + RadDropDownTables.SelectedItem.Value, conn);
         conn.Open();
         List<object> typeresults = new List<object>();
         List<object> nuleresults = new List<object>();
+        List<object> posresults = new List<object>();
+        List<object> descresults = new List<object>();
+        List<object> longresults = new List<object>();
+        List<object> formresults = new List<object>();
         using (SqlDataReader reader = comm.ExecuteReader())
         {
             while (reader.Read())
             {
                 typeresults.Add(reader[0]);
                 nuleresults.Add(reader[1]);
+                posresults.Add(reader[2]);
+                descresults.Add(reader[3]);
+                longresults.Add(reader[4]);
+                formresults.Add(reader[5]);
             }
         }
         conn.Close();
-        return Tuple.Create(typeresults,nuleresults);
+        return Tuple.Create(typeresults,nuleresults,posresults,descresults,longresults,formresults);
     }
 
     private void Get_Option_Name(string connsrt)
@@ -188,6 +197,27 @@ public partial class Default : System.Web.UI.Page
         }
     }
 
+    protected void btn_Structure_Click(object sender, EventArgs e)
+    {
+        try
+        {
+            myPanel1.InnerHtml = "";
+            myPanel1.InnerHtml += "<table>";
+            myPanel1.InnerHtml += "<tr><th>Columna</th><th>Tipo</th><th>Puede ser nula</th><th>Posición</th><th>Descripción</th><th>sadasd</th></tr>";
+            for (int i = 0; i < Get_Option_Types("SqlServices").Item1.Count(); i++)
+            {
+                myPanel1.InnerHtml += "<tr><td>Columna "+i+"</td><td>" + Get_Option_Types("SqlServices").Item1[i]+ "</td><td>"+ Get_Option_Types("SqlServices").Item2[i] + "</td></tr>";
+            }
+            myPanel1.InnerHtml += "</table>";
+        }
+        catch (Exception ex)
+        {
+            myPanel1.InnerHtml = ex.Message;
+        }
+        modalPopup.VisibleOnPageLoad = true;
+        modalPopup.Visible = true;
+    }
+    
     /* --------------------------------  Validation module  -------------------------------------------- */
 
     protected void btn_Validate_Click(object sender, EventArgs e)
@@ -306,16 +336,20 @@ public partial class Default : System.Web.UI.Page
             if (validatorRB2.IsValid && validatorRB3.IsValid && validatorRB4.IsValid && validatorRB5.IsValid && validatorRB6.IsValid && validatorRB7.IsValid && validatorRB8.IsValid && validatorRB9.IsValid && validatorRB11.IsValid)
             {
                 Creation_Type("SqlServices", RadTextBox3.Text.ToString(), Int32.Parse(RadDropDownTipeLoad.SelectedItem.Value), RadTextBox4.Text.ToString(), RadTextBox5.Text.ToString(), RadTextBox2.Text.ToString(), RadTextBox7.Text.ToString(), RadTextBox8.Text.ToString(), RadTextBox9.Text.ToString(), RadTextBox10.Text.ToString(), RadTextBox11.Text.ToString(), 0);
+                myPanel1.InnerHtml = "Opción "+ RadTextBox3.Text.ToString() +" creada con éxito";
+                RadButton2.Enabled = false;
             }
             else
             {
-                System.Diagnostics.Debug.Write("problem");
+                myPanel1.InnerHtml = "Hay campos vacíos";
             }
         }
         catch (Exception ex)
         {
-            System.Diagnostics.Debug.Write(ex.Message);
+            myPanel1.InnerHtml = ex.Message;
         }
+        modalPopup.VisibleOnPageLoad = true;
+        modalPopup.Visible = true;
     }
 
     private char get_Spliter_Creation()

@@ -32,6 +32,7 @@
                 <telerik:AjaxSetting AjaxControlID="RadButton2">
                     <UpdatedControls>
                         <telerik:AjaxUpdatedControl ControlID="RadButton2" LoadingPanelID="RadAjaxLoadingPanel1" />
+                        <telerik:AjaxUpdatedControl ControlID="modalPopup" LoadingPanelID="RadAjaxLoadingPanel1" />
                     </UpdatedControls>
                 </telerik:AjaxSetting>
                 <telerik:AjaxSetting AjaxControlID="RadButton5">
@@ -59,6 +60,14 @@
                         <telerik:AjaxUpdatedControl ControlID="RadTextBoxStoring" />
                     </UpdatedControls>
                 </telerik:AjaxSetting>
+                <telerik:AjaxSetting AjaxControlID="RadButton6">
+                    <UpdatedControls>
+                        <telerik:AjaxUpdatedControl ControlID="modalPopup" LoadingPanelID="RadAjaxLoadingPanel1" />
+                        <telerik:AjaxUpdatedControl ControlID="myPanel1" LoadingPanelID="RadAjaxLoadingPanel1" />
+                        <telerik:AjaxUpdatedControl ControlID="myTable1" LoadingPanelID="RadAjaxLoadingPanel1" />
+                        <telerik:AjaxUpdatedControl ControlID="RadButton6" LoadingPanelID="RadAjaxLoadingPanel1" />
+                    </UpdatedControls>
+                </telerik:AjaxSetting>
             </AjaxSettings>
         </telerik:RadAjaxManager> 
 
@@ -78,9 +87,7 @@
                                 <telerik:RadCard runat="server" Skin="WebBlue">
                                     <telerik:CardHeaderComponent runat="server">
                                         <telerik:CardTitleComponent runat="server" Content="Pre-validación de datos"></telerik:CardTitleComponent>
-                                        <telerik:CardSubtitleComponent runat="server" Content="ver estructura"  CssClass="k-button k-flat k-primary">
-                                            <telerik:RadLinkButton EnableEmbeddedSkins="false" runat="server" Font-Size="14px" CssClass="k-button k-flat k-button-icon" Icon-CssClass="p-icon p-i-info" Enabled="false"></telerik:RadLinkButton>
-                                        </telerik:CardSubtitleComponent>
+                                        <telerik:RadButton EnableEmbeddedSkins="false" ID="RadButton6" runat="server" Font-Size="14px" CssClass="k-button k-flat" Text="Ver estructura" OnClick="btn_Structure_Click" Enabled="true"></telerik:RadButton>
                                     </telerik:CardHeaderComponent>
                                     <telerik:CardBodyComponent runat="server">
                                         <telerik:RadAsyncUpload RenderMode="Lightweight" runat="server" ID="RadAsyncUpload1" Skin="WebBlue" DropZones=".DropZone1" Localization-Select="Cargar archivo"/>
@@ -388,6 +395,14 @@
                 </telerik:LayoutRow>
             </Rows>
         </telerik:RadPageLayout>    
+
+         <telerik:RadWindow RenderMode="Lightweight" ID="modalPopup" runat="server" Skin="WebBlue" Modal="true" OffsetElementID="main" Style="z-index: 100001;">
+            <ContentTemplate>
+                <div id="myPanel1" runat="server">
+
+                </div>
+            </ContentTemplate>
+        </telerik:RadWindow>
 
         <script type="text/javascript">
             //Put your JavaScript code here.
