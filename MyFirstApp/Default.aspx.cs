@@ -203,10 +203,10 @@ public partial class Default : System.Web.UI.Page
         {
             myPanel1.InnerHtml = "";
             myPanel1.InnerHtml += "<table>";
-            myPanel1.InnerHtml += "<tr><th>Columna</th><th>Tipo</th><th>Puede ser nula</th><th>Posición</th><th>Descripción</th><th>sadasd</th></tr>";
+            myPanel1.InnerHtml += "<tr><th>Columna</th><th>Tipo</th><th>Puede ser nula</th><th>Posición</th><th>Descripción</th><th>Longitud del campo</th><th>Formato</th></tr>";
             for (int i = 0; i < Get_Option_Types("SqlServices").Item1.Count(); i++)
             {
-                myPanel1.InnerHtml += "<tr><td>Columna "+i+"</td><td>" + Get_Option_Types("SqlServices").Item1[i]+ "</td><td>"+ Get_Option_Types("SqlServices").Item2[i] + "</td></tr>";
+                myPanel1.InnerHtml += "<tr><td>Columna "+i+"</td><td>" + Get_Option_Types("SqlServices").Item1[i]+ "</td><td>"+ Get_Option_Types("SqlServices").Item2[i] + "</td><td>" + Get_Option_Types("SqlServices").Item3[i] + "</td><td>" + Get_Option_Types("SqlServices").Item4[i] + "</td><td>" + Get_Option_Types("SqlServices").Item5[i] + "</td><td>" + Get_Option_Types("SqlServices").Item6[i] + "</td></tr>";
             }
             myPanel1.InnerHtml += "</table>";
         }
