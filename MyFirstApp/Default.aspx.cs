@@ -183,12 +183,27 @@ public partial class Default : System.Web.UI.Page
     {
         try
         {
-            RadTextBox1.Enabled = false;
-            RadDropDownTables.Enabled = false;
-            //RadAsyncUpload1.Enabled = false;
-            RadButton1.Enabled = false;
-            RadButton3.Enabled = true;
-            Confirmtext.Text = "Guardado";
+            System.Diagnostics.Debug.Write(RadButton5.Value);
+            if (Int32.Parse(RadButton5.Value) != 0)
+            {
+                RadTextBox1.Enabled = true;
+                RadDropDownTables.Enabled = true;
+                RadButton1.Enabled = true;
+                RadButton3.Enabled = false;
+                Confirmtext.Text = "Modificando";
+                RadButton5.Value = "0";
+                RadButton5.Text = "Guardar estado";
+            } 
+            else
+            {
+                RadTextBox1.Enabled = false;
+                RadDropDownTables.Enabled = false;
+                RadButton1.Enabled = false;
+                RadButton3.Enabled = true;
+                Confirmtext.Text = "Guardado";
+                RadButton5.Value = "1";
+                RadButton5.Text = "Modificar estado";
+            }
         }
         catch (Exception ex)
         {
@@ -206,7 +221,7 @@ public partial class Default : System.Web.UI.Page
             myPanel1.InnerHtml += "<tr><th>Columna</th><th>Tipo</th><th>Puede ser nula</th><th>Posición</th><th>Descripción</th><th>Longitud del campo</th><th>Formato</th></tr>";
             for (int i = 0; i < Get_Option_Types("SqlServices").Item1.Count(); i++)
             {
-                myPanel1.InnerHtml += "<tr><td>Columna "+i+"</td><td>" + Get_Option_Types("SqlServices").Item1[i]+ "</td><td>"+ Get_Option_Types("SqlServices").Item2[i] + "</td><td>" + Get_Option_Types("SqlServices").Item3[i] + "</td><td>" + Get_Option_Types("SqlServices").Item4[i] + "</td><td>" + Get_Option_Types("SqlServices").Item5[i] + "</td><td>" + Get_Option_Types("SqlServices").Item6[i] + "</td></tr>";
+                myPanel1.InnerHtml += "<tr><td>Columna "+(i+1)+"</td><td>" + Get_Option_Types("SqlServices").Item1[i]+ "</td><td>"+ Get_Option_Types("SqlServices").Item2[i] + "</td><td>" + Get_Option_Types("SqlServices").Item3[i] + "</td><td>" + Get_Option_Types("SqlServices").Item4[i] + "</td><td>" + Get_Option_Types("SqlServices").Item5[i] + "</td><td>" + Get_Option_Types("SqlServices").Item6[i] + "</td></tr>";
             }
             myPanel1.InnerHtml += "</table>";
         }
