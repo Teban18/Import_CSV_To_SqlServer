@@ -22,11 +22,17 @@
 
         <telerik:RadAjaxManager runat="server">
             <AjaxSettings>
+                <telerik:AjaxSetting AjaxControlID="RadGrid2">
+                    <UpdatedControls>
+                        <telerik:AjaxUpdatedControl ControlID="RadGrid2" LoadingPanelID="RadAjaxLoadingPanel1"/>
+                    </UpdatedControls>
+                </telerik:AjaxSetting>
                 <telerik:AjaxSetting AjaxControlID="RadButton1">
                     <UpdatedControls>
                         <telerik:AjaxUpdatedControl ControlID="RadGrid2" LoadingPanelID="RadAjaxLoadingPanel1" />
                         <telerik:AjaxUpdatedControl ControlID="importstatus" LoadingPanelID="RadAjaxLoadingPanel1" />
                         <telerik:AjaxUpdatedControl ControlID="RadButton5" LoadingPanelID="RadAjaxLoadingPanel1"/>
+                        <telerik:AjaxUpdatedControl ControlID="RadButton1" LoadingPanelID="RadAjaxLoadingPanel1"/>
                     </UpdatedControls>
                 </telerik:AjaxSetting>
                 <telerik:AjaxSetting AjaxControlID="RadButton2">
@@ -42,23 +48,38 @@
                         <telerik:AjaxUpdatedControl ControlID="RadButton1" LoadingPanelID="RadAjaxLoadingPanel1"/>
                         <telerik:AjaxUpdatedControl ControlID="RadButton3" LoadingPanelID="RadAjaxLoadingPanel1"/>
                         <telerik:AjaxUpdatedControl ControlID="RadButton5" LoadingPanelID="RadAjaxLoadingPanel1"/>
+                        <telerik:AjaxUpdatedControl ControlID="RadButton7" LoadingPanelID="RadAjaxLoadingPanel1"/>
                         <telerik:AjaxUpdatedControl ControlID="Confirmtext" LoadingPanelID="RadAjaxLoadingPanel1" />
+                    </UpdatedControls>
+                </telerik:AjaxSetting>
+                <telerik:AjaxSetting AjaxControlID="RadButton7">
+                    <UpdatedControls>
+                        <telerik:AjaxUpdatedControl ControlID="RadButton7" LoadingPanelID="RadAjaxLoadingPanel1" />
+                        <telerik:AjaxUpdatedControl ControlID="RadButton3" LoadingPanelID="RadAjaxLoadingPanel1" />
+                        <telerik:AjaxUpdatedControl ControlID="RadButton4" LoadingPanelID="RadAjaxLoadingPanel1" />
+                        <telerik:AjaxUpdatedControl ControlID="confirmvalid" LoadingPanelID="RadAjaxLoadingPanel1" />
                     </UpdatedControls>
                 </telerik:AjaxSetting>
                 <telerik:AjaxSetting AjaxControlID="RadButton3">
                     <UpdatedControls>
                         <telerik:AjaxUpdatedControl ControlID="totallines" LoadingPanelID="RadAjaxLoadingPanel1" />
-                        <telerik:AjaxUpdatedControl ControlID="totalvalidlines" LoadingPanelID="RadAjaxLoadingPanel1" />
-                        <telerik:AjaxUpdatedControl ControlID="totalinvalidlines" LoadingPanelID="RadAjaxLoadingPanel1" />
                         <telerik:AjaxUpdatedControl ControlID="spvalidate" LoadingPanelID="RadAjaxLoadingPanel1" />
-                        <telerik:AjaxUpdatedControl ControlID="RadButton4" LoadingPanelID="RadAjaxLoadingPanel1"/>
+                        <telerik:AjaxUpdatedControl ControlID="RadButton3" LoadingPanelID="RadAjaxLoadingPanel1"/>
+                        <telerik:AjaxUpdatedControl ControlID="RadButton7" LoadingPanelID="RadAjaxLoadingPanel1"/>
+                        <telerik:AjaxUpdatedControl ControlID="RadButton5" LoadingPanelID="RadAjaxLoadingPanel1"/>
                         <telerik:AjaxUpdatedControl ControlID="validstatus" LoadingPanelID="RadAjaxLoadingPanel1" />
                         <telerik:AjaxUpdatedControl ControlID="RadTextBoxValidation" LoadingPanelID="RadAjaxLoadingPanel1" />
                     </UpdatedControls>
                 </telerik:AjaxSetting>
                 <telerik:AjaxSetting AjaxControlID="RadButton4">
                     <UpdatedControls>
+                        <telerik:AjaxUpdatedControl ControlID="RadLinkButton1" LoadingPanelID="RadAjaxLoadingPanel1"/>
+                        <telerik:AjaxUpdatedControl ControlID="RadButton4" LoadingPanelID="RadAjaxLoadingPanel1"/>
+                        <telerik:AjaxUpdatedControl ControlID="RadButton5" LoadingPanelID="RadAjaxLoadingPanel1"/>
+                        <telerik:AjaxUpdatedControl ControlID="RadButton7" LoadingPanelID="RadAjaxLoadingPanel1"/>
                         <telerik:AjaxUpdatedControl ControlID="RadTextBoxStoring" LoadingPanelID="RadAjaxLoadingPanel1"/>
+                        <telerik:AjaxUpdatedControl ControlID="RadLinkButton2" LoadingPanelID="RadAjaxLoadingPanel1"/>
+                        <telerik:AjaxUpdatedControl ControlID="storeline" LoadingPanelID="RadAjaxLoadingPanel1"/>
                     </UpdatedControls>
                 </telerik:AjaxSetting>
                 <telerik:AjaxSetting AjaxControlID="RadButton6">
@@ -108,7 +129,7 @@
                                     </telerik:CardActionsContainerComponent>
                                     <telerik:CardActionsContainerComponent runat="server" CardActionsAlignment="Stretched">
                                         <telerik:CardActionComponent runat="server">
-                                            <telerik:RadLinkButton EnableEmbeddedSkins="false" CssClass="k-button k-flat k-primary" Font-Size="14px" runat="server" Text="Tipo de cargue"></telerik:RadLinkButton>
+                                            <telerik:RadLinkButton EnableEmbeddedSkins="false" CssClass="k-button k-flat k-primary" Font-Size="14px" runat="server" Text="Nombre del cargue"></telerik:RadLinkButton>
                                         </telerik:CardActionComponent>
                                         <telerik:CardActionComponent runat="server">
                                             <telerik:RadDropDownList RenderMode="Lightweight" ID="RadDropDownTables" CssClass="ddlist" runat="server" DropDownHeight="" Skin="WebBlue"></telerik:RadDropDownList>       
@@ -116,7 +137,7 @@
                                     </telerik:CardActionsContainerComponent>
                                     <telerik:CardActionsContainerComponent runat="server" CardActionsAlignment="Stretched">
                                         <telerik:CardActionComponent runat="server">
-                                            <telerik:RadButton RenderMode="Lightweight" ID="RadButton1" CssClass="btnvalid" runat="server" Skin="WebBlue" OnClick="btn_Prevalidate_Click" Text="Pre-validar Archivo"></telerik:RadButton>
+                                            <telerik:RadButton RenderMode="Lightweight" ID="RadButton1" CssClass="btnvalid" runat="server" Skin="WebBlue" OnClick="btn_Prevalidate_Click" Text="Pre-validar archivo"></telerik:RadButton>
                                         </telerik:CardActionComponent>
                                         <telerik:CardActionComponent runat="server">
                                             <telerik:RadLinkButton EnableEmbeddedSkins="false" ID="importstatus" CssClass="k-button k-flat k-primary" Font-Size="14px" runat="server" Text="No pre-validado"></telerik:RadLinkButton>
@@ -124,10 +145,10 @@
                                     </telerik:CardActionsContainerComponent>
                                     <telerik:CardActionsContainerComponent runat="server" CardActionsAlignment="Stretched">
                                         <telerik:CardActionComponent runat="server">
-                                            <telerik:RadButton RenderMode="Lightweight" ID="RadButton5" CssClass="btnvalid" runat="server" Skin="WebBlue" OnClick="btn_Confirm_Click" Text="Guardar estado" Value="0" Enabled="false"></telerik:RadButton>
+                                            <telerik:RadButton RenderMode="Lightweight" ID="RadButton5" CssClass="btnvalid" runat="server" Skin="WebBlue" OnClick="btn_Confirmpv_Click" Text="Guardar pre-validacion" Value="0" Enabled="false"></telerik:RadButton>
                                         </telerik:CardActionComponent>
                                         <telerik:CardActionComponent runat="server">
-                                            <telerik:RadLinkButton EnableEmbeddedSkins="false" ID="Confirmtext" CssClass="k-button k-flat k-primary" Font-Size="14px" runat="server" Text="No guardado"></telerik:RadLinkButton>
+                                            <telerik:RadLinkButton EnableEmbeddedSkins="false" ID="Confirmtext" CssClass="k-button k-flat k-primary" Font-Size="14px" runat="server" Text="No guardada"></telerik:RadLinkButton>
                                         </telerik:CardActionComponent>
                                     </telerik:CardActionsContainerComponent>
                                     <telerik:CardHeaderComponent runat="server">
@@ -135,7 +156,7 @@
                                     </telerik:CardHeaderComponent>
                                     <telerik:CardActionsContainerComponent runat="server" CardActionsAlignment="Stretched">
                                         <telerik:CardActionComponent runat="server">
-                                            <telerik:RadButton RenderMode="Lightweight" ID="RadButton3" CssClass="btnvalid" runat="server" Skin="WebBlue" OnClick="btn_Validate_Click" Text="Validar Archivo" Enabled="false"></telerik:RadButton>
+                                            <telerik:RadButton RenderMode="Lightweight" ID="RadButton3" CssClass="btnvalid" runat="server" Skin="WebBlue" OnClick="btn_Validate_Click" Text="Validar archivo" Enabled="false"></telerik:RadButton>
                                         </telerik:CardActionComponent>
                                         <telerik:CardActionComponent runat="server">
                                             <telerik:RadLinkButton EnableEmbeddedSkins="false" ID="validstatus" CssClass="k-button k-flat k-primary" Font-Size="14px" runat="server" Text="No validado"></telerik:RadLinkButton>
@@ -152,7 +173,7 @@
                                     </telerik:CardActionsContainerComponent>
                                     <telerik:CardActionsContainerComponent runat="server" CardActionsAlignment="Stretched">
                                         <telerik:CardActionComponent runat="server">
-                                            <telerik:RadLinkButton EnableEmbeddedSkins="false" CssClass="k-button k-flat k-primary" Font-Size="14px" runat="server" Text="Líneas totales"></telerik:RadLinkButton>
+                                            <telerik:RadLinkButton EnableEmbeddedSkins="false" CssClass="k-button k-flat k-primary" Font-Size="14px" runat="server" Text="Líneas validadas"></telerik:RadLinkButton>
                                         </telerik:CardActionComponent>
                                         <telerik:CardActionComponent runat="server">
                                             <telerik:RadLinkButton EnableEmbeddedSkins="false" ID="totallines" CssClass="k-button k-flat k-primary" Font-Size="14px" runat="server" Text="0">
@@ -161,18 +182,10 @@
                                     </telerik:CardActionsContainerComponent>
                                     <telerik:CardActionsContainerComponent runat="server" CardActionsAlignment="Stretched">
                                         <telerik:CardActionComponent runat="server">
-                                            <telerik:RadLinkButton EnableEmbeddedSkins="false" CssClass="k-button k-flat k-primary" Font-Size="14px" runat="server" Text="Líneas validadas"></telerik:RadLinkButton>
+                                            <telerik:RadButton RenderMode="Lightweight" ID="RadButton7" CssClass="btnvalid" runat="server" Skin="WebBlue" OnClick="btn_Confirmv_Click" Value="0" Text="Guardar validación" Enabled="false"></telerik:RadButton>
                                         </telerik:CardActionComponent>
                                         <telerik:CardActionComponent runat="server">
-                                            <telerik:RadLinkButton EnableEmbeddedSkins="false" ID="totalvalidlines" CssClass="k-button k-flat k-primary" Font-Size="14px" runat="server" Text="0"></telerik:RadLinkButton>
-                                        </telerik:CardActionComponent>
-                                    </telerik:CardActionsContainerComponent>
-                                    <telerik:CardActionsContainerComponent runat="server" CardActionsAlignment="Stretched">
-                                        <telerik:CardActionComponent runat="server">
-                                            <telerik:RadLinkButton EnableEmbeddedSkins="false" CssClass="k-button k-flat k-primary" Font-Size="14px" runat="server" Text="Líneas Invalidadas"></telerik:RadLinkButton>
-                                        </telerik:CardActionComponent>
-                                        <telerik:CardActionComponent runat="server">
-                                            <telerik:RadLinkButton EnableEmbeddedSkins="false" ID="totalinvalidlines" CssClass="k-button k-flat k-primary" Font-Size="14px" runat="server" Text="0"></telerik:RadLinkButton>
+                                            <telerik:RadLinkButton EnableEmbeddedSkins="false" ID="confirmvalid" CssClass="k-button k-flat k-primary" Font-Size="14px" runat="server" Text="No guardada"></telerik:RadLinkButton>
                                         </telerik:CardActionComponent>
                                     </telerik:CardActionsContainerComponent>
                                     <telerik:CardHeaderComponent runat="server">
@@ -183,7 +196,23 @@
                                             <telerik:RadButton RenderMode="Lightweight" ID="RadButton4" CssClass="btnvalid" runat="server" Skin="WebBlue" OnClick="btnStore_Click" Text="Almacenar Archivo" Enabled="false"></telerik:RadButton>
                                         </telerik:CardActionComponent>
                                         <telerik:CardActionComponent runat="server">
-                                            <telerik:RadLinkButton EnableEmbeddedSkins="false" CssClass="k-button k-flat k-primary" Font-Size="14px" runat="server" Text="No Almacenado"></telerik:RadLinkButton>
+                                            <telerik:RadLinkButton EnableEmbeddedSkins="false" ID="storeline" CssClass="k-button k-flat k-primary" Font-Size="14px" runat="server" Text="No Almacenado"></telerik:RadLinkButton>
+                                        </telerik:CardActionComponent>
+                                    </telerik:CardActionsContainerComponent>
+                                    <telerik:CardActionsContainerComponent runat="server" CardActionsAlignment="Stretched">
+                                        <telerik:CardActionComponent runat="server">
+                                            <telerik:RadLinkButton EnableEmbeddedSkins="false" CssClass="k-button k-flat k-primary" Font-Size="14px" runat="server" Text="Procedimiento"></telerik:RadLinkButton>
+                                        </telerik:CardActionComponent>
+                                        <telerik:CardActionComponent runat="server">
+                                            <telerik:RadLinkButton EnableEmbeddedSkins="false" ID="RadLinkButton2" CssClass="k-button k-flat k-primary" Font-Size="14px" runat="server" Text="x"></telerik:RadLinkButton>
+                                        </telerik:CardActionComponent>
+                                    </telerik:CardActionsContainerComponent>
+                                    <telerik:CardActionsContainerComponent runat="server" CardActionsAlignment="Stretched">
+                                        <telerik:CardActionComponent runat="server">
+                                            <telerik:RadLinkButton EnableEmbeddedSkins="false" CssClass="k-button k-flat k-primary" Font-Size="14px" runat="server" Text="Líneas Almacenadas"></telerik:RadLinkButton>
+                                        </telerik:CardActionComponent>
+                                        <telerik:CardActionComponent runat="server">
+                                            <telerik:RadLinkButton EnableEmbeddedSkins="false" ID="RadLinkButton1" CssClass="k-button k-flat k-primary" Font-Size="14px" runat="server" Text="0"></telerik:RadLinkButton>
                                         </telerik:CardActionComponent>
                                     </telerik:CardActionsContainerComponent>
                                     <telerik:CardFooterComponent runat="server">
@@ -198,16 +227,15 @@
                         <telerik:LayoutColumn Span="8" SpanXs="12" SpanSm="12">
                             <div class="col">
                                 <telerik:RadAjaxPanel ID="RadAjaxPanel1" runat="server" LoadingPanelID="RadAjaxLoadingPanel1"></telerik:RadAjaxPanel>
-                                <telerik:RadGrid runat="server" ID="RadGrid2" Skin="WebBlue" AllowPaging="true" AutoGenerateColumns="false" PageSize="10" OnNeedDataSource="RadGrid2_NeedDataSource1" AllowFilteringByColumn="true" Visible="false">
+                                <telerik:RadGrid RenderMode="Lightweight" runat="server" ID="RadGrid2" AutoGenerateColumns="true" Skin="WebBlue" AllowPaging="true" PageSize="11" OnNeedDataSource="RadGrid2_NeedDataSource1" AllowSorting="true" Visible="false">
                                     <ClientSettings>
                                         <Scrolling AllowScroll="true" ScrollHeight="" UseStaticHeaders="false"></Scrolling>
                                     </ClientSettings>
                                     <MasterTableView AutoGenerateColumns="true"> 
-                                        <Columns></Columns>
                                     </MasterTableView>
                                 </telerik:RadGrid>
-                                <telerik:RadTextBox id="RadTextBoxValidation" runat="server" TextMode="MultiLine" Skin="WebBlue" Rows="2" Wrap="true" Width="100%" Height="334" Visible="false" Text="Vacío" Enabled="false"></telerik:RadTextBox>
-                                <telerik:RadTextBox id="RadTextBoxStoring" runat="server" TextMode="MultiLine" Skin="WebBlue" Rows="2" Wrap="true" Width="100%" Height="280" Visible="false" Text="Vacío"></telerik:RadTextBox>
+                                <telerik:RadTextBox id="RadTextBoxValidation" runat="server" TextMode="MultiLine" Skin="WebBlue" Rows="2" Wrap="true" Width="100%" Height="600" Visible="false" Text="Vacío" Enabled="false"></telerik:RadTextBox>
+                                <telerik:RadTextBox id="RadTextBoxStoring" runat="server" TextMode="MultiLine" Skin="WebBlue" Rows="2" Wrap="true" Width="100%" Height="600" Visible="false" Text="Vacío" Enabled="false"></telerik:RadTextBox>
                             </div>
                         </telerik:LayoutColumn>
                         <telerik:LayoutColumn Span="12" SpanXs="12" SpanSm="12">

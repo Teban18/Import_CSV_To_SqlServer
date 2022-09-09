@@ -31,15 +31,15 @@
     color: white;
 }
 
-.RadInputDisabled a, .RadInputDisabled .riTextBox {
-    opacity:1 !important;
+#RadTextBoxValidation, #RadTextBoxStoring {
+    opacity: 1 !important;
 }
 
 .k-card-action {
     flex: 1 !important;
 }
 
-#RadButton1Panel, #RadButton3Panel, #RadButton4Panel, #RadButton5Panel {
+#RadButton1Panel, #RadButton3Panel, #RadButton4Panel, #RadButton5Panel, #RadButton7Panel {
     width: 100%;
 }
 
