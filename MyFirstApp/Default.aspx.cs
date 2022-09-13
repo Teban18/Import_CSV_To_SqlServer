@@ -19,8 +19,7 @@ public partial class Default : System.Web.UI.Page
         {
             Get_Option_Name("SqlServices");
             Get_Creation_PrepareLoading("SqlServices");
-        }
-        
+        } 
     }
 
     /* ----------------------------------  Pre-Validation Module  ---------------------------------------------  */
@@ -85,7 +84,6 @@ public partial class Default : System.Web.UI.Page
             if (li != 0)
                 dt.Rows.Add(dr);
         }
-
         return dt;
     }
 
@@ -157,7 +155,7 @@ public partial class Default : System.Web.UI.Page
     static Dictionary<string, Type> typeAlias = new Dictionary<string, Type>
     {
         { "bool" , typeof(bool) },
-        { "byte" , typeof(byte) },
+        { "bit" , typeof(byte) },
         { "char" , typeof(char) },
         { "decimal" , typeof(decimal) },
         { "double" , typeof(double) },
@@ -171,7 +169,8 @@ public partial class Default : System.Web.UI.Page
         { "string" , typeof(string) },
         { "uint" , typeof(uint) },
         { "ulong" , typeof(ulong) },
-        { "void" , typeof(void) }
+        { "void" , typeof(void) },
+        { "date" , typeof(DateTime) }
     };
 
     private System.Type Get_Type(Dictionary<string, Type> typealias, string typecolumn)
