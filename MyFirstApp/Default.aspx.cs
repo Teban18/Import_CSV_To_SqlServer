@@ -22,8 +22,6 @@ public partial class Default : System.Web.UI.Page
         } 
     }
 
-    /* ----------------------------------  Pre-Validation Module  ---------------------------------------------  */
-
     public static string strtxt;
     protected void btn_Prevalidate_Click(object sender, EventArgs e)
     {
@@ -68,7 +66,8 @@ public partial class Default : System.Web.UI.Page
             {
                 if (li == 0)
                 {
-                    dt.Columns.Add(new DataColumn { ColumnName = filecolumns[ci], DataType = Get_Type(typeAlias, data.Item1[ci].ToString()), AllowDBNull=bool.Parse(data.Item2[ci].ToString())});
+                    Type datty = Type.GetType(Get_DataType("SqlServices", data.Item1[ci].ToString()));
+                    dt.Columns.Add(new DataColumn { ColumnName = filecolumns[ci], DataType = datty, AllowDBNull=bool.Parse(data.Item2[ci].ToString())});
                 }
                 else
                 {
@@ -87,6 +86,22 @@ public partial class Default : System.Web.UI.Page
         return dt;
     }
 
+    private string Get_DataType(string connsrt, string alias)
+    {
+        SqlConnection conn = new SqlConnection(ConfigurationManager.ConnectionStrings[connsrt].ConnectionString);
+        SqlCommand comm = new SqlCommand("select tipo_dato from dbo.tbtipo_dato where alias_tipo_dato = '"+ alias.ToString()+"'", conn);
+        conn.Open();
+        using (SqlDataReader reader = comm.ExecuteReader())
+        {
+            while (reader.Read())
+            {
+                alias = reader[0].ToString();
+            }
+        }
+        conn.Close();
+        return alias;
+    }
+
     protected void RadGrid2_NeedDataSource1(object source, Telerik.Web.UI.GridNeedDataSourceEventArgs e)
     {
         try
@@ -98,7 +113,8 @@ public partial class Default : System.Web.UI.Page
                 importstatus.Text = "Pre-validado";
                 RadButton5.Enabled = true;
             }
-        } catch (Exception ex)
+        } 
+        catch (Exception ex)
         {
             RadGrid2.Visible = true;
             List<string> errlist = new List<string>();
@@ -151,67 +167,50 @@ public partial class Default : System.Web.UI.Page
         }
         conn.Close();   
     }
-
-    static Dictionary<string, Type> typeAlias = new Dictionary<string, Type>
+   
+    private char get_Spliter()
     {
-        { "bool" , typeof(bool) },
-        { "bit" , typeof(byte) },
-        { "char" , typeof(char) },
-        { "decimal" , typeof(decimal) },
-        { "double" , typeof(double) },
-        { "float" , typeof(float) },
-        { "int32" , typeof(Int32) },
-        { "int64" , typeof(Int64) },
-        { "long" , typeof(long) },
-        { "object" , typeof(object) },
-        { "sbyte" , typeof(sbyte) },
-        { "short" , typeof(short) },
-        { "string" , typeof(string) },
-        { "uint" , typeof(uint) },
-        { "ulong" , typeof(ulong) },
-        { "void" , typeof(void) },
-        { "date" , typeof(DateTime) }
-    };
-
-    private System.Type Get_Type(Dictionary<string, Type> typealias, string typecolumn)
-    {
-        return typeAlias[typecolumn];
+        return char.Parse(RadTextBox1.Text);
     }
 
     protected void btn_Confirmpv_Click(object sender, EventArgs e)
     {
         try
         {
-            if (Int32.Parse(RadButton5.Value) != 0)
+            if (Store_Data())
             {
-                RadTextBox1.Enabled = true;
-                RadDropDownTables.Enabled = true;
-                RadButton1.Enabled = true;
-                RadButton3.Enabled = false;
-                RadButton7.Enabled = false;
-                Confirmtext.Text = "No guardada";
-                RadButton5.Value = "0";
-                RadButton5.Text = "Guardar pre-validación";
-            } 
-            else
-            {
-                RadTextBox1.Enabled = false;
-                RadDropDownTables.Enabled = false;
-                RadButton1.Enabled = false;
-                RadButton3.Enabled = true;
-                Confirmtext.Text = "Guardada";
-                RadButton5.Value = "1";
-                RadButton5.Text = "Volver a pre-validar";
+
             }
         }
         catch (Exception ex)
         {
-            RadGrid2.Visible = true;
-            List<string> errlist = new List<string>();
-            errlist.Add("Error");
-            errlist.Add("Descripción del error: " + ex.Message);
-            RadGrid2.DataSource = errlist;
+            RadTextBoxValidation.Text = "";
+            RadTextBoxValidation.Visible = true;
+            RadTextBoxValidation.Text = ex.Message;
         }
+    }
+
+    private bool Store_Data()
+    {
+        foreach (DataRow row in Load_Prevalidation_Table(Read_File(@"C:\Users\MARIO RUEDA\Documents\cargues\" + Return_File()), Get_Option_Types("SqlServices")).Rows)
+        {
+            StringBuilder sb = new StringBuilder();
+            Store_Data_Into_Loadtable("SqlServices", "asdas34324", sb.AppendLine(string.Join(get_Spliter().ToString(), row.ItemArray)).ToString(), Get_Procedures("SqlServices").Item3[0].ToString());
+        }
+        return true;
+    }
+
+    private void Store_Data_Into_Loadtable(string connsrt, string sessionid, string line, string procedure)
+    {
+        SqlConnection conn = new SqlConnection(ConfigurationManager.ConnectionStrings[connsrt].ConnectionString);
+        SqlCommand comm = new SqlCommand(procedure, conn);
+        comm.CommandType = CommandType.StoredProcedure;
+        comm.Parameters.AddWithValue("@idsesion", sessionid);
+        comm.Parameters.AddWithValue("@linea", line);
+        comm.Parameters.AddWithValue("@spliter", get_Spliter());
+        conn.Open();
+        comm.ExecuteNonQuery();
+        conn.Close();
     }
 
     protected void btn_Structure_Click(object sender, EventArgs e)
@@ -237,22 +236,7 @@ public partial class Default : System.Web.UI.Page
     
     /* --------------------------------  Validation module  -------------------------------------------- */
 
-    protected void btn_Validate_Click(object sender, EventArgs e)
-    {
-        try
-        {
-            Load_Validation_Multiline(0);
-        } 
-        catch (Exception ex)
-        {
-            RadTextBoxValidation.Text = ex.Message;
-        }
-    }
-
-    private char get_Spliter()
-    {
-        return char.Parse(RadTextBox1.Text);
-    }
+    
 
     protected void Load_Validation_Multiline(int counter)
     {
@@ -267,8 +251,6 @@ public partial class Default : System.Web.UI.Page
             RadTextBoxValidation.Text += "Línea "+counter+ " "+send_Validation_Data("SqlServices", sb.AppendLine(string.Join(get_Spliter().ToString(), row.ItemArray)).ToString(), Get_Procedures("SqlServices").Item1[0].ToString())+ "\n";
         }
         validstatus.Text = "Validado";
-        RadButton7.Enabled = true;
-        //RadButton4.Enabled = true;
     }
 
     private string send_Validation_Data(string connsrt, string line, string procedure)
@@ -287,65 +269,28 @@ public partial class Default : System.Web.UI.Page
         return result;  
     }
 
-    private Tuple<List<object>, List<object>> Get_Procedures(string connsrt)
+    private Tuple<List<object>, List<object>, List<object>> Get_Procedures(string connsrt)
     {
         SqlConnection conn = new SqlConnection(ConfigurationManager.ConnectionStrings[connsrt].ConnectionString);
-        SqlCommand comm = new SqlCommand("SELECT a.NOMBRE_PROC_VALIDA, a.NOMBRE_PROC_ALMACENA FROM TBPROCEDIMIENTOS_CARGUE AS a RIGHT JOIN TBOPCION_CARGUE AS b ON a.OP_CODIGO = b.OPC_CODIGO WHERE b.OPC_CODIGO =" + RadDropDownTables.SelectedItem.Value, conn);
+        SqlCommand comm = new SqlCommand("SELECT a.NOMBRE_PROC_VALIDA, a.NOMBRE_PROC_ALMACENA, NOMBRE_CARGA_TABLA FROM TBPROCEDIMIENTOS_CARGUE AS a RIGHT JOIN TBOPCION_CARGUE AS b ON a.OP_CODIGO = b.OPC_CODIGO WHERE b.OPC_CODIGO =" + RadDropDownTables.SelectedItem.Value, conn);
         conn.Open();
         List<object> pvalidate = new List<object>();
         List<object> pstore = new List<object>();
+        List<object> pload = new List<object>();
         using (SqlDataReader reader = comm.ExecuteReader())
         {
             while (reader.Read())
             {
                 pvalidate.Add(reader[0]);
                 pstore.Add(reader[1]);
+                pload.Add(reader[2]);
             }
         }
         conn.Close();
-        return Tuple.Create(pvalidate, pstore);
-    }
-
-    protected void btn_Confirmv_Click(object sender, EventArgs e)
-    {
-        try
-        {
-            if (Int32.Parse(RadButton7.Value) != 0)
-            {
-                RadButton3.Enabled = true;
-                RadButton4.Enabled = false;
-                RadButton7.Value = "0";
-                RadButton7.Text = "Guardar validación";
-                confirmvalid.Text = "No guardada";
-            }
-            else
-            {
-                RadButton3.Enabled = false;
-                RadButton4.Enabled = true;
-                RadButton7.Value = "1";
-                RadButton7.Text = "Volver a validar";
-                confirmvalid.Text = "Guardada";
-            }
-        }
-        catch (Exception ex)
-        {
-            RadTextBoxValidation.Text = ex.Message;
-        }
+        return Tuple.Create(pvalidate, pstore, pload);
     }
 
     /* ----------------------------------  Storing Module  ----------------------------------------------  */
-
-    protected void btnStore_Click(object sender, EventArgs e)
-    {
-        try
-        {
-            Load_Storing_Multiline(0, 0, 0);
-        }
-        catch (Exception ex)
-        {
-
-        }
-    }
 
     protected void Load_Storing_Multiline(int countervalid, int counterinvalid, int counter)
     {
@@ -360,9 +305,7 @@ public partial class Default : System.Web.UI.Page
         }
         RadLinkButton1.Text = counter.ToString();
         storeline.Text = "Almacenado";
-        RadButton4.Enabled = false;
         RadButton5.Enabled = false; 
-        RadButton7.Enabled = false;
     }
 
     private string send_Storing_Data(string connsrt, string line, string procedure)
