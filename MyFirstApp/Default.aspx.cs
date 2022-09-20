@@ -66,8 +66,7 @@ public partial class Default : System.Web.UI.Page
             {
                 if (li == 0)
                 {
-                    Type datty = Type.GetType(Get_DataType("SqlServices", data.Item1[ci].ToString()));
-                    dt.Columns.Add(new DataColumn { ColumnName = filecolumns[ci], DataType = datty, AllowDBNull=bool.Parse(data.Item2[ci].ToString())});
+                    dt.Columns.Add(new DataColumn { ColumnName = filecolumns[ci], DataType = Type.GetType(Get_DataType("SqlServices", data.Item1[ci].ToString())), AllowDBNull=bool.Parse(data.Item2[ci].ToString())});
                 }
                 else
                 {
@@ -179,7 +178,10 @@ public partial class Default : System.Web.UI.Page
         {
             if (Store_Data())
             {
-
+                RadTextBoxValidation.Text = "";
+                RadTextBoxValidation.Visible = true;
+                RadTextBoxValidation.Text = send_Validation_Data("SqlServices", "asdas34324", Get_Procedures("SqlServices").Item1[0].ToString());
+                //send_Validation_Data("SqlServices", "asdas34324", Get_Procedures("SqlServices").Item1[0].ToString());
             }
         }
         catch (Exception ex)
@@ -212,33 +214,12 @@ public partial class Default : System.Web.UI.Page
         comm.ExecuteNonQuery();
         conn.Close();
     }
-
-    protected void btn_Structure_Click(object sender, EventArgs e)
-    {
-        try
-        {
-            myPanel1.InnerHtml = "";
-            myPanel1.InnerHtml += "<table>";
-            myPanel1.InnerHtml += "<tr><th>Columna</th><th>Tipo</th><th>Puede ser nula</th><th>Posición</th><th>Descripción</th><th>Longitud del campo</th><th>Formato</th></tr>";
-            for (int i = 0; i < Get_Option_Types("SqlServices").Item1.Count(); i++)
-            {
-                myPanel1.InnerHtml += "<tr><td>Columna "+(i+1)+"</td><td>" + Get_Option_Types("SqlServices").Item1[i]+ "</td><td>"+ Get_Option_Types("SqlServices").Item2[i] + "</td><td>" + Get_Option_Types("SqlServices").Item3[i] + "</td><td>" + Get_Option_Types("SqlServices").Item4[i] + "</td><td>" + Get_Option_Types("SqlServices").Item5[i] + "</td><td>" + Get_Option_Types("SqlServices").Item6[i] + "</td></tr>";
-            }
-            myPanel1.InnerHtml += "</table>";
-        }
-        catch (Exception ex)
-        {
-            myPanel1.InnerHtml = ex.Message;
-        }
-        modalPopup.VisibleOnPageLoad = true;
-        modalPopup.Visible = true;
-    }
     
     /* --------------------------------  Validation module  -------------------------------------------- */
 
     
 
-    protected void Load_Validation_Multiline(int counter)
+    /*protected void Load_Validation_Multiline(int counter)
     {
         RadTextBoxValidation.Text = "";
         RadTextBoxValidation.Visible = true;
@@ -251,16 +232,14 @@ public partial class Default : System.Web.UI.Page
             RadTextBoxValidation.Text += "Línea "+counter+ " "+send_Validation_Data("SqlServices", sb.AppendLine(string.Join(get_Spliter().ToString(), row.ItemArray)).ToString(), Get_Procedures("SqlServices").Item1[0].ToString())+ "\n";
         }
         validstatus.Text = "Validado";
-    }
+    }*/
 
-    private string send_Validation_Data(string connsrt, string line, string procedure)
+    private string send_Validation_Data(string connsrt, string sessionid, string procedure)
     {
         SqlConnection conn = new SqlConnection(ConfigurationManager.ConnectionStrings[connsrt].ConnectionString);
         SqlCommand comm = new SqlCommand(procedure, conn);
         comm.CommandType = CommandType.StoredProcedure;
-        comm.Parameters.AddWithValue("@linea", line);
-        comm.Parameters.AddWithValue("@spliter", get_Spliter());
-        comm.Parameters.AddWithValue("@idsesion", "asdas123sdasd");
+        comm.Parameters.AddWithValue("@idsesion", sessionid);
         comm.Parameters.Add("@resultado", SqlDbType.VarChar, -1).Direction = ParameterDirection.Output;
         conn.Open();
         comm.ExecuteNonQuery();
@@ -290,6 +269,26 @@ public partial class Default : System.Web.UI.Page
         return Tuple.Create(pvalidate, pstore, pload);
     }
 
+    protected void btn_Structure_Click(object sender, EventArgs e)
+    {
+        try
+        {
+            myPanel1.InnerHtml = "";
+            myPanel1.InnerHtml += "<table>";
+            myPanel1.InnerHtml += "<tr><th>Columna</th><th>Tipo</th><th>Puede ser nula</th><th>Posición</th><th>Descripción</th><th>Longitud del campo</th><th>Formato</th></tr>";
+            for (int i = 0; i < Get_Option_Types("SqlServices").Item1.Count(); i++)
+            {
+                myPanel1.InnerHtml += "<tr><td>Columna " + (i + 1) + "</td><td>" + Get_Option_Types("SqlServices").Item1[i] + "</td><td>" + Get_Option_Types("SqlServices").Item2[i] + "</td><td>" + Get_Option_Types("SqlServices").Item3[i] + "</td><td>" + Get_Option_Types("SqlServices").Item4[i] + "</td><td>" + Get_Option_Types("SqlServices").Item5[i] + "</td><td>" + Get_Option_Types("SqlServices").Item6[i] + "</td></tr>";
+            }
+            myPanel1.InnerHtml += "</table>";
+        }
+        catch (Exception ex)
+        {
+            myPanel1.InnerHtml = ex.Message;
+        }
+        modalPopup.VisibleOnPageLoad = true;
+        modalPopup.Visible = true;
+    }
     /* ----------------------------------  Storing Module  ----------------------------------------------  */
 
     protected void Load_Storing_Multiline(int countervalid, int counterinvalid, int counter)
