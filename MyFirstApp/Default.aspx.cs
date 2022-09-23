@@ -15,11 +15,15 @@ public partial class Default : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (!IsPostBack)
+        try
         {
-            Get_Option_Name("SqlServices");
-            Get_Creation_PrepareLoading("SqlServices");
+            if (!IsPostBack)
+            {
+                Get_Option_Name("SqlServices");
+                Get_Creation_PrepareLoading("SqlServices");
+            }
         } 
+        catch{}
     }
 
     public static string strtxt;
@@ -55,7 +59,7 @@ public partial class Default : System.Web.UI.Page
         return lines;   
     }
 
-    protected DataTable Load_Prevalidation_Table(string[] filedata, Tuple<List<object>, List<object>, List<object>, List<object>, List<object>, List<object>> data)
+    /*protected DataTable Load_Prevalidation_Table(string[] filedata, Tuple<List<object>, List<object>, List<object>, List<object>, List<object>, List<object>> data)
     {
         DataTable dt = new DataTable();
         for (int li = 0; li < filedata.Length; li++)
@@ -77,6 +81,45 @@ public partial class Default : System.Web.UI.Page
                     {
                         dr[ci] = filecolumns[ci];
                     }
+                }
+            }
+            if (li != 0)
+                dt.Rows.Add(dr);
+        }
+        return dt;
+    }*/
+
+    protected DataTable Load_Prevalidation_Table(string[] filedata, Tuple<List<object>, List<object>, List<object>, List<object>, List<object>, List<object>> data)
+    {
+        char i ;
+        DataTable dt = new DataTable();
+        for (int a = 0; a < data.Item4.Count; a++)
+        {
+            dt.Columns.Add(new DataColumn
+            {
+                ColumnName = data.Item4[a].ToString(),
+                DataType = Type.GetType(Get_DataType("SqlServices", data.Item1[ci].ToString()))
+            });
+        }
+        for (int li = 0; li < filedata.Length; li++)
+        {
+            DataRow dr = dt.NewRow();
+            string[] filecolumns = filedata[li].Split(get_Spliter());
+            for (int ci = 0; ci < filecolumns.Length; ci++)
+            {
+                System.Diagnostics.Debug.Write(filecolumns[ci].Count()+"------------");
+                if ( filecolumns[ci].Count() > Int32.Parse(data.Item5[ci].ToString()))
+                {
+                    dr[ci] = "<b>Excede longitud del campo</b>";
+                }
+                else if (filecolumns[ci].ToString() == "") 
+                {
+                    if (!bool.Parse(data.Item2[ci].ToString()))
+                        dr[ci] = "<b>No acepta nulo</b>";
+                }
+                else 
+                {   
+                    dr[ci] = filecolumns[ci];
                 }
             }
             if (li != 0)
@@ -111,14 +154,14 @@ public partial class Default : System.Web.UI.Page
                 RadGrid2.DataSource = Load_Prevalidation_Table(Read_File(@"C:\Users\MARIO RUEDA\Documents\cargues\" + Return_File()), Get_Option_Types("SqlServices"));
                 importstatus.Text = "Pre-validado";
                 RadButton5.Enabled = true;
-            }
+            }     
         } 
         catch (Exception ex)
         {
             RadGrid2.Visible = true;
             List<string> errlist = new List<string>();
             errlist.Add("Error");
-            errlist.Add("Descripción del error: "+ex.Message);
+            errlist.Add("Linea 1 : "+ex.Message+"----");
             RadGrid2.DataSource = errlist;
             RadButton5.Enabled = false;
             importstatus.Text = "No Pre-validado";
@@ -178,10 +221,7 @@ public partial class Default : System.Web.UI.Page
         {
             if (Store_Data())
             {
-                RadTextBoxValidation.Text = "";
-                RadTextBoxValidation.Visible = true;
-                RadTextBoxValidation.Text = send_Validation_Data("SqlServices", "asdas34324", Get_Procedures("SqlServices").Item1[0].ToString());
-                //send_Validation_Data("SqlServices", "asdas34324", Get_Procedures("SqlServices").Item1[0].ToString());
+                send_Validation_Data("SqlServices", "asdas34324", Get_Procedures("SqlServices").Item1[0].ToString());
             }
         }
         catch (Exception ex)
@@ -194,10 +234,12 @@ public partial class Default : System.Web.UI.Page
 
     private bool Store_Data()
     {
-        foreach (DataRow row in Load_Prevalidation_Table(Read_File(@"C:\Users\MARIO RUEDA\Documents\cargues\" + Return_File()), Get_Option_Types("SqlServices")).Rows)
+        linesloadedtotal.Text = Load_Prevalidation_Table(Read_File(@"C:\Users\MARIO RUEDA\Documents\cargues\" + Return_File()), Get_Option_Types("SqlServices")).Rows.Count.ToString();
+        for (int i = 0; i < Load_Prevalidation_Table(Read_File(@"C:\Users\MARIO RUEDA\Documents\cargues\" + Return_File()), Get_Option_Types("SqlServices")).Rows.Count; i++)
         {
             StringBuilder sb = new StringBuilder();
-            Store_Data_Into_Loadtable("SqlServices", "asdas34324", sb.AppendLine(string.Join(get_Spliter().ToString(), row.ItemArray)).ToString(), Get_Procedures("SqlServices").Item3[0].ToString());
+            Store_Data_Into_Loadtable("SqlServices", "asdas34324", sb.AppendLine(string.Join(get_Spliter().ToString(), Load_Prevalidation_Table(Read_File(@"C:\Users\MARIO RUEDA\Documents\cargues\" + Return_File()), Get_Option_Types("SqlServices")).Rows[i].ItemArray)).ToString(), Get_Procedures("SqlServices").Item3[0].ToString());
+            linesloadedvalid.Text = (i+1).ToString();
         }
         return true;
     }
@@ -214,25 +256,6 @@ public partial class Default : System.Web.UI.Page
         comm.ExecuteNonQuery();
         conn.Close();
     }
-    
-    /* --------------------------------  Validation module  -------------------------------------------- */
-
-    
-
-    /*protected void Load_Validation_Multiline(int counter)
-    {
-        RadTextBoxValidation.Text = "";
-        RadTextBoxValidation.Visible = true;
-        totallines.Text = Load_Prevalidation_Table(Read_File(@"C:\Users\MARIO RUEDA\Documents\cargues\" + Return_File()), Get_Option_Types("SqlServices")).Rows.Count.ToString();
-        spvalidate.Text = Get_Procedures("SqlServices").Item1[0].ToString();
-        foreach (DataRow row in Load_Prevalidation_Table(Read_File(@"C:\Users\MARIO RUEDA\Documents\cargues\" + Return_File()), Get_Option_Types("SqlServices")).Rows)
-        {
-            counter++;
-            StringBuilder sb = new StringBuilder();
-            RadTextBoxValidation.Text += "Línea "+counter+ " "+send_Validation_Data("SqlServices", sb.AppendLine(string.Join(get_Spliter().ToString(), row.ItemArray)).ToString(), Get_Procedures("SqlServices").Item1[0].ToString())+ "\n";
-        }
-        validstatus.Text = "Validado";
-    }*/
 
     private string send_Validation_Data(string connsrt, string sessionid, string procedure)
     {
@@ -291,7 +314,7 @@ public partial class Default : System.Web.UI.Page
     }
     /* ----------------------------------  Storing Module  ----------------------------------------------  */
 
-    protected void Load_Storing_Multiline(int countervalid, int counterinvalid, int counter)
+    /*protected void Load_Storing_Multiline(int countervalid, int counterinvalid, int counter)
     {
         RadTextBoxStoring.Text = "";
         RadTextBoxStoring.Visible = true;
@@ -321,7 +344,7 @@ public partial class Default : System.Web.UI.Page
         string result = comm.Parameters["@resultado"].Value.ToString();
         conn.Close();
         return result;
-    }
+    }*/
         
     
     /* ----------------------------------  Creation Module  ----------------------------------------------  */
