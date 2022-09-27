@@ -97,8 +97,8 @@ public partial class Default : System.Web.UI.Page
         {
             dt.Columns.Add(new DataColumn
             {
-                ColumnName = data.Item4[a].ToString(),
-                DataType = Type.GetType(Get_DataType("SqlServices", data.Item1[ci].ToString()))
+                ColumnName = data.Item4[a].ToString()/*,
+                DataType = Type.GetType(Get_DataType("SqlServices", data.Item1[a].ToString()))*/
             });
         }
         for (int li = 0; li < filedata.Length; li++)
@@ -107,7 +107,6 @@ public partial class Default : System.Web.UI.Page
             string[] filecolumns = filedata[li].Split(get_Spliter());
             for (int ci = 0; ci < filecolumns.Length; ci++)
             {
-                System.Diagnostics.Debug.Write(filecolumns[ci].Count()+"------------");
                 if ( filecolumns[ci].Count() > Int32.Parse(data.Item5[ci].ToString()))
                 {
                     dr[ci] = "<b>Excede longitud del campo</b>";
@@ -122,8 +121,8 @@ public partial class Default : System.Web.UI.Page
                     dr[ci] = filecolumns[ci];
                 }
             }
-            if (li != 0)
-                dt.Rows.Add(dr);
+            //if (li != 0)
+            dt.Rows.Add(dr);
         }
         return dt;
     }
@@ -161,7 +160,7 @@ public partial class Default : System.Web.UI.Page
             RadGrid2.Visible = true;
             List<string> errlist = new List<string>();
             errlist.Add("Error");
-            errlist.Add("Linea 1 : "+ex.Message+"----");
+            errlist.Add(ex.Message);
             RadGrid2.DataSource = errlist;
             RadButton5.Enabled = false;
             importstatus.Text = "No Pre-validado";
@@ -221,7 +220,8 @@ public partial class Default : System.Web.UI.Page
         {
             if (Store_Data())
             {
-                send_Validation_Data("SqlServices", "asdas34324", Get_Procedures("SqlServices").Item1[0].ToString());
+                RadTextBoxValidation.Text = "Cargado";
+                //send_Validation_Data("SqlServices", "asdas34324", Get_Procedures("SqlServices").Item1[0].ToString());
             }
         }
         catch (Exception ex)
@@ -234,24 +234,23 @@ public partial class Default : System.Web.UI.Page
 
     private bool Store_Data()
     {
-        linesloadedtotal.Text = Load_Prevalidation_Table(Read_File(@"C:\Users\MARIO RUEDA\Documents\cargues\" + Return_File()), Get_Option_Types("SqlServices")).Rows.Count.ToString();
         for (int i = 0; i < Load_Prevalidation_Table(Read_File(@"C:\Users\MARIO RUEDA\Documents\cargues\" + Return_File()), Get_Option_Types("SqlServices")).Rows.Count; i++)
         {
             StringBuilder sb = new StringBuilder();
-            Store_Data_Into_Loadtable("SqlServices", "asdas34324", sb.AppendLine(string.Join(get_Spliter().ToString(), Load_Prevalidation_Table(Read_File(@"C:\Users\MARIO RUEDA\Documents\cargues\" + Return_File()), Get_Option_Types("SqlServices")).Rows[i].ItemArray)).ToString(), Get_Procedures("SqlServices").Item3[0].ToString());
-            linesloadedvalid.Text = (i+1).ToString();
+            Store_Data_Into_Loadtable("SqlServices", "asdas34324", sb.AppendLine(string.Join(",", Load_Prevalidation_Table(Read_File(@"C:\Users\MARIO RUEDA\Documents\cargues\" + Return_File()), Get_Option_Types("SqlServices")).Rows[i].ItemArray)).ToString(), Get_Procedures("SqlServices").Item4[0].ToString(), Get_Procedures("SqlServices").Item3[0].ToString());
         }
         return true;
     }
 
-    private void Store_Data_Into_Loadtable(string connsrt, string sessionid, string line, string procedure)
+    private void Store_Data_Into_Loadtable(string connsrt, string sessionid, string line, string loadtable, string procedure)
     {
         SqlConnection conn = new SqlConnection(ConfigurationManager.ConnectionStrings[connsrt].ConnectionString);
         SqlCommand comm = new SqlCommand(procedure, conn);
         comm.CommandType = CommandType.StoredProcedure;
         comm.Parameters.AddWithValue("@idsesion", sessionid);
+        comm.Parameters.AddWithValue("@tablacargue", loadtable);
         comm.Parameters.AddWithValue("@linea", line);
-        comm.Parameters.AddWithValue("@spliter", get_Spliter());
+        comm.Parameters.AddWithValue("@spliter", ",");
         conn.Open();
         comm.ExecuteNonQuery();
         conn.Close();
@@ -271,14 +270,15 @@ public partial class Default : System.Web.UI.Page
         return result;  
     }
 
-    private Tuple<List<object>, List<object>, List<object>> Get_Procedures(string connsrt)
+    private Tuple<List<object>, List<object>, List<object>, List<object>> Get_Procedures(string connsrt)
     {
         SqlConnection conn = new SqlConnection(ConfigurationManager.ConnectionStrings[connsrt].ConnectionString);
-        SqlCommand comm = new SqlCommand("SELECT a.NOMBRE_PROC_VALIDA, a.NOMBRE_PROC_ALMACENA, NOMBRE_CARGA_TABLA FROM TBPROCEDIMIENTOS_CARGUE AS a RIGHT JOIN TBOPCION_CARGUE AS b ON a.OP_CODIGO = b.OPC_CODIGO WHERE b.OPC_CODIGO =" + RadDropDownTables.SelectedItem.Value, conn);
+        SqlCommand comm = new SqlCommand("SELECT a.NOMBRE_PROC_VALIDA, a.NOMBRE_PROC_ALMACENA, NOMBRE_CARGA_TABLA, NOMBRE_TABLA FROM TBPROCEDIMIENTOS_CARGUE AS a RIGHT JOIN TBOPCION_CARGUE AS b ON a.OP_CODIGO = b.OPC_CODIGO WHERE b.OPC_CODIGO =" + RadDropDownTables.SelectedItem.Value, conn);
         conn.Open();
         List<object> pvalidate = new List<object>();
         List<object> pstore = new List<object>();
         List<object> pload = new List<object>();
+        List<object> ptable = new List<object>();
         using (SqlDataReader reader = comm.ExecuteReader())
         {
             while (reader.Read())
@@ -286,10 +286,11 @@ public partial class Default : System.Web.UI.Page
                 pvalidate.Add(reader[0]);
                 pstore.Add(reader[1]);
                 pload.Add(reader[2]);
+                ptable.Add(reader[3]);
             }
         }
         conn.Close();
-        return Tuple.Create(pvalidate, pstore, pload);
+        return Tuple.Create(pvalidate, pstore, pload, ptable);
     }
 
     protected void btn_Structure_Click(object sender, EventArgs e)
@@ -346,7 +347,6 @@ public partial class Default : System.Web.UI.Page
         return result;
     }*/
         
-    
     /* ----------------------------------  Creation Module  ----------------------------------------------  */
 
     private void Get_Creation_PrepareLoading(string connsrt)
