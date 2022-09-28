@@ -94,6 +94,19 @@
                                     </telerik:CardBodyComponent>
                                     <telerik:CardActionsContainerComponent runat="server" CardActionsAlignment="Stretched">
                                         <telerik:CardActionComponent runat="server">
+                                            <telerik:RadLinkButton EnableEmbeddedSkins="false" CssClass="k-button k-flat k-primary" Font-Size="14px" runat="server" Text="Archivo tiene título?"></telerik:RadLinkButton>
+                                        </telerik:CardActionComponent>
+                                        <telerik:CardActionComponent runat="server">
+                                            <telerik:RadDropDownList RenderMode="Lightweight" ID="RadDropDownList1" CssClass="ddlist" runat="server" DropDownHeight="">
+                                                <Items>
+                                                    <telerik:DropDownListItem Text="Si" Value="1"/>
+                                                    <telerik:DropDownListItem Text="No" Value="0"/>
+                                                </Items>
+                                            </telerik:RadDropDownList>       
+                                        </telerik:CardActionComponent>
+                                    </telerik:CardActionsContainerComponent>
+                                    <telerik:CardActionsContainerComponent runat="server" CardActionsAlignment="Stretched">
+                                        <telerik:CardActionComponent runat="server">
                                             <telerik:RadLinkButton EnableEmbeddedSkins="false" CssClass="k-button k-flat k-primary" Font-Size="14px" runat="server" Text="Separador"></telerik:RadLinkButton>
                                         </telerik:CardActionComponent>
                                         <telerik:CardActionComponent runat="server">
@@ -331,24 +344,35 @@
                                                 </telerik:LayoutColumn>
                                                 <telerik:LayoutColumn Span="6" SpanXs="6" SpanSm="6">
                                                     <div class="col">
-                                                        <asp:Label RenderMode="Lightweight" ID="Label5" runat="server" Text="Validación"></asp:Label>    
+                                                        <asp:Label RenderMode="Lightweight" ID="Label5" runat="server" Text="Procedimiento valida"></asp:Label>    
                                                     </div>
                                                 </telerik:LayoutColumn>
                                                 <telerik:LayoutColumn Span="6" SpanXs="6" SpanSm="6">
                                                     <div class="col">
-                                                        <telerik:RadTextBox RenderMode="Lightweight" runat="server" ID="RadTextBox4" Width="" TextMode="MultiLine" EmptyMessage="ej: xxxx-xxxx"></telerik:RadTextBox>  
+                                                        <telerik:RadTextBox RenderMode="Lightweight" runat="server" ID="RadTextBox4" Width="" TextMode="MultiLine" EmptyMessage="ej: SP_TEST"></telerik:RadTextBox>  
                                                         <asp:RequiredFieldValidator runat="server" ID="validatorRB4" ControlToValidate="RadTextBox4" ErrorMessage="Ingrese un valor" ForeColor="red"></asp:RequiredFieldValidator> 
                                                     </div>
                                                 </telerik:LayoutColumn>
                                                 <telerik:LayoutColumn Span="6" SpanXs="6" SpanSm="6">
                                                     <div class="col">
-                                                        <asp:Label RenderMode="Lightweight" ID="Label7" runat="server" Text="Almacenamiento"></asp:Label>    
+                                                        <asp:Label RenderMode="Lightweight" ID="Label7" runat="server" Text="Procedimiento almacena"></asp:Label>    
                                                     </div>
                                                 </telerik:LayoutColumn>
                                                 <telerik:LayoutColumn Span="6" SpanXs="6" SpanSm="6">
                                                     <div class="col">
-                                                        <telerik:RadTextBox RenderMode="Lightweight" runat="server" ID="RadTextBox5" Width="" TextMode="MultiLine" EmptyMessage="ej: xxxx-xxxx"></telerik:RadTextBox>  
+                                                        <telerik:RadTextBox RenderMode="Lightweight" runat="server" ID="RadTextBox5" Width="" TextMode="MultiLine" EmptyMessage="ej: SP_TEST"></telerik:RadTextBox>  
                                                         <asp:RequiredFieldValidator runat="server" ID="validatorRB5" ControlToValidate="RadTextBox5" ErrorMessage="Ingrese un valor" ForeColor="red"></asp:RequiredFieldValidator> 
+                                                    </div>
+                                                </telerik:LayoutColumn>
+                                                <telerik:LayoutColumn Span="6" SpanXs="6" SpanSm="6">
+                                                    <div class="col">
+                                                        <asp:Label RenderMode="Lightweight" ID="Label1" runat="server" Text="Tabla de cargue"></asp:Label>    
+                                                    </div>
+                                                </telerik:LayoutColumn>
+                                                <telerik:LayoutColumn Span="6" SpanXs="6" SpanSm="6">
+                                                    <div class="col">
+                                                        <telerik:RadTextBox RenderMode="Lightweight" runat="server" ID="RadTextBox12" Width="" TextMode="MultiLine" EmptyMessage="ej: TBTEST"></telerik:RadTextBox>  
+                                                        <asp:RequiredFieldValidator runat="server" ID="validatorRB12" ControlToValidate="RadTextBox12" ErrorMessage="Ingrese un valor" ForeColor="red"></asp:RequiredFieldValidator> 
                                                     </div>
                                                 </telerik:LayoutColumn>
                                             </Columns>

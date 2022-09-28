@@ -91,38 +91,89 @@ public partial class Default : System.Web.UI.Page
 
     protected DataTable Load_Prevalidation_Table(string[] filedata, Tuple<List<object>, List<object>, List<object>, List<object>, List<object>, List<object>> data)
     {
-        char i ;
         DataTable dt = new DataTable();
-        for (int a = 0; a < data.Item4.Count; a++)
+        if (Int32.Parse(RadDropDownList1.SelectedItem.Value) == 0)
         {
-            dt.Columns.Add(new DataColumn
+            for (int a = 0; a < data.Item4.Count; a++)
             {
-                ColumnName = data.Item4[a].ToString()/*,
-                DataType = Type.GetType(Get_DataType("SqlServices", data.Item1[a].ToString()))*/
-            });
-        }
-        for (int li = 0; li < filedata.Length; li++)
-        {
-            DataRow dr = dt.NewRow();
-            string[] filecolumns = filedata[li].Split(get_Spliter());
-            for (int ci = 0; ci < filecolumns.Length; ci++)
-            {
-                if ( filecolumns[ci].Count() > Int32.Parse(data.Item5[ci].ToString()))
+                dt.Columns.Add(new DataColumn
                 {
-                    dr[ci] = "<b>Excede longitud del campo</b>";
-                }
-                else if (filecolumns[ci].ToString() == "") 
-                {
-                    if (!bool.Parse(data.Item2[ci].ToString()))
-                        dr[ci] = "<b>No acepta nulo</b>";
-                }
-                else 
-                {   
-                    dr[ci] = filecolumns[ci];
-                }
+                    ColumnName = data.Item4[a].ToString()/*,
+                    DataType = Type.GetType(Get_DataType("SqlServices", data.Item1[a].ToString()))*/
+                });
             }
-            //if (li != 0)
-            dt.Rows.Add(dr);
+            for (int li = 0; li < filedata.Length; li++)
+            {
+                DataRow dr = dt.NewRow();
+                string[] filecolumns = filedata[li].Split(get_Spliter());
+                for (int ci = 0; ci < filecolumns.Length; ci++)
+                {
+                    if (data.Item4.Count == filecolumns.Length)
+                    {
+                        if (filecolumns[ci].Count() > Int32.Parse(data.Item5[ci].ToString()))
+                        {
+                            dr[ci] = "<b>'"+ filecolumns[ci]+"' Excede longitud del campo</b>";
+                        }
+                        else if (filecolumns[ci].ToString() == "")
+                        {
+                            if (!bool.Parse(data.Item2[ci].ToString()))
+                                dr[ci] = "<b>No acepta nulo</b>";
+                        }
+                        else
+                        {
+                            dr[ci] = filecolumns[ci];
+                        }
+                    }
+                    else
+                    {
+                        dr[ci] = "<b>No coincide el numero de columnas</b>";
+                    }
+                }
+                dt.Rows.Add(dr);
+            }
+        }
+        else
+        {
+            for (int li = 0; li < filedata.Length; li++)
+            {
+                DataRow dr = dt.NewRow();
+                string[] filecolumns = filedata[li].Split(get_Spliter());
+                for (int ci = 0; ci < filecolumns.Length; ci++)
+                {
+                    if (li == 0)
+                    {
+                        dt.Columns.Add(new DataColumn 
+                        { 
+                            ColumnName = filecolumns[ci]
+                        });
+                    }
+                    else
+                    {
+                        if (data.Item4.Count == filecolumns.Length)
+                        {
+                            if (filecolumns[ci].Count() > Int32.Parse(data.Item5[ci].ToString()))
+                            {
+                                dr[ci] = "<b>'"+ filecolumns[ci] + "' Excede longitud del campo</b>";
+                            }
+                            else if (filecolumns[ci].ToString() == "")
+                            {
+                                if (!bool.Parse(data.Item2[ci].ToString()))
+                                    dr[ci] = "<b>No acepta nulo</b>";
+                            }
+                            else
+                            {
+                                dr[ci] = filecolumns[ci];
+                            }
+                        }
+                        else
+                        {
+                            dr[ci] = "<b>No coincide el numero de columnas</b>";
+                        }
+                    }
+                }
+                if (li != 0)
+                    dt.Rows.Add(dr);
+            }
         }
         return dt;
     }
@@ -368,9 +419,9 @@ public partial class Default : System.Web.UI.Page
     {
         try
         {
-            if (validatorRB2.IsValid && validatorRB3.IsValid && validatorRB4.IsValid && validatorRB5.IsValid && validatorRB6.IsValid && validatorRB7.IsValid && validatorRB8.IsValid && validatorRB9.IsValid && validatorRB11.IsValid)
+            if (validatorRB2.IsValid && validatorRB3.IsValid && validatorRB4.IsValid && validatorRB5.IsValid && validatorRB6.IsValid && validatorRB7.IsValid && validatorRB8.IsValid && validatorRB9.IsValid && validatorRB11.IsValid && validatorRB12.IsValid)
             {
-                Creation_Type("SqlServices", RadTextBox3.Text.ToString(), Int32.Parse(RadDropDownTipeLoad.SelectedItem.Value), RadTextBox4.Text.ToString(), RadTextBox5.Text.ToString(), RadTextBox2.Text.ToString(), RadTextBox7.Text.ToString(), RadTextBox8.Text.ToString(), RadTextBox9.Text.ToString(), RadTextBox10.Text.ToString(), RadTextBox11.Text.ToString(), 0);
+                Creation_Type("SqlServices", RadTextBox3.Text.ToString(), Int32.Parse(RadDropDownTipeLoad.SelectedItem.Value), RadTextBox4.Text.ToString(), RadTextBox5.Text.ToString(), RadTextBox12.Text.ToString(), RadTextBox2.Text.ToString(), RadTextBox7.Text.ToString(), RadTextBox8.Text.ToString(), RadTextBox9.Text.ToString(), RadTextBox10.Text.ToString(), RadTextBox11.Text.ToString(), 0);
                 myPanel1.InnerHtml = "Opción "+ RadTextBox3.Text.ToString() +" creada con éxito";
                 RadButton2.Enabled = false;
             }
@@ -392,7 +443,7 @@ public partial class Default : System.Web.UI.Page
         return char.Parse(RadTextBox6.Text);
     }
 
-    private void Creation_Type(string connsrt, string name, int typeload, string spvalidate, string spstore, string fields, string position, string description, string length, string format, string acceptnull, int init)
+    private void Creation_Type(string connsrt, string name, int typeload, string spvalidate, string spstore, string ptable, string fields, string position, string description, string length, string format, string acceptnull, int init)
     {
         SqlConnection conn = new SqlConnection(ConfigurationManager.ConnectionStrings[connsrt].ConnectionString);
         SqlCommand comm = new SqlCommand("SP_SAVELOADTYPE", conn);
@@ -401,6 +452,7 @@ public partial class Default : System.Web.UI.Page
         comm.Parameters.AddWithValue("@Tipo_carga", typeload);
         comm.Parameters.AddWithValue("@Nombre_pa_valida", spvalidate);
         comm.Parameters.AddWithValue("@Nombre_pa_almacena", spstore);
+        comm.Parameters.AddWithValue("@Nombre_pa_tabla", ptable);
         comm.Parameters.AddWithValue("@spliter", get_Spliter_Creation());
         comm.Parameters.AddWithValue("@campos", fields);
         comm.Parameters.AddWithValue("@posicion", position);
