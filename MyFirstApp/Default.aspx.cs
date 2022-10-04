@@ -6,10 +6,7 @@ using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.IO;
 using System.Data;
-using Newtonsoft.Json.Linq;
-using System.Web.UI.WebControls;
 using System.Text;
-using System.Web.UI.HtmlControls;
 
 public partial class Default : System.Web.UI.Page 
 {
@@ -20,17 +17,19 @@ public partial class Default : System.Web.UI.Page
             if (!IsPostBack)
             {
                 Get_Option_Name("SqlServices");
-                Get_Creation_PrepareLoading("SqlServices");
             }
         } 
         catch{}
     }
 
     public static string strtxt;
+  
     protected void btn_Prevalidate_Click(object sender, EventArgs e)
     {
         try
         {
+            //Save_File();
+            System.Diagnostics.Debug.Write(RadAsyncUpload1.TargetFolder);
             strtxt = "Bind";
             RadGrid2.Rebind();
         } 
@@ -43,51 +42,22 @@ public partial class Default : System.Web.UI.Page
         }
     }
 
-    protected string Return_File()
+    /*protected void Save_File()
     {
-        List<object> list = new List<object>();
-        foreach (UploadedFile f in RadAsyncUpload1.UploadedFiles)
+        string name = "~/Imagenes/Archivosimporter/";
+        if (!Directory.Exists(Server.MapPath(name))) 
         {
-            list.Add(f.GetName());
+            Directory.CreateDirectory(Server.MapPath(name));
         }
-        return list.ElementAt(0).ToString();
-    }
+        RadAsyncUpload1.UploadedFiles[0].SaveAs(Server.MapPath(name + RadAsyncUpload1.UploadedFiles[0].GetName()), true);
+        pathp = name + RadAsyncUpload1.UploadedFiles[0].GetName();
+    }*/
 
     private string[] Read_File(string path)
     { 
         string[] lines = File.ReadAllLines(path);
         return lines;   
     }
-
-    /*protected DataTable Load_Prevalidation_Table(string[] filedata, Tuple<List<object>, List<object>, List<object>, List<object>, List<object>, List<object>> data)
-    {
-        DataTable dt = new DataTable();
-        for (int li = 0; li < filedata.Length; li++)
-        {
-            DataRow dr = dt.NewRow();
-            string[] filecolumns = filedata[li].Split(get_Spliter()); 
-            for (int ci = 0; ci < filecolumns.Length; ci++)
-            {
-                if (li == 0)
-                {
-                    dt.Columns.Add(new DataColumn { ColumnName = filecolumns[ci], DataType = Type.GetType(Get_DataType("SqlServices", data.Item1[ci].ToString())), AllowDBNull=bool.Parse(data.Item2[ci].ToString())});
-                }
-                else
-                {
-                    if (filecolumns[ci].ToString() == "")
-                    {
-                        dr[ci] = DBNull.Value;
-                    } else
-                    {
-                        dr[ci] = filecolumns[ci];
-                    }
-                }
-            }
-            if (li != 0)
-                dt.Rows.Add(dr);
-        }
-        return dt;
-    }*/
 
     protected DataTable Load_Prevalidation_Table(string[] filedata, Tuple<List<object>, List<object>, List<object>, List<object>, List<object>, List<object>> data)
     {
@@ -201,7 +171,7 @@ public partial class Default : System.Web.UI.Page
             if (strtxt == "Bind")
             {
                 RadGrid2.Visible = true;
-                RadGrid2.DataSource = Load_Prevalidation_Table(Read_File(@"C:\Users\MARIO RUEDA\Documents\cargues\" + Return_File()), Get_Option_Types("SqlServices"));
+                RadGrid2.DataSource = Load_Prevalidation_Table(File.ReadAllLines(Server.MapPath("~/MyFiles/"+RadAsyncUpload1.UploadedFiles[0].GetName())), Get_Option_Types("SqlServices"));
                 importstatus.Text = "Pre-validado";
                 RadButton5.Enabled = true;
             }     
@@ -272,7 +242,7 @@ public partial class Default : System.Web.UI.Page
             if (Store_Data())
             {
                 RadTextBoxValidation.Text = "Cargado";
-                //send_Validation_Data("SqlServices", "asdas34324", Get_Procedures("SqlServices").Item1[0].ToString());
+                
             }
         }
         catch (Exception ex)
@@ -285,10 +255,10 @@ public partial class Default : System.Web.UI.Page
 
     private bool Store_Data()
     {
-        for (int i = 0; i < Load_Prevalidation_Table(Read_File(@"C:\Users\MARIO RUEDA\Documents\cargues\" + Return_File()), Get_Option_Types("SqlServices")).Rows.Count; i++)
+        for (int i = 0; i < Load_Prevalidation_Table(Read_File(Server.MapPath("")), Get_Option_Types("SqlServices")).Rows.Count; i++)
         {
             StringBuilder sb = new StringBuilder();
-            Store_Data_Into_Loadtable("SqlServices", "asdas34324", sb.AppendLine(string.Join(",", Load_Prevalidation_Table(Read_File(@"C:\Users\MARIO RUEDA\Documents\cargues\" + Return_File()), Get_Option_Types("SqlServices")).Rows[i].ItemArray)).ToString(), Get_Procedures("SqlServices").Item4[0].ToString(), Get_Procedures("SqlServices").Item3[0].ToString());
+            Store_Data_Into_Loadtable("SqlServices", "asdas34324", sb.AppendLine(string.Join(",", Load_Prevalidation_Table(Read_File(""), Get_Option_Types("SqlServices")).Rows[i].ItemArray)).ToString(), Get_Procedures("SqlServices").Item4[0].ToString(), Get_Procedures("SqlServices").Item3[0].ToString());
         }
         return true;
     }
@@ -305,20 +275,6 @@ public partial class Default : System.Web.UI.Page
         conn.Open();
         comm.ExecuteNonQuery();
         conn.Close();
-    }
-
-    private string send_Validation_Data(string connsrt, string sessionid, string procedure)
-    {
-        SqlConnection conn = new SqlConnection(ConfigurationManager.ConnectionStrings[connsrt].ConnectionString);
-        SqlCommand comm = new SqlCommand(procedure, conn);
-        comm.CommandType = CommandType.StoredProcedure;
-        comm.Parameters.AddWithValue("@idsesion", sessionid);
-        comm.Parameters.Add("@resultado", SqlDbType.VarChar, -1).Direction = ParameterDirection.Output;
-        conn.Open();
-        comm.ExecuteNonQuery();
-        string result = comm.Parameters["@resultado"].Value.ToString();
-        conn.Close();
-        return result;  
     }
 
     private Tuple<List<object>, List<object>, List<object>, List<object>> Get_Procedures(string connsrt)
@@ -363,107 +319,6 @@ public partial class Default : System.Web.UI.Page
         }
         modalPopup.VisibleOnPageLoad = true;
         modalPopup.Visible = true;
-    }
-    /* ----------------------------------  Storing Module  ----------------------------------------------  */
-
-    /*protected void Load_Storing_Multiline(int countervalid, int counterinvalid, int counter)
-    {
-        RadTextBoxStoring.Text = "";
-        RadTextBoxStoring.Visible = true;
-        RadLinkButton2.Text = Get_Procedures("SqlServices").Item2[0].ToString();
-        foreach (DataRow row in Load_Prevalidation_Table(Read_File(@"C:\Users\MARIO RUEDA\Documents\cargues\" + Return_File()), Get_Option_Types("SqlServices")).Rows)
-        {
-            counter++;
-            StringBuilder sb = new StringBuilder();
-            RadTextBoxStoring.Text += "Linea "+counter+" "+send_Storing_Data("SqlServices", sb.AppendLine(string.Join(get_Spliter().ToString(), row.ItemArray)).ToString(), Get_Procedures("SqlServices").Item2[0].ToString())+"\n";
-        }
-        RadLinkButton1.Text = counter.ToString();
-        storeline.Text = "Almacenado";
-        RadButton5.Enabled = false; 
-    }
-
-    private string send_Storing_Data(string connsrt, string line, string procedure)
-    {
-        SqlConnection conn = new SqlConnection(ConfigurationManager.ConnectionStrings[connsrt].ConnectionString);
-        SqlCommand comm = new SqlCommand(procedure, conn);
-        comm.CommandType = CommandType.StoredProcedure;
-        comm.Parameters.AddWithValue("@linea", line);
-        comm.Parameters.AddWithValue("@spliter", get_Spliter());
-        comm.Parameters.AddWithValue("@idsesion", "asdas123sdasd");
-        comm.Parameters.Add("@resultado", SqlDbType.VarChar, -1).Direction = ParameterDirection.Output;
-        conn.Open();
-        comm.ExecuteNonQuery();
-        string result = comm.Parameters["@resultado"].Value.ToString();
-        conn.Close();
-        return result;
-    }*/
-        
-    /* ----------------------------------  Creation Module  ----------------------------------------------  */
-
-    private void Get_Creation_PrepareLoading(string connsrt)
-    {
-        SqlConnection conn = new SqlConnection(ConfigurationManager.ConnectionStrings[connsrt].ConnectionString);
-        SqlCommand comm = new SqlCommand("SELECT AC_CODIGO, AC_NOMBRE FROM TBALMACENAMIENTO_CARGUE", conn);
-        conn.Open();
-        using (SqlDataReader reader = comm.ExecuteReader())
-        {
-            while (reader.Read())
-            {
-                RadDropDownTipeLoad.Items.Add(new DropDownListItem(reader[1].ToString(), reader[0].ToString()));
-            }
-        }
-        conn.Close();
-    }
-
-    protected void btnCreate_Click(object sender, EventArgs e)
-    {
-        try
-        {
-            if (validatorRB2.IsValid && validatorRB3.IsValid && validatorRB4.IsValid && validatorRB5.IsValid && validatorRB6.IsValid && validatorRB7.IsValid && validatorRB8.IsValid && validatorRB9.IsValid && validatorRB11.IsValid && validatorRB12.IsValid)
-            {
-                Creation_Type("SqlServices", RadTextBox3.Text.ToString(), Int32.Parse(RadDropDownTipeLoad.SelectedItem.Value), RadTextBox4.Text.ToString(), RadTextBox5.Text.ToString(), RadTextBox12.Text.ToString(), RadTextBox2.Text.ToString(), RadTextBox7.Text.ToString(), RadTextBox8.Text.ToString(), RadTextBox9.Text.ToString(), RadTextBox10.Text.ToString(), RadTextBox11.Text.ToString(), 0);
-                myPanel1.InnerHtml = "Opción "+ RadTextBox3.Text.ToString() +" creada con éxito";
-                RadButton2.Enabled = false;
-            }
-            else
-            {
-                myPanel1.InnerHtml = "Hay campos vacíos";
-            }
-        }
-        catch (Exception ex)
-        {
-            myPanel1.InnerHtml = ex.Message;
-        }
-        modalPopup.VisibleOnPageLoad = true;
-        modalPopup.Visible = true;
-    }
-
-    private char get_Spliter_Creation()
-    {
-        return char.Parse(RadTextBox6.Text);
-    }
-
-    private void Creation_Type(string connsrt, string name, int typeload, string spvalidate, string spstore, string ptable, string fields, string position, string description, string length, string format, string acceptnull, int init)
-    {
-        SqlConnection conn = new SqlConnection(ConfigurationManager.ConnectionStrings[connsrt].ConnectionString);
-        SqlCommand comm = new SqlCommand("SP_SAVELOADTYPE", conn);
-        comm.CommandType = CommandType.StoredProcedure;
-        comm.Parameters.AddWithValue("@Nombre_carga", name);
-        comm.Parameters.AddWithValue("@Tipo_carga", typeload);
-        comm.Parameters.AddWithValue("@Nombre_pa_valida", spvalidate);
-        comm.Parameters.AddWithValue("@Nombre_pa_almacena", spstore);
-        comm.Parameters.AddWithValue("@Nombre_pa_tabla", ptable);
-        comm.Parameters.AddWithValue("@spliter", get_Spliter_Creation());
-        comm.Parameters.AddWithValue("@campos", fields);
-        comm.Parameters.AddWithValue("@posicion", position);
-        comm.Parameters.AddWithValue("@descripcion", description);
-        comm.Parameters.AddWithValue("@longitud", length);
-        comm.Parameters.AddWithValue("@formato", format);
-        comm.Parameters.AddWithValue("@nulo", acceptnull);
-        comm.Parameters.AddWithValue("@scope", init);
-        conn.Open();
-        comm.ExecuteNonQuery();
-        conn.Close();
     }
 
 }
