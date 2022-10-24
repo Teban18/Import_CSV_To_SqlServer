@@ -2,7 +2,7 @@
     font-family: Verdana, Geneva, Tahoma, sans-serif;
     font-size: 12px;
     font-weight: normal;
-    text-align:center;
+    text-align: center;
 }
 
 .header {
@@ -11,29 +11,6 @@
     font-family: Calibri;
 }
 
-.DropZone1 {
-    height: auto;
-    background-color: white;
-    border: 1px solid #dedede;
-    color: black;
-    text-align: center;
-    margin-top: 15px;
-    margin-bottom: 50px;
-}
-
-.k-card-header .k-card-title + .k-card-subtitle {
-    color: white;
-}
-
-#RadTextBoxValidation, #RadTextBoxStoring {
-    opacity: 1 !important;
-}
-
 .k-card-action {
     flex: 1 !important;
-}
-
-
-#RadWindowWrapper_modalPopup {
-    width:auto !important;
 }

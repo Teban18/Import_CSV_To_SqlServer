@@ -23,53 +23,27 @@ public partial class Default : System.Web.UI.Page
     }
 
     public static string strtxt;
-  
+
     protected void btn_Prevalidate_Click(object sender, EventArgs e)
-    {
-        try
-        {
-            //Save_File();
-            System.Diagnostics.Debug.Write(RadAsyncUpload1.TargetFolder);
-            strtxt = "Bind";
-            RadGrid2.Rebind();
-        } 
-        catch (Exception ex)
-        {
-            List<string> errlist = new List<string>();
-            errlist.Add("Error");
-            errlist.Add("Descripción del error: "+ex.Message);
-            RadGrid2.DataSource = errlist;
-        }
+    {  
+        strtxt = "Bind";
+        RadGrid2.Rebind();
+        cardesc.Visible = true;      
     }
 
-    /*protected void Save_File()
-    {
-        string name = "~/Imagenes/Archivosimporter/";
-        if (!Directory.Exists(Server.MapPath(name))) 
-        {
-            Directory.CreateDirectory(Server.MapPath(name));
-        }
-        RadAsyncUpload1.UploadedFiles[0].SaveAs(Server.MapPath(name + RadAsyncUpload1.UploadedFiles[0].GetName()), true);
-        pathp = name + RadAsyncUpload1.UploadedFiles[0].GetName();
-    }*/
-
-    private string[] Read_File(string path)
-    { 
-        string[] lines = File.ReadAllLines(path);
-        return lines;   
-    }
-
-    protected DataTable Load_Prevalidation_Table(string[] filedata, Tuple<List<object>, List<object>, List<object>, List<object>, List<object>, List<object>> data)
+    protected Tuple<DataTable, int> Load_Prevalidation_Table(string[] filedata, Tuple<List<object>, List<object>, List<object>, List<object>, List<object>, List<object>> data)
     {
         DataTable dt = new DataTable();
+        int status;
         if (Int32.Parse(RadDropDownList1.SelectedItem.Value) == 0)
         {
+            status = 0;
             for (int a = 0; a < data.Item4.Count; a++)
             {
                 dt.Columns.Add(new DataColumn
                 {
-                    ColumnName = data.Item4[a].ToString()/*,
-                    DataType = Type.GetType(Get_DataType("SqlServices", data.Item1[a].ToString()))*/
+                    ColumnName = data.Item4[a].ToString(),
+                    DataType = Type.GetType(Get_DataType("SqlServices", data.Item1[a].ToString()))
                 });
             }
             for (int li = 0; li < filedata.Length; li++)
@@ -82,12 +56,16 @@ public partial class Default : System.Web.UI.Page
                     {
                         if (filecolumns[ci].Count() > Int32.Parse(data.Item5[ci].ToString()))
                         {
-                            dr[ci] = "<b>'"+ filecolumns[ci]+"' Excede longitud del campo</b>";
+                            dr[ci] = "<b> Error: '"+ filecolumns[ci]+ "'</b> Excede longitud del campo";
+                            status = 1;
                         }
                         else if (filecolumns[ci].ToString() == "")
                         {
                             if (!bool.Parse(data.Item2[ci].ToString()))
+                            {
                                 dr[ci] = "<b>No acepta nulo</b>";
+                                status = 1;
+                            }    
                         }
                         else
                         {
@@ -97,6 +75,7 @@ public partial class Default : System.Web.UI.Page
                     else
                     {
                         dr[ci] = "<b>No coincide el numero de columnas</b>";
+                        status = 1;
                     }
                 }
                 dt.Rows.Add(dr);
@@ -104,6 +83,7 @@ public partial class Default : System.Web.UI.Page
         }
         else
         {
+            status = 0;
             for (int li = 0; li < filedata.Length; li++)
             {
                 DataRow dr = dt.NewRow();
@@ -114,7 +94,8 @@ public partial class Default : System.Web.UI.Page
                     {
                         dt.Columns.Add(new DataColumn 
                         { 
-                            ColumnName = filecolumns[ci]
+                            ColumnName = filecolumns[ci],
+                            DataType = Type.GetType(Get_DataType("SqlServices", data.Item1[ci].ToString()))
                         });
                     }
                     else
@@ -124,11 +105,15 @@ public partial class Default : System.Web.UI.Page
                             if (filecolumns[ci].Count() > Int32.Parse(data.Item5[ci].ToString()))
                             {
                                 dr[ci] = "<b>'"+ filecolumns[ci] + "' Excede longitud del campo</b>";
+                                status = 1;
                             }
                             else if (filecolumns[ci].ToString() == "")
                             {
                                 if (!bool.Parse(data.Item2[ci].ToString()))
+                                {
                                     dr[ci] = "<b>No acepta nulo</b>";
+                                    status = 1;
+                                }                                    
                             }
                             else
                             {
@@ -138,6 +123,7 @@ public partial class Default : System.Web.UI.Page
                         else
                         {
                             dr[ci] = "<b>No coincide el numero de columnas</b>";
+                            status = 1;
                         }
                     }
                 }
@@ -145,7 +131,27 @@ public partial class Default : System.Web.UI.Page
                     dt.Rows.Add(dr);
             }
         }
-        return dt;
+        return Tuple.Create(dt, status);
+    }
+
+    private void Check_Prevalidation(int status)
+    {
+        if (status == 0)
+        {
+            RadButton5.Enabled = true;
+            //Progress1.Value = 1;
+            //RadLabel3.Text = "Prevalidación";
+            //RadLabel3.OptionalMark = " (ok)";
+            //paneldesc.InnerHtml = "<div><button class='k-button k-flat' disabled='disabled'>Total de líneas prevalidadas :" + table.Rows.Count + "</button></div>";
+        }
+        else
+        {
+            RadButton5.Enabled = false;
+            //Progress1.Value = 0;
+            //RadLabel3.Text = "Prevalidación";
+            //RadLabel3.OptionalMark = " (hay errores en los datos)";
+            //paneldesc.InnerHtml = "<div><button class='k-button k-flat' disabled='disabled'>Errores en los datos</button></div>";
+        }
     }
 
     private string Get_DataType(string connsrt, string alias)
@@ -171,20 +177,22 @@ public partial class Default : System.Web.UI.Page
             if (strtxt == "Bind")
             {
                 RadGrid2.Visible = true;
-                RadGrid2.DataSource = Load_Prevalidation_Table(File.ReadAllLines(Server.MapPath("~/MyFiles/"+RadAsyncUpload1.UploadedFiles[0].GetName())), Get_Option_Types("SqlServices"));
-                importstatus.Text = "Pre-validado";
-                RadButton5.Enabled = true;
+                DataTable table = Load_Prevalidation_Table(File.ReadAllLines(Server.MapPath("~/MyFiles/" + RadAsyncUpload1.UploadedFiles[0].GetName())), Get_Option_Types("SqlServices")).Item1;
+                RadGrid2.DataSource = table;
+                int stat = Load_Prevalidation_Table(File.ReadAllLines(Server.MapPath("~/MyFiles/" + RadAsyncUpload1.UploadedFiles[0].GetName())), Get_Option_Types("SqlServices")).Item2;
+                Check_Prevalidation(stat);
             }     
         } 
         catch (Exception ex)
         {
             RadGrid2.Visible = true;
             List<string> errlist = new List<string>();
-            errlist.Add("Error");
             errlist.Add(ex.Message);
             RadGrid2.DataSource = errlist;
             RadButton5.Enabled = false;
-            importstatus.Text = "No Pre-validado";
+            //Progress1.Value = 0;
+            //RadLabel3.Text = "Prevalidación";
+            //RadLabel3.OptionalMark = " (Hay errores en las opciones)";
         }
     }
 
@@ -237,33 +245,30 @@ public partial class Default : System.Web.UI.Page
 
     protected void btn_Confirmpv_Click(object sender, EventArgs e)
     {
-        try
+        if (Store_Data())
         {
-            if (Store_Data())
-            {
-                RadTextBoxValidation.Text = "Cargado";
                 
-            }
-        }
-        catch (Exception ex)
-        {
-            RadTextBoxValidation.Text = "";
-            RadTextBoxValidation.Visible = true;
-            RadTextBoxValidation.Text = ex.Message;
         }
     }
 
     private bool Store_Data()
     {
-        for (int i = 0; i < Load_Prevalidation_Table(Read_File(Server.MapPath("")), Get_Option_Types("SqlServices")).Rows.Count; i++)
+        cardesc.Visible = true;
+        DataTable table = Load_Prevalidation_Table(File.ReadAllLines(Server.MapPath("~/MyFiles/" + RadAsyncUpload1.UploadedFiles[0].GetName())), Get_Option_Types("SqlServices")).Item1;
+        paneldesc.InnerHtml = "";
+        for (int i = 0; i < table.Rows.Count; i++)
         {
             StringBuilder sb = new StringBuilder();
-            Store_Data_Into_Loadtable("SqlServices", "asdas34324", sb.AppendLine(string.Join(",", Load_Prevalidation_Table(Read_File(""), Get_Option_Types("SqlServices")).Rows[i].ItemArray)).ToString(), Get_Procedures("SqlServices").Item4[0].ToString(), Get_Procedures("SqlServices").Item3[0].ToString());
+            paneldesc.InnerHtml += "Línea "+(i+1)+" "+ Store_Data_Into_Loadtable("SqlServices", "asdas34324", "ayycomo", sb.AppendLine(string.Join(",", table.Rows[i].ItemArray)).ToString(), Get_Procedures("SqlServices").Item4[0].ToString(), Get_Procedures("SqlServices").Item3[0].ToString())+"<br>";
         }
-        return true;
+        //Progress1.Value = 2;
+        //RadLabel3.Text = "Cargue de datos";
+        //RadLabel3.OptionalMark = " (ok)";
+        //paneldesc.InnerHtml += "<div><button class='k-button k-flat' disabled='disabled'>Total de líneas cargadas :" + loadedrows + "</button></div>";
+        return true;   
     }
 
-    private void Store_Data_Into_Loadtable(string connsrt, string sessionid, string line, string loadtable, string procedure)
+    private string Store_Data_Into_Loadtable(string connsrt, string sessionid, string loadcode, string line, string loadtable, string procedure)
     {
         SqlConnection conn = new SqlConnection(ConfigurationManager.ConnectionStrings[connsrt].ConnectionString);
         SqlCommand comm = new SqlCommand(procedure, conn);
@@ -271,10 +276,15 @@ public partial class Default : System.Web.UI.Page
         comm.Parameters.AddWithValue("@idsesion", sessionid);
         comm.Parameters.AddWithValue("@tablacargue", loadtable);
         comm.Parameters.AddWithValue("@linea", line);
+        comm.Parameters.AddWithValue("@codigocargue", loadcode);
+        comm.Parameters.AddWithValue("@estado", 0);
         comm.Parameters.AddWithValue("@spliter", ",");
+        comm.Parameters.Add("@resultado", SqlDbType.VarChar, int.MaxValue).Direction = ParameterDirection.Output;
         conn.Open();
         comm.ExecuteNonQuery();
+        string outp = Convert.ToString(comm.Parameters["@resultado"].Value);
         conn.Close();
+        return outp;   
     }
 
     private Tuple<List<object>, List<object>, List<object>, List<object>> Get_Procedures(string connsrt)
@@ -302,23 +312,7 @@ public partial class Default : System.Web.UI.Page
 
     protected void btn_Structure_Click(object sender, EventArgs e)
     {
-        try
-        {
-            myPanel1.InnerHtml = "";
-            myPanel1.InnerHtml += "<table>";
-            myPanel1.InnerHtml += "<tr><th>Columna</th><th>Tipo</th><th>Puede ser nula</th><th>Posición</th><th>Descripción</th><th>Longitud del campo</th><th>Formato</th></tr>";
-            for (int i = 0; i < Get_Option_Types("SqlServices").Item1.Count(); i++)
-            {
-                myPanel1.InnerHtml += "<tr><td>Columna " + (i + 1) + "</td><td>" + Get_Option_Types("SqlServices").Item1[i] + "</td><td>" + Get_Option_Types("SqlServices").Item2[i] + "</td><td>" + Get_Option_Types("SqlServices").Item3[i] + "</td><td>" + Get_Option_Types("SqlServices").Item4[i] + "</td><td>" + Get_Option_Types("SqlServices").Item5[i] + "</td><td>" + Get_Option_Types("SqlServices").Item6[i] + "</td></tr>";
-            }
-            myPanel1.InnerHtml += "</table>";
-        }
-        catch (Exception ex)
-        {
-            myPanel1.InnerHtml = ex.Message;
-        }
-        modalPopup.VisibleOnPageLoad = true;
-        modalPopup.Visible = true;
+        RadGrid3.Visible = true;
     }
 
 }
