@@ -7,6 +7,7 @@ using System.Data.SqlClient;
 using System.IO;
 using System.Data;
 using System.Text;
+using System.Text.RegularExpressions;
 
 public partial class Default : System.Web.UI.Page 
 {
@@ -42,8 +43,7 @@ public partial class Default : System.Web.UI.Page
             {
                 dt.Columns.Add(new DataColumn
                 {
-                    ColumnName = data.Item4[a].ToString(),
-                    DataType = Type.GetType(Get_DataType("SqlServices", data.Item1[a].ToString()))
+                    ColumnName = data.Item4[a].ToString()
                 });
             }
             for (int li = 0; li < filedata.Length; li++)
@@ -66,6 +66,11 @@ public partial class Default : System.Web.UI.Page
                                 dr[ci] = "<b>No acepta nulo</b>";
                                 status = 1;
                             }    
+                        }
+                        else if (!Regex.IsMatch(filecolumns[ci], Get_DataType("SqlServices", Int32.Parse(data.Item1[ci].ToString()))))
+                        {
+                            dr[ci] = " <b> Error: '" + filecolumns[ci] + "'</b> No es del tipo esperado";
+                            status = 1;
                         }
                         else
                         {
@@ -94,8 +99,7 @@ public partial class Default : System.Web.UI.Page
                     {
                         dt.Columns.Add(new DataColumn 
                         { 
-                            ColumnName = filecolumns[ci],
-                            DataType = Type.GetType(Get_DataType("SqlServices", data.Item1[ci].ToString()))
+                            ColumnName = filecolumns[ci]
                         });
                     }
                     else
@@ -114,6 +118,11 @@ public partial class Default : System.Web.UI.Page
                                     dr[ci] = "<b>No acepta nulo</b>";
                                     status = 1;
                                 }                                    
+                            }
+                            else if (!Regex.IsMatch(filecolumns[ci], Get_DataType("SqlServices", Int32.Parse(data.Item1[ci].ToString()))))
+                            {
+                                dr[ci] = " <b> Error: '" + filecolumns[ci] + "'</b> No es del tipo esperado";
+                                status = 1;
                             }
                             else
                             {
@@ -139,35 +148,34 @@ public partial class Default : System.Web.UI.Page
         if (status == 0)
         {
             RadButton5.Enabled = true;
-            //Progress1.Value = 1;
-            //RadLabel3.Text = "Prevalidación";
-            //RadLabel3.OptionalMark = " (ok)";
-            //paneldesc.InnerHtml = "<div><button class='k-button k-flat' disabled='disabled'>Total de líneas prevalidadas :" + table.Rows.Count + "</button></div>";
+            Progress1.Value = 1;
+            RadLabel3.Text = "Prevalidación";
+            RadLabel3.OptionalMark = " (ok)";
         }
         else
         {
             RadButton5.Enabled = false;
-            //Progress1.Value = 0;
-            //RadLabel3.Text = "Prevalidación";
-            //RadLabel3.OptionalMark = " (hay errores en los datos)";
-            //paneldesc.InnerHtml = "<div><button class='k-button k-flat' disabled='disabled'>Errores en los datos</button></div>";
+            Progress1.Value = 0;
+            RadLabel3.Text = "Prevalidación";
+            RadLabel3.OptionalMark = " (hay errores en los datos)";
         }
     }
 
-    private string Get_DataType(string connsrt, string alias)
+    private string Get_DataType(string connsrt, int id)
     {
+        string data = "";
         SqlConnection conn = new SqlConnection(ConfigurationManager.ConnectionStrings[connsrt].ConnectionString);
-        SqlCommand comm = new SqlCommand("select tipo_dato from dbo.tbtipo_dato where alias_tipo_dato = '"+ alias.ToString()+"'", conn);
+        SqlCommand comm = new SqlCommand("select tipo_dato from dbo.tbtipo_dato where id_tipo_dato = "+ id, conn);
         conn.Open();
         using (SqlDataReader reader = comm.ExecuteReader())
         {
             while (reader.Read())
             {
-                alias = reader[0].ToString();
+                data = reader[0].ToString();
             }
         }
         conn.Close();
-        return alias;
+        return data;
     }
 
     protected void RadGrid2_NeedDataSource1(object source, Telerik.Web.UI.GridNeedDataSourceEventArgs e)
@@ -190,9 +198,9 @@ public partial class Default : System.Web.UI.Page
             errlist.Add(ex.Message);
             RadGrid2.DataSource = errlist;
             RadButton5.Enabled = false;
-            //Progress1.Value = 0;
-            //RadLabel3.Text = "Prevalidación";
-            //RadLabel3.OptionalMark = " (Hay errores en las opciones)";
+            Progress1.Value = 0;
+            RadLabel3.Text = "Prevalidación";
+            RadLabel3.OptionalMark = " (Hay errores en las opciones)";
         }
     }
 
@@ -261,10 +269,9 @@ public partial class Default : System.Web.UI.Page
             StringBuilder sb = new StringBuilder();
             paneldesc.InnerHtml += "Línea "+(i+1)+" "+ Store_Data_Into_Loadtable("SqlServices", "asdas34324", "ayycomo", sb.AppendLine(string.Join(",", table.Rows[i].ItemArray)).ToString(), Get_Procedures("SqlServices").Item4[0].ToString(), Get_Procedures("SqlServices").Item3[0].ToString())+"<br>";
         }
-        //Progress1.Value = 2;
-        //RadLabel3.Text = "Cargue de datos";
-        //RadLabel3.OptionalMark = " (ok)";
-        //paneldesc.InnerHtml += "<div><button class='k-button k-flat' disabled='disabled'>Total de líneas cargadas :" + loadedrows + "</button></div>";
+        Progress1.Value = 2;
+        RadLabel3.Text = "Cargue de datos";
+        RadLabel3.OptionalMark = " (ok)";
         return true;   
     }
 

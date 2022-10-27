@@ -155,11 +155,11 @@
                                     </ClientSettings>
                                     <MasterTableView DataSourceID="SqlDataSource1">
                                         <Columns>
-                                            <telerik:GridBoundColumn DataField="CAMP_DESCRIPCION" FilterControlAltText="Filter column column" HeaderText="Nombre esperado" ReadOnly="True" UniqueName="Supplier">
+                                            <telerik:GridBoundColumn DataField="CAMP_DESCRIPCION" FilterControlAltText="Filter column column" HeaderText="Campo esperado" ReadOnly="True" UniqueName="Supplier">
                                             </telerik:GridBoundColumn>
-                                            <telerik:GridBoundColumn DataField="CAMP_TIPO" FilterControlAltText="Filter column column" HeaderText="Tipo esperado" UniqueName="Prime">
+                                            <telerik:GridBoundColumn DataField="alias_tipo_dato" FilterControlAltText="Filter column column" HeaderText="Tipo de dato permitido" UniqueName="Prime">
                                             </telerik:GridBoundColumn>
-                                            <telerik:GridBoundColumn DataField="CAMP_LONGITUD" FilterControlAltText="Filter column1 column" HeaderText="Longitud esperada" UniqueName="RSDCSv">
+                                            <telerik:GridBoundColumn DataField="CAMP_LONGITUD" FilterControlAltText="Filter column1 column" HeaderText="Longitud maxima permitida" UniqueName="RSDCSv">
                                             </telerik:GridBoundColumn>
                                             <telerik:GridBoundColumn DataField="CAMP_NULO" FilterControlAltText="Filter column2 column" HeaderText="Recibe nulos" UniqueName="Mill">
                                             </telerik:GridBoundColumn>
@@ -169,7 +169,7 @@
                                     </MasterTableView>
                                 </telerik:RadGrid>
                                 <asp:SqlDataSource ID="SqlDataSource1" ConnectionString="<%$ ConnectionStrings:SqlServices %>"
-                                    ProviderName="System.Data.SqlClient" SelectCommand="SELECT * FROM TBCAMPOS_CARGUE AS a RIGHT JOIN TBOPCION_CARGUE AS b ON a.OP_CODIGO = b.OPC_CODIGO WHERE b.OPC_CODIGO = @tables" runat="server">
+                                    ProviderName="System.Data.SqlClient" SelectCommand="SELECT * FROM TBCAMPOS_CARGUE c INNER JOIN TBOPCION_CARGUE o on c.OP_CODIGO = o.OPC_CODIGO INNER JOIN TBTIPO_DATO t on c.CAMP_TIPO = t.id_tipo_dato WHERE o.OPC_CODIGO = @tables" runat="server">
                                     <SelectParameters>
                                         <asp:ControlParameter Name="tables" ControlID="RadDropDownTables" />
                                     </SelectParameters>

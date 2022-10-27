@@ -1,3 +1,3 @@
 Codigo ubicacion;Codigo pais;Depto;Mun;Nombre;Nacional;Sigla;Idioma;Dane;Fecha;Usuario
-1-5-1;1;5;1;MEDELLIN;1;;;5001;2022-09-13;1
+1-5-1;;;1;MEDELLIN;1;;;5001;2022-09-13;a
 1-5-1;1;5;134;CAMPAMENTO;1;;;5134;2022-09-13;1
