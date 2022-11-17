@@ -31,31 +31,36 @@
                 <telerik:AjaxSetting AjaxControlID="RadButton2">
                     <UpdatedControls>
                         <telerik:AjaxUpdatedControl ControlID="RadLabel11" LoadingPanelID="RadAjaxLoadingPanel1"/>
+                        <telerik:AjaxUpdatedControl ControlID="RadTextBox7" LoadingPanelID="RadAjaxLoadingPanel1"/>
+                        <telerik:AjaxUpdatedControl ControlID="RadTextBox8" LoadingPanelID="RadAjaxLoadingPanel1"/>
                     </UpdatedControls>
                 </telerik:AjaxSetting>
-                <telerik:AjaxSetting AjaxControlID="RadButton3">
+                <telerik:AjaxSetting AjaxControlID="RadButton1">
                     <UpdatedControls>
-                        <telerik:AjaxUpdatedControl ControlID="RadLabel11" LoadingPanelID="RadAjaxLoadingPanel1"/>
-                        <telerik:AjaxUpdatedControl ControlID="modalPopup" LoadingPanelID="RadAjaxLoadingPanel1"/>
+                        <telerik:AjaxUpdatedControl ControlID="RadGridVis" LoadingPanelID="RadAjaxLoadingPanel1"/>
+                    </UpdatedControls>
+                </telerik:AjaxSetting>
+                <telerik:AjaxSetting AjaxControlID="RadButton4">
+                    <UpdatedControls>
+                        <telerik:AjaxUpdatedControl ControlID="RadTextBox2" LoadingPanelID="RadAjaxLoadingPanel1"/>
+                        <telerik:AjaxUpdatedControl ControlID="RadTextBox11" LoadingPanelID="RadAjaxLoadingPanel1"/>
                     </UpdatedControls>
                 </telerik:AjaxSetting>
                 <telerik:AjaxSetting AjaxControlID="RadDropDownInter">
                     <UpdatedControls>
                         <telerik:AjaxUpdatedControl ControlID="RadLabel2" LoadingPanelID="RadAjaxLoadingPanel1"/>
-                        <telerik:AjaxUpdatedControl ControlID="RadButton3" LoadingPanelID="RadAjaxLoadingPanel1"/>
+                        <telerik:AjaxUpdatedControl ControlID="RadButton5" LoadingPanelID="RadAjaxLoadingPanel1"/>
+                        <telerik:AjaxUpdatedControl ControlID="RadButton4" LoadingPanelID="RadAjaxLoadingPanel1"/>
                     </UpdatedControls>
                 </telerik:AjaxSetting>
-                <telerik:AjaxSetting AjaxControlID="opparamcard">
+                <telerik:AjaxSetting AjaxControlID="RadGridVis">
                     <UpdatedControls>
-                        <telerik:AjaxUpdatedControl ControlID="paramcard" LoadingPanelID="RadAjaxLoadingPanel1"/>
-                        <telerik:AjaxUpdatedControl ControlID="RadDropDownInter" LoadingPanelID="RadAjaxLoadingPanel1"/>
-                        <telerik:AjaxUpdatedControl ControlID="RadLabel11" LoadingPanelID="RadAjaxLoadingPanel1"/>
+                        <telerik:AjaxUpdatedControl ControlID="RadGridVis" LoadingPanelID="RadAjaxLoadingPanel1"/>
                     </UpdatedControls>
                 </telerik:AjaxSetting>
-                <telerik:AjaxSetting AjaxControlID="opviscard">
+                <telerik:AjaxSetting AjaxControlID="RadTextBox2">
                     <UpdatedControls>
-                        <telerik:AjaxUpdatedControl ControlID="RadCard1" LoadingPanelID="RadAjaxLoadingPanel1"/>
-                        <telerik:AjaxUpdatedControl ControlID="RadLabel11" LoadingPanelID="RadAjaxLoadingPanel1"/>
+                        <telerik:AjaxUpdatedControl ControlID="RadLabel3" LoadingPanelID="RadAjaxLoadingPanel1"/>
                     </UpdatedControls>
                 </telerik:AjaxSetting>
             </AjaxSettings>
@@ -71,129 +76,95 @@
                 </telerik:LayoutRow>
                 <telerik:LayoutRow>
                     <Columns>
-                        <telerik:LayoutColumn Span="12" SpanXs="12" SpanSm="12">
+                        <telerik:LayoutColumn Span="3" SpanXs="3" SpanSm="12">
                             <div class="col" style="margin-bottom:2rem;">
-
                                 <telerik:RadCard runat="server" Orientation="Vertical">
-                                    <telerik:CardHeaderComponent runat="server">
-                                        <telerik:CardTitleComponent runat="server" Content="Interfaz de salida"></telerik:CardTitleComponent>
-                                    </telerik:CardHeaderComponent>
                                     <telerik:CardBodyComponent runat="server" CardActionsAlignment="Stretched">
-                                        <telerik:RadLabel RenderMode="Lightweight" ID="RadLabel6" runat="server" Text="Nombre de la interfaz"></telerik:RadLabel>
-                                        <telerik:RadTextBox RenderMode="Lightweight" ID="RadTextBox7" runat="server" Text=""></telerik:RadTextBox>
-                                    </telerik:CardBodyComponent>
-                                    <telerik:CardBodyComponent runat="server" CardActionsAlignment="Stretched">
-                                        <telerik:RadLabel RenderMode="Lightweight" ID="RadLabel7" runat="server" Text="Tipo de interfaz"></telerik:RadLabel>
-                                        <telerik:RadTextBox RenderMode="Lightweight" ID="RadTextBox8" runat="server" Text=""></telerik:RadTextBox>
-                                    </telerik:CardBodyComponent>
-                                    <telerik:CardBodyComponent runat="server" CardActionsAlignment="Stretched">
-                                        <telerik:RadLabel RenderMode="Lightweight" ID="RadLabel11" runat="server" Text=""></telerik:RadLabel>
-                                    </telerik:CardBodyComponent>
-                                    <telerik:CardFooterComponent runat="server">
-                                        <telerik:RadButton RenderMode="Lightweight" ID="RadButton2" OnClick="generateInterfaz" CssClass="btnvalid" runat="server" Text="Crear interfaz"></telerik:RadButton>
-                                        <a runat="server" id="opparamcard" onServerClick="openCard" href="#javascript">Ver panel de parametrización</a>
-                                    </telerik:CardFooterComponent>
-                                </telerik:RadCard>
-
-                                <telerik:RadCard runat="server" ID="paramcard" Visible="false">
-                                    <telerik:CardHeaderComponent runat="server">
-                                        <telerik:CardTitleComponent runat="server" Content="Parametrización de la interfaz"></telerik:CardTitleComponent>
-                                    </telerik:CardHeaderComponent>
-                                    <telerik:CardBodyComponent runat="server" CardActionsAlignment="Stretched">
-                                        <telerik:RadLabel RenderMode="Lightweight" ID="RadLabel12" runat="server" Text="Seleccione la interfaz a parametrizar"></telerik:RadLabel>
-                                        <telerik:RadDropDownList RenderMode="Lightweight" ID="RadDropDownInter" runat="server" OnSelectedIndexChanged="RadDropDownInter_SelectedIndexChanged" AutoPostBack="true" DefaultMessage="seleccionar"></telerik:RadDropDownList>
+                                        <telerik:RadDropDownList RenderMode="Lightweight" ID="RadDropDownInter" runat="server" OnSelectedIndexChanged="RadDropDownInterSelectedIndexChanged" AutoPostBack="true" DefaultMessage="Seleccionar interfaz"></telerik:RadDropDownList>
                                         <telerik:RadLabel RenderMode="Lightweight" ID="RadLabel2" runat="server" Text=""></telerik:RadLabel>
                                     </telerik:CardBodyComponent>
-                                    <telerik:CardBodyComponent runat="server" CardActionsAlignment="Stretched">
-                                        <telerik:RadLabel RenderMode="Lightweight" ID="RadLabel3" runat="server" Text="Crear nueva columna de la interfaz"></telerik:RadLabel>
-                                        <telerik:RadButton RenderMode="Lightweight" ID="RadButton3" OnClick="openModal" CssClass="btnvalid" runat="server" Enabled="false" Text="Crear"></telerik:RadButton>
-                                    </telerik:CardBodyComponent>
-                                    <telerik:CardFooterComponent runat="server">
-                                        <a runat="server" id="opviscard" onServerClick="openVis" href="#javascript">Ver panel de visualización</a>
-                                    </telerik:CardFooterComponent>
                                 </telerik:RadCard>
-
-                                 <telerik:RadWindow RenderMode="Lightweight" ID="modalPopup" runat="server" Modal="true" OffsetElementID="main" Style="z-index: 100001;">
-                                    <ContentTemplate>
-                                        <telerik:RadCard runat="server" ID="RadCard2">
-                                            <telerik:CardHeaderComponent runat="server">
-                                                <telerik:CardTitleComponent runat="server" Content="Detalle de la columna"></telerik:CardTitleComponent>
-                                            </telerik:CardHeaderComponent>
-                                            <telerik:CardBodyComponent runat="server" CardActionsAlignment="Stretched">
-                                                <telerik:RadLabel RenderMode="Lightweight" ID="RadLabel4" runat="server" Text="Nombre"></telerik:RadLabel>
-                                            </telerik:CardBodyComponent>
-                                            <telerik:CardBodyComponent runat="server" CardActionsAlignment="Stretched">
-                                                <telerik:RadLabel RenderMode="Lightweight" ID="RadLabel5" runat="server" Text="Alias"></telerik:RadLabel>
-                                            </telerik:CardBodyComponent>
-                                            <telerik:CardBodyComponent runat="server" CardActionsAlignment="Stretched">
-                                                <telerik:RadLabel RenderMode="Lightweight" ID="RadLabel13" runat="server" Text="Longitud máxima"></telerik:RadLabel>
-                                            </telerik:CardBodyComponent>
-                                            <telerik:CardBodyComponent runat="server" CardActionsAlignment="Stretched">
-                                                <telerik:RadLabel RenderMode="Lightweight" ID="RadLabel14" runat="server" Text="Tipo de dato aceptado"></telerik:RadLabel>
-                                            </telerik:CardBodyComponent>
-                                            <telerik:CardFooterComponent runat="server">
-                                                <telerik:RadButton RenderMode="Lightweight" ID="RadButton4" CssClass="btnvalid" runat="server" Text="Guardar datos"></telerik:RadButton>
-                                            </telerik:CardFooterComponent>
-                                        </telerik:RadCard>
-                                    </ContentTemplate>
-                                </telerik:RadWindow>
-
-                                <telerik:RadCard runat="server" ID="RadCard1" Visible="false">
-                                    <telerik:CardHeaderComponent runat="server">
-                                        <telerik:CardTitleComponent runat="server" Content="Visualización de la interfaz"></telerik:CardTitleComponent>
-                                    </telerik:CardHeaderComponent>
-                                    <telerik:CardBodyComponent runat="server" CardActionsAlignment="Stretched">
-                                        
-                                    </telerik:CardBodyComponent>
-                                    <telerik:CardFooterComponent runat="server">
-                                        
-                                    </telerik:CardFooterComponent>
-                                </telerik:RadCard>
-
                             </div>
                         </telerik:LayoutColumn>
-                    </Columns>
-                </telerik:LayoutRow>
-                <telerik:LayoutRow>
-                    <Columns>
-                        <telerik:LayoutColumn Span="4" SpanXs="12" SpanSm="12">
+
+                        <telerik:LayoutColumn Span="9" SpanXs="9" SpanSm="12">
                             <div class="col" style="margin-bottom:2rem;">
-                                <telerik:RadCard runat="server">
-                                    <telerik:CardHeaderComponent runat="server">
-                                        <telerik:CardTitleComponent runat="server" Content="Interfaz de salida"></telerik:CardTitleComponent>
-                                    </telerik:CardHeaderComponent>
+                                <telerik:RadCard runat="server" Orientation="Vertical">
                                     <telerik:CardBodyComponent runat="server" CardActionsAlignment="Stretched">
-                                        <telerik:RadDropDownList RenderMode="Lightweight" ID="RadDropDownInt" runat="server" Width="80%" DefaultMessage="seleccione interfaz" AutoPostBack="true"></telerik:RadDropDownList>
-                                        <telerik:RadLabel RenderMode="Lightweight" ID="RadLabel1" runat="server" Width="80%" Text=""></telerik:RadLabel>
+                                        <telerik:RadTabStrip RenderMode="Lightweight" runat="server" ID="RadTabStrip2"  MultiPageID="RadMultiPage1" SelectedIndex="0" Skin="Silk">
+                                            <Tabs>
+                                                <telerik:RadTab Text="Crear interfaz" Width="200px"></telerik:RadTab>
+                                                <telerik:RadTab Text="Parametrizar interfaz" Width="200px"></telerik:RadTab>
+                                                <telerik:RadTab Text="Ver interfaz" Width="200px"></telerik:RadTab>
+                                            </Tabs>
+                                        </telerik:RadTabStrip>
+                                        <telerik:RadMultiPage runat="server" ID="RadMultiPage1"  SelectedIndex="0" CssClass="outerMultiPage">
+                                            <telerik:RadPageView runat="server" ID="RadPageView1">
+                                                <telerik:CardBodyComponent runat="server" CardActionsAlignment="Stretched">
+                                                    <telerik:RadLabel RenderMode="Lightweight" ID="RadLabel6" runat="server" Text="Nombre de la interfaz"></telerik:RadLabel>
+                                                    <telerik:RadTextBox RenderMode="Lightweight" ID="RadTextBox7" runat="server" Text=""></telerik:RadTextBox>
+                                                </telerik:CardBodyComponent>
+                                                <telerik:CardBodyComponent runat="server" CardActionsAlignment="Stretched">
+                                                    <telerik:RadLabel RenderMode="Lightweight" ID="RadLabel7" runat="server" Text="Tipo de interfaz"></telerik:RadLabel>
+                                                    <telerik:RadTextBox RenderMode="Lightweight" ID="RadTextBox8" runat="server" Text=""></telerik:RadTextBox>
+                                                </telerik:CardBodyComponent>
+                                                <telerik:CardBodyComponent runat="server" CardActionsAlignment="Stretched">
+                                                    <telerik:RadLabel RenderMode="Lightweight" ID="RadLabel11" runat="server" Text=""></telerik:RadLabel>
+                                                    <telerik:RadButton RenderMode="Lightweight" ID="RadButton2" OnClick="generateInterface" CssClass="btnvalid" runat="server" Text="Crear"></telerik:RadButton>
+                                                </telerik:CardBodyComponent>
+                                            </telerik:RadPageView>
+                                            <telerik:RadPageView runat="server" ID="RadPageView2">
+                                                 <telerik:CardBodyComponent runat="server" CardActionsAlignment="Stretched">
+                                                    <telerik:RadLabel RenderMode="Lightweight" ID="RadLabel5" runat="server" Text="Consulta sql para traer datos"></telerik:RadLabel>
+                                                    <telerik:RadTextBox RenderMode="Lightweight" ID="RadTextBox2" TextMode="MultiLine" Width="80%" runat="server" AutoPostBack="true" OnTextChanged="radtxtSerachDocument_TextChanged" Text=""></telerik:RadTextBox>
+                                                    <telerik:RadLabel RenderMode="Lightweight" ID="RadLabel3" runat="server" Text=""></telerik:RadLabel>
+                                                </telerik:CardBodyComponent>
+                                                <telerik:CardBodyComponent runat="server" CardActionsAlignment="Stretched">
+                                                    <telerik:RadLabel RenderMode="Lightweight" ID="RadLabel16" runat="server" Text="Campo clave"></telerik:RadLabel>
+                                                    <telerik:RadTextBox RenderMode="Lightweight" ID="RadTextBox11" runat="server" Text=""></telerik:RadTextBox>
+                                                </telerik:CardBodyComponent>
+                                                <telerik:CardBodyComponent runat="server" CardActionsAlignment="Stretched">
+                                                    <telerik:RadLabel RenderMode="Lightweight" ID="RadLabel19" runat="server" Text=""></telerik:RadLabel>
+                                                    <telerik:RadButton RenderMode="Lightweight" ID="RadButton4" CssClass="btnvalid" runat="server" OnClick="generateInterfaceColumn" Enabled="false" Text="Cargar"></telerik:RadButton>
+                                                </telerik:CardBodyComponent>
+                                            </telerik:RadPageView>
+                                            <telerik:RadPageView runat="server" ID="RadPageView3">
+                                                <telerik:CardBodyComponent runat="server" CardActionsAlignment="Stretched">
+                                                    <telerik:RadTabStrip RenderMode="Lightweight" runat="server" ID="RadTabStrip1" MultiPageID="RadMultiPage2"
+                                                    Orientation="HorizontalTop" Skin="Silk" >
+                                                        <Tabs>
+                                                            <telerik:RadTab Text="Ver todas las interfaces"></telerik:RadTab>
+                                                            <telerik:RadTab Text="Ver interfaz seleccionada"></telerik:RadTab>
+                                                        </Tabs>
+                                                    </telerik:RadTabStrip>
+                                                </telerik:CardBodyComponent>
+                                                <telerik:CardBodyComponent runat="server" CardActionsAlignment="Stretched">
+                                                    <telerik:RadMultiPage runat="server" ID="RadMultiPage2"  SelectedIndex="0" CssClass="innerMultiPage">
+                                                        <telerik:RadPageView runat="server" ID="PageView1">
+                                                            <telerik:RadButton RenderMode="Lightweight" ID="RadButton1" CssClass="btnvalid" runat="server" OnClick="generateCompleteView" Text="Ver"></telerik:RadButton>
+                                                            <telerik:RadGrid RenderMode="Lightweight" runat="server" ID="RadGridVis" AllowPaging="True" AllowSorting="true"
+                                                            OnSortCommand="RadGrid1_SortCommand" OnPageIndexChanged="RadGrid1_PageIndexChanged" OnPageSizeChanged="RadGrid1_PageSizeChanged">
+                                                                <ClientSettings>
+                                                                    <Scrolling AllowScroll="true" ScrollHeight="" UseStaticHeaders="false"></Scrolling>
+                                                                </ClientSettings>
+                                                            </telerik:RadGrid>
+                                                        </telerik:RadPageView>
+                                                        <telerik:RadPageView runat="server" ID="PageView2">
+                                                            chao
+                                                        </telerik:RadPageView>
+                                                    </telerik:RadMultiPage>
+                                                </telerik:CardBodyComponent>
+                                            </telerik:RadPageView>
+                                        </telerik:RadMultiPage>
                                     </telerik:CardBodyComponent>
-                                    <telerik:CardBodyComponent runat="server" CardActionsAlignment="Stretched">
-                                        <telerik:RadLabel RenderMode="Lightweight" ID="RadLabel8" runat="server" Text="Tipo de archivo"></telerik:RadLabel>
-                                        <telerik:RadTextBox RenderMode="Lightweight" ID="RadTextBox4" runat="server" Text=""></telerik:RadTextBox>
-                                    </telerik:CardBodyComponent>
-                                    <telerik:CardBodyComponent runat="server" CardActionsAlignment="Stretched">
-                                        <telerik:RadLabel RenderMode="Lightweight" ID="RadLabel9" runat="server" Text="Separador"></telerik:RadLabel>
-                                        <telerik:RadTextBox RenderMode="Lightweight" ID="RadTextBox5" runat="server" Text=""></telerik:RadTextBox>
-                                    </telerik:CardBodyComponent>
-                                    <telerik:CardBodyComponent runat="server" CardActionsAlignment="Stretched">
-                                        <telerik:RadLabel RenderMode="Lightweight" ID="RadLabel10" runat="server" Text="Ruta de exportación"></telerik:RadLabel>
-                                        <telerik:RadTextBox RenderMode="Lightweight" ID="RadTextBox6" runat="server" Text=""></telerik:RadTextBox>
-                                    </telerik:CardBodyComponent>
-                                    <telerik:CardBodyComponent runat="server" CardActionsAlignment="Stretched">
-                                        <telerik:RadButton RenderMode="Lightweight" ID="RadButton1" CssClass="btnvalid" runat="server" OnClick="generateInterfaz" Text="Generar"></telerik:RadButton>
-                                    </telerik:CardBodyComponent>
-                                    <telerik:CardFooterComponent runat="server">
-                                       
-                                    </telerik:CardFooterComponent>
+
                                 </telerik:RadCard>
-                            </div>
-                        </telerik:LayoutColumn>
-                        <telerik:LayoutColumn Span="8" SpanXs="12" SpanSm="12">
-                            <div class="col">
-                                
+
                             </div>
                         </telerik:LayoutColumn>
                     </Columns>
                 </telerik:LayoutRow>
+                
                 <telerik:LayoutRow>
                     <Content>
                         <div class="footer">
