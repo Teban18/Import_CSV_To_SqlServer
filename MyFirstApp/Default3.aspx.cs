@@ -8,12 +8,16 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using Telerik.Web.UI;
 using System.Data;
+using System.Collections;
 
 public partial class Default3 : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        GetInterfazName("SqlServices");
+        if (!IsPostBack)
+        {
+            GetInterfazName("SqlServices");
+        }
     }
 
     private void GetInterfazName(string connsrt)
@@ -53,49 +57,52 @@ public partial class Default3 : System.Web.UI.Page
         
     }
 
-    protected void generateInterface(object sender, EventArgs e)
+    /*protected void generateInterface(object sender, EventArgs e)
     {
         try
         {
             RadLabel11.Text = insertGeneralDataInterface("SqlServices", RadTextBox7.Text, Int32.Parse(RadTextBox8.Text), "cc", "asasas");
-            RadTextBox7.Text = null;
-            RadTextBox8.Text = null;
         }
         catch (Exception ex)
         {
             RadLabel11.Text = ex.Message;
         }
-    }
+    }*/
 
     protected void RadDropDownInterSelectedIndexChanged(object sender, EventArgs e)
     {
+        RadButton4.Enabled = true;
         try
         {
-            GetInterfaceRegType("SqlServices", Int32.Parse(RadDropDownInter.SelectedItem.Value));
-            RadButton4.Enabled = true;
-            RadButton1.Enabled = true;
+            for (int i = 0; i < GetInterfaceRegType("SqlServices", Int32.Parse(RadDropDownInter.SelectedItem.Value)).Item1.Count; i++)
+            {
+                DefineGridStructure(GetInterfaceRegType("SqlServices", Int32.Parse(RadDropDownInter.SelectedItem.Value)).Item2[i].ToString(), Lay2);
+            }
         }
         catch (Exception ex)
         {
-            System.Diagnostics.Debug.Write(ex.Message);        
+            
         }
-        
     }
 
-    private void GetInterfaceRegType(string connsrt, int intcode)
+    private Tuple<List<object>, List<object>> GetInterfaceRegType(string connsrt, int intcode)
     {
         SqlConnection conn = new SqlConnection(ConfigurationManager.ConnectionStrings[connsrt].ConnectionString);
-        SqlCommand comm = new SqlCommand("select * from dbo.tbinterfaz_exportacion where Codigo_interfaz = @ic", conn);
+        SqlCommand comm = new SqlCommand("select * from dbo.tbtiporegistro_exportacion where Codigo_interfaz = @ic", conn);
         conn.Open();
         comm.Parameters.AddWithValue("@ic", intcode);
+        List<object> sqlconn = new List<object>();
+        List<object> keyf = new List<object>();
         using (SqlDataReader reader = comm.ExecuteReader())
         {
             while (reader.Read())
             {
-                RadLabel2.Text = "Tipo de interfaz : " + reader[2].ToString() + " Reglas : " + reader[3].ToString();
+                sqlconn.Add(reader[2].ToString());
+                keyf.Add(reader[3].ToString());
             }
         }
         conn.Close();
+        return Tuple.Create(keyf, sqlconn);
     }
 
     private string insertParamDataInterface(string connsrt, int codeinterface, string sqlsentence, string keyfield)
@@ -147,29 +154,9 @@ public partial class Default3 : System.Web.UI.Page
         conn.Close();
     }
 
-    protected void RadGrid1_PageSizeChanged(object sender, GridPageSizeChangedEventArgs e)
+    public DataTable GetDataTable(string connstr, string sqlsentence)
     {
-        LoadDataForRadGrid1();
-    }
-
-    protected void RadGrid1_PageIndexChanged(object sender, Telerik.Web.UI.GridPageChangedEventArgs e)
-    {
-        LoadDataForRadGrid1();
-    }
-
-    protected void RadGrid1_SortCommand(object sender, Telerik.Web.UI.GridSortCommandEventArgs e)
-    {
-        LoadDataForRadGrid1();
-    }
-
-    private void LoadDataForRadGrid1()
-    {
-        RadGridVis.DataSource = GetDataTable("SqlServices");
-    }
-
-    public DataTable GetDataTable(string connstr)
-    {
-        string query = "SELECT * FROM dbo.TBTIPOREGISTRO_EXPORTACION";
+        string query = sqlsentence;
 
         String ConnString = ConfigurationManager.ConnectionStrings[connstr].ConnectionString;
         SqlConnection conn = new SqlConnection(ConnString);
@@ -191,38 +178,127 @@ public partial class Default3 : System.Web.UI.Page
         return myDataTable;
     }
 
-    protected void generateCompleteView(object sender, EventArgs e)
+    private void DefineGridStructure(string sqlsentence, Control parent)
     {
-        try
+        RadGrid RadGrid1 = new RadGrid();
+        //RadGrid1.MasterTableView.DataKeyNames = new string[] { "CustomerID" };
+        //RadGrid1.Skin = "Default";
+        //RadGrid1.Width = Unit.Percentage(100);
+        RadGrid1.PageSize = 10;
+        RadGrid1.AllowPaging = true;
+        RadGrid1.AutoGenerateColumns = true;
+        RadGrid1.AllowFilteringByColumn = true;
+        RadGrid1.DataSource = GetDataTable("SqlServices", sqlsentence);
+
+        //RadAjaxManager ram = new RadAjaxManager();
+        //ram.AjaxSettings.AddAjaxSetting(RadGrid1,RadGrid1);
+        /*
+        GridBoundColumn boundColumn;
+        boundColumn = new GridBoundColumn();
+        boundColumn.DataField = "CustomerID";
+        boundColumn.HeaderText = "CustomerID";
+        RadGrid1.MasterTableView.Columns.Add(boundColumn);
+        boundColumn = new GridBoundColumn();
+        boundColumn.DataField = "ContactName";
+        boundColumn.HeaderText = "Contact Name";
+        RadGrid1.MasterTableView.Columns.Add(boundColumn);
+
+        //Detail table - Orders (II in hierarchy level)
+        GridTableView tableViewOrders = new GridTableView(RadGrid1);
+        tableViewOrders.DataSourceID = "SqlDataSource2";
+        tableViewOrders.DataKeyNames = new string[] { "OrderID" };
+        GridRelationFields relationFields = new GridRelationFields();
+        relationFields.MasterKeyField = "CustomerID";
+        relationFields.DetailKeyField = "CustomerID";
+        tableViewOrders.ParentTableRelation.Add(relationFields);
+        RadGrid1.MasterTableView.DetailTables.Add(tableViewOrders);
+        //Add columns
+        boundColumn = new GridBoundColumn();
+        boundColumn.DataField = "OrderID";
+        boundColumn.HeaderText = "OrderID";
+        tableViewOrders.Columns.Add(boundColumn);
+        boundColumn = new GridBoundColumn();
+        boundColumn.DataField = "OrderDate";
+        boundColumn.HeaderText = "Date Ordered";
+        tableViewOrders.Columns.Add(boundColumn);
+        //Detail table Order-Details (III in hierarchy level)
+        GridTableView tableViewOrderDetails = new GridTableView(RadGrid1);
+        tableViewOrderDetails.DataSourceID = "SqlDataSource3";
+        tableViewOrderDetails.DataKeyNames = new string[] { "OrderID" };
+        GridRelationFields relationFields2 = new GridRelationFields();
+        relationFields2.MasterKeyField = "OrderID";
+        relationFields2.DetailKeyField = "OrderID";
+        tableViewOrderDetails.ParentTableRelation.Add(relationFields2);
+        tableViewOrders.DetailTables.Add(tableViewOrderDetails);
+        boundColumn = new GridBoundColumn();
+        boundColumn.DataField = "UnitPrice";
+        boundColumn.HeaderText = "Unit Price";
+        tableViewOrderDetails.Columns.Add(boundColumn);
+        boundColumn = new GridBoundColumn();
+        boundColumn.DataField = "Quantity";
+        boundColumn.HeaderText = "Quantity";
+        tableViewOrderDetails.Columns.Add(boundColumn);
+        //Add the RadGrid instance to the controls*/
+        parent.Controls.Add(RadGrid1);
+        RadAjaxMan.AjaxSettings.AddAjaxSetting(RadGrid1, RadGrid1, RadAjaxLoadingPanel1);
+    }
+
+
+    //test 
+
+
+    protected void RadGrid1_ItemCreated(object sender, Telerik.Web.UI.GridItemEventArgs e)
+    {
+        if (e.Item is GridEditableItem && e.Item.IsInEditMode)
         {
-            LoadDataForRadGrid1();
-            RadGridVis.DataBind();
+            if (!(e.Item is GridEditFormInsertItem))
+            {
+                GridEditableItem item = e.Item as GridEditableItem;
+                GridEditManager manager = item.EditManager;
+                GridTextBoxColumnEditor ci = manager.GetColumnEditor("CODIGO_INTERFAZ") as GridTextBoxColumnEditor;
+            }
         }
-        catch (Exception ex)
+    }
+    protected void RadGrid1_ItemInserted(object source, GridInsertedEventArgs e)
+    {
+        if (e.Exception != null)
         {
-            
+            e.ExceptionHandled = true;
+            SetMessage("Customer cannot be inserted. Reason: " + e.Exception.Message);
+        }
+        else
+        {
+            SetMessage("New customer is inserted!");
+        }
+    }
+    private void DisplayMessage(string text)
+    {
+        RadGrid1.Controls.Add(new LiteralControl(string.Format("<span style='color:red'>{0}</span>", text)));
+    }
+
+    private void SetMessage(string message)
+    {
+        gridMessage = message;
+    }
+
+    private string gridMessage = null;
+
+    protected void RadGrid1_PreRender(object sender, EventArgs e)
+    {
+        if (!string.IsNullOrEmpty(gridMessage))
+        {
+            DisplayMessage(gridMessage);
         }
     }
 
-    /*protected void tabClick(object sender, RadTabStripEventArgs e)
+    protected void RadGrid1_InsertCommand(object sender, GridCommandEventArgs e)
     {
-        checkTabOption(e.Tab.UniqueID);
-        
+        if (e.Item is GridEditableItem)
+        {
+            GridEditableItem editedItem = e.Item as GridEditableItem;
+            Hashtable newValues = new Hashtable();
+            e.Item.OwnerTableView.ExtractValuesFromItem(newValues, editedItem);
+        }
     }
-
-    private void checkTabOption(string id)
-    {
-        if (id == "RadTabStrip1$i1")
-        {
-            System.Diagnostics.Debug.Write("Abajo");
-        }
-        else if (id == "RadTabStrip1$i0")
-        {
-            System.Diagnostics.Debug.Write("Arriba");
-            LoadDataForRadGrid1();
-            RadGridVis.DataBind();
-        }
-    }*/
-
 
 }

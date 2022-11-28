@@ -21,41 +21,35 @@
         <telerik:RadAjaxLoadingPanel ID="RadAjaxLoadingPanel1" runat="server" Width="20px">
         </telerik:RadAjaxLoadingPanel>
 
-        <telerik:RadAjaxManager runat="server">
+        <telerik:RadAjaxManager runat="server" ID="RadAjaxMan">
             <AjaxSettings>
-                <telerik:AjaxSetting AjaxControlID="RadButton1">
+                <telerik:AjaxSetting AjaxControlID="RadGrid1">
                     <UpdatedControls>
-                        <telerik:AjaxUpdatedControl ControlID="RadButton1" LoadingPanelID="RadAjaxLoadingPanel1"/>
+                        <telerik:AjaxUpdatedControl ControlID="RadGrid1" LoadingPanelID="RadAjaxLoadingPanel1" />
                     </UpdatedControls>
                 </telerik:AjaxSetting>
                 <telerik:AjaxSetting AjaxControlID="RadButton2">
                     <UpdatedControls>
+                        <telerik:AjaxUpdatedControl ControlID="RadButton2" LoadingPanelID="RadAjaxLoadingPanel1"/>
                         <telerik:AjaxUpdatedControl ControlID="RadLabel11" LoadingPanelID="RadAjaxLoadingPanel1"/>
                         <telerik:AjaxUpdatedControl ControlID="RadTextBox7" LoadingPanelID="RadAjaxLoadingPanel1"/>
                         <telerik:AjaxUpdatedControl ControlID="RadTextBox8" LoadingPanelID="RadAjaxLoadingPanel1"/>
                     </UpdatedControls>
                 </telerik:AjaxSetting>
-                <telerik:AjaxSetting AjaxControlID="RadButton1">
-                    <UpdatedControls>
-                        <telerik:AjaxUpdatedControl ControlID="RadGridVis" LoadingPanelID="RadAjaxLoadingPanel1"/>
-                    </UpdatedControls>
-                </telerik:AjaxSetting>
                 <telerik:AjaxSetting AjaxControlID="RadButton4">
                     <UpdatedControls>
+                        <telerik:AjaxUpdatedControl ControlID="RadButton4" LoadingPanelID="RadAjaxLoadingPanel1"/>
                         <telerik:AjaxUpdatedControl ControlID="RadTextBox2" LoadingPanelID="RadAjaxLoadingPanel1"/>
                         <telerik:AjaxUpdatedControl ControlID="RadTextBox11" LoadingPanelID="RadAjaxLoadingPanel1"/>
+                        <telerik:AjaxUpdatedControl ControlID="RadLabel19" LoadingPanelID="RadAjaxLoadingPanel1"/>
                     </UpdatedControls>
                 </telerik:AjaxSetting>
                 <telerik:AjaxSetting AjaxControlID="RadDropDownInter">
                     <UpdatedControls>
-                        <telerik:AjaxUpdatedControl ControlID="RadLabel2" LoadingPanelID="RadAjaxLoadingPanel1"/>
-                        <telerik:AjaxUpdatedControl ControlID="RadButton5" LoadingPanelID="RadAjaxLoadingPanel1"/>
                         <telerik:AjaxUpdatedControl ControlID="RadButton4" LoadingPanelID="RadAjaxLoadingPanel1"/>
-                    </UpdatedControls>
-                </telerik:AjaxSetting>
-                <telerik:AjaxSetting AjaxControlID="RadGridVis">
-                    <UpdatedControls>
-                        <telerik:AjaxUpdatedControl ControlID="RadGridVis" LoadingPanelID="RadAjaxLoadingPanel1"/>
+                        <telerik:AjaxUpdatedControl ControlID="Lay2" LoadingPanelID="RadAjaxLoadingPanel1"/>
+                        <telerik:AjaxUpdatedControl ControlID="errorcontainer" LoadingPanelID="RadAjaxLoadingPanel1"/>
+                        <telerik:AjaxUpdatedControl ControlID="RadDropDownInter" LoadingPanelID="RadAjaxLoadingPanel1"/>
                     </UpdatedControls>
                 </telerik:AjaxSetting>
                 <telerik:AjaxSetting AjaxControlID="RadTextBox2">
@@ -64,7 +58,7 @@
                     </UpdatedControls>
                 </telerik:AjaxSetting>
             </AjaxSettings>
-        </telerik:RadAjaxManager>
+        </telerik:RadAjaxManager> 
 
         <telerik:radpagelayout id="RadPageLayout3" runat="server" gridtype="Fluid">
             <Rows>
@@ -76,18 +70,7 @@
                 </telerik:LayoutRow>
                 <telerik:LayoutRow>
                     <Columns>
-                        <telerik:LayoutColumn Span="3" SpanXs="3" SpanSm="12">
-                            <div class="col" style="margin-bottom:2rem;">
-                                <telerik:RadCard runat="server" Orientation="Vertical">
-                                    <telerik:CardBodyComponent runat="server" CardActionsAlignment="Stretched">
-                                        <telerik:RadDropDownList RenderMode="Lightweight" ID="RadDropDownInter" runat="server" OnSelectedIndexChanged="RadDropDownInterSelectedIndexChanged" AutoPostBack="true" DefaultMessage="Seleccionar interfaz"></telerik:RadDropDownList>
-                                        <telerik:RadLabel RenderMode="Lightweight" ID="RadLabel2" runat="server" Text=""></telerik:RadLabel>
-                                    </telerik:CardBodyComponent>
-                                </telerik:RadCard>
-                            </div>
-                        </telerik:LayoutColumn>
-
-                        <telerik:LayoutColumn Span="9" SpanXs="9" SpanSm="12">
+                        <telerik:LayoutColumn Span="12" SpanXs="12" SpanSm="12">
                             <div class="col" style="margin-bottom:2rem;">
                                 <telerik:RadCard runat="server" Orientation="Vertical">
                                     <telerik:CardBodyComponent runat="server" CardActionsAlignment="Stretched">
@@ -95,25 +78,75 @@
                                             <Tabs>
                                                 <telerik:RadTab Text="Crear interfaz" Width="200px"></telerik:RadTab>
                                                 <telerik:RadTab Text="Parametrizar interfaz" Width="200px"></telerik:RadTab>
+                                                <telerik:RadTab Text="Formato de salida" Width="200px"></telerik:RadTab>
                                                 <telerik:RadTab Text="Ver interfaz" Width="200px"></telerik:RadTab>
                                             </Tabs>
                                         </telerik:RadTabStrip>
+                                        <telerik:CardBodyComponent runat="server" CardActionsAlignment="Stretched">
+                                            <telerik:RadLabel RenderMode="Lightweight" ID="RadLabel1" runat="server" Text="Seleccione la interfaz"></telerik:RadLabel>
+                                            <telerik:RadDropDownList RenderMode="Lightweight" ID="RadDropDownInter" runat="server" OnSelectedIndexChanged="RadDropDownInterSelectedIndexChanged" AutoPostBack="true" DefaultMessage="Seleccionar interfaz"></telerik:RadDropDownList>
+                                        </telerik:CardBodyComponent>
                                         <telerik:RadMultiPage runat="server" ID="RadMultiPage1"  SelectedIndex="0" CssClass="outerMultiPage">
-                                            <telerik:RadPageView runat="server" ID="RadPageView1">
+                                            <telerik:RadPageView runat="server" ID="RadPageView2">
                                                 <telerik:CardBodyComponent runat="server" CardActionsAlignment="Stretched">
-                                                    <telerik:RadLabel RenderMode="Lightweight" ID="RadLabel6" runat="server" Text="Nombre de la interfaz"></telerik:RadLabel>
-                                                    <telerik:RadTextBox RenderMode="Lightweight" ID="RadTextBox7" runat="server" Text=""></telerik:RadTextBox>
-                                                </telerik:CardBodyComponent>
-                                                <telerik:CardBodyComponent runat="server" CardActionsAlignment="Stretched">
-                                                    <telerik:RadLabel RenderMode="Lightweight" ID="RadLabel7" runat="server" Text="Tipo de interfaz"></telerik:RadLabel>
-                                                    <telerik:RadTextBox RenderMode="Lightweight" ID="RadTextBox8" runat="server" Text=""></telerik:RadTextBox>
-                                                </telerik:CardBodyComponent>
-                                                <telerik:CardBodyComponent runat="server" CardActionsAlignment="Stretched">
-                                                    <telerik:RadLabel RenderMode="Lightweight" ID="RadLabel11" runat="server" Text=""></telerik:RadLabel>
-                                                    <telerik:RadButton RenderMode="Lightweight" ID="RadButton2" OnClick="generateInterface" CssClass="btnvalid" runat="server" Text="Crear"></telerik:RadButton>
+                                                    <telerik:RadGrid RenderMode="Lightweight" ID="RadGrid1" runat="server" DataSourceID="DsInterface"
+                                                    AllowPaging="True" AllowAutomaticUpdates="True" AllowAutomaticInserts="True" PageSize="10" MasterTableView-PagerStyle-AlwaysVisible="true"
+                                                    AllowAutomaticDeletes="true" AllowSorting="true" AllowFilteringByColumn="true">
+                                                        <PagerStyle Mode="NextPrevAndNumeric" />
+                                                        <MasterTableView DataSourceID="DsInterface" AutoGenerateColumns="False"
+                                                            DataKeyNames="CODIGO_INTERFAZ" CommandItemDisplay="Top" AllowFilteringByColumn="true">
+                                                            <Columns>
+                                                                <telerik:GridEditCommandColumn HeaderText="Editar" UniqueName="EditCommandColumn">
+                                                                </telerik:GridEditCommandColumn>
+                                                                <telerik:GridBoundColumn DataField="CODIGO_INTERFAZ" HeaderText="Codigo" SortExpression="CODIGO_INTERFAZ"
+                                                                    UniqueName="CODIGO_INTERFAZ" InsertVisiblityMode="AlwaysHidden">
+                                                                </telerik:GridBoundColumn>
+                                                                <telerik:GridBoundColumn DataField="NOMBRE_INTERFAZ" HeaderText="Nombre" SortExpression="NOMBRE_INTERFAZ"
+                                                                    UniqueName="NOMBRE_INTERFAZ">
+                                                                </telerik:GridBoundColumn>
+                                                                <telerik:GridBoundColumn DataField="TIPO_INTERFAZ" HeaderText="Tipo" SortExpression="TIPO_INTERFAZ"
+                                                                    UniqueName="TIPO_INTERFAZ">
+                                                                </telerik:GridBoundColumn>
+                                                                <telerik:GridBoundColumn DataField="REGLAS_REGISTRO" HeaderText="Registro" SortExpression="REGLAS_REGISTRO"
+                                                                    UniqueName="REGLAS_REGISTRO">
+                                                                </telerik:GridBoundColumn>
+                                                                <telerik:GridBoundColumn DataField="ID_SESION_OPERATION" HeaderText="Id sesion" SortExpression="ID_SESION_OPERATION"
+                                                                    UniqueName="ID_SESION_OPERATION" InsertVisiblityMode="AlwaysHidden">
+                                                                </telerik:GridBoundColumn>
+                                                                <telerik:GridCheckBoxColumn DataField="LOG_REG" HeaderText="Es visible" SortExpression="LOG_REG"
+                                                                    UniqueName="LOG_REG" DefaultInsertValue="True">
+                                                                </telerik:GridCheckBoxColumn>
+                                                                <telerik:GridButtonColumn HeaderText="Dar de baja" CommandName="Delete"  />
+                                                            </Columns>    
+                                                        </MasterTableView>
+                                                    </telerik:RadGrid>
+                                                    <asp:SqlDataSource ID="DsInterface" ConnectionString="<%$ ConnectionStrings:SqlServices %>" ProviderName="System.Data.SqlClient" 
+                                                        InsertCommand="INSERT INTO [TBINTERFAZ_EXPORTACION] ([NOMBRE_INTERFAZ], [TIPO_INTERFAZ], [REGLAS_REGISTRO], [ID_SESION_OPERATION], [LOG_REG]) VALUES (@NOMBRE_INTERFAZ, @TIPO_INTERFAZ, @REGLAS_REGISTRO, @IDSES, @LOG_REG)" 
+                                                        SelectCommand="SELECT * FROM [TBINTERFAZ_EXPORTACION]" 
+                                                        UpdateCommand="UPDATE [TBINTERFAZ_EXPORTACION] SET [NOMBRE_INTERFAZ] = @NOMBRE_INTERFAZ, [TIPO_INTERFAZ] = @TIPO_INTERFAZ, [REGLAS_REGISTRO] = @REGLAS_REGISTRO, [LOG_REG] = @LOG_REG WHERE [CODIGO_INTERFAZ] = @CODIGO_INTERFAZ" 
+                                                        DeleteCommand="UPDATE [TBINTERFAZ_EXPORTACION] SET [LOG_REG] = 0 WHERE [CODIGO_INTERFAZ] = @CODIGO_INTERFAZ" 
+                                                        runat="server">
+                                                        <DeleteParameters>
+                                                            <asp:Parameter Name="CODIGO_INTERFAZ" Type="Int64"/>
+                                                        </DeleteParameters>
+                                                        <InsertParameters>
+                                                            <asp:Parameter Name="NOMBRE_INTERFAZ" Type="String"/>
+                                                            <asp:Parameter Name="TIPO_INTERFAZ" Type="Int32"></asp:Parameter>
+                                                            <asp:Parameter Name="REGLAS_REGISTRO" Type="String"></asp:Parameter>
+                                                            <asp:Parameter Name="IDSES" Type="String" DefaultValue="asdeeca"></asp:Parameter>
+                                                            <asp:Parameter Name="LOG_REG" Type="Boolean"></asp:Parameter>
+                                                        </InsertParameters>
+                                                        <UpdateParameters>
+                                                            <asp:Parameter Name="NOMBRE_INTERFAZ" Type="String"/>
+                                                            <asp:Parameter Name="TIPO_INTERFAZ" Type="Int32"></asp:Parameter>
+                                                            <asp:Parameter Name="REGLAS_REGISTRO" Type="String"></asp:Parameter>
+                                                            <asp:Parameter Name="CODIGO_INTERFAZ" Type="Int64"/>
+                                                            <asp:Parameter Name="LOG_REG" Type="Boolean"></asp:Parameter>
+                                                        </UpdateParameters>
+                                                    </asp:SqlDataSource>
                                                 </telerik:CardBodyComponent>
                                             </telerik:RadPageView>
-                                            <telerik:RadPageView runat="server" ID="RadPageView2">
+                                            <telerik:RadPageView runat="server" ID="RadPageView3">
                                                  <telerik:CardBodyComponent runat="server" CardActionsAlignment="Stretched">
                                                     <telerik:RadLabel RenderMode="Lightweight" ID="RadLabel5" runat="server" Text="Consulta sql para traer datos"></telerik:RadLabel>
                                                     <telerik:RadTextBox RenderMode="Lightweight" ID="RadTextBox2" TextMode="MultiLine" Width="80%" runat="server" AutoPostBack="true" OnTextChanged="radtxtSerachDocument_TextChanged" Text=""></telerik:RadTextBox>
@@ -127,38 +160,85 @@
                                                     <telerik:RadLabel RenderMode="Lightweight" ID="RadLabel19" runat="server" Text=""></telerik:RadLabel>
                                                     <telerik:RadButton RenderMode="Lightweight" ID="RadButton4" CssClass="btnvalid" runat="server" OnClick="generateInterfaceColumn" Enabled="false" Text="Cargar"></telerik:RadButton>
                                                 </telerik:CardBodyComponent>
+
+
+                                                    <telerik:RadGrid RenderMode="Lightweight" ID="RadGrid2" runat="server" DataSourceID="PaInterface"
+                                                    AllowPaging="True" AllowAutomaticUpdates="True" AllowAutomaticInserts="True" PageSize="10" MasterTableView-PagerStyle-AlwaysVisible="true"
+                                                    AllowAutomaticDeletes="true" AllowSorting="true" AllowFilteringByColumn="true">
+                                                        <PagerStyle Mode="NextPrevAndNumeric" />
+                                                        <MasterTableView DataSourceID="PaInterface" AutoGenerateColumns="False"
+                                                            DataKeyNames="TIPO_REGISTRO" CommandItemDisplay="Top" AllowFilteringByColumn="true">
+                                                            <Columns>
+                                                                <telerik:GridEditCommandColumn HeaderText="Editar" UniqueName="EditCommandColumn">
+                                                                </telerik:GridEditCommandColumn>
+                                                                <telerik:GridBoundColumn DataField="CODIGO_INTERFAZ" HeaderText="Codigo" SortExpression="CODIGO_INTERFAZ"
+                                                                    UniqueName="CODIGO_INTERFAZ" InsertVisiblityMode="AlwaysHidden">
+                                                                </telerik:GridBoundColumn>
+                                                                <telerik:GridBoundColumn DataField="CONSULTA_SQL" HeaderText="Consulta para traer datos" SortExpression="CONSULTA_SQL"
+                                                                    UniqueName="CONSULTA_SQL">
+                                                                </telerik:GridBoundColumn>
+                                                                <telerik:GridBoundColumn DataField="ID_SESION_OPERATION" HeaderText="Id sesion" SortExpression="ID_SESION_OPERATION"
+                                                                    UniqueName="ID_SESION_OPERATION" InsertVisiblityMode="AlwaysHidden">
+                                                                </telerik:GridBoundColumn>
+                                                                <telerik:GridCheckBoxColumn DataField="LOG_REG" HeaderText="Es visible" SortExpression="LOG_REG"
+                                                                    UniqueName="LOG_REG" DefaultInsertValue="True">
+                                                                </telerik:GridCheckBoxColumn>
+                                                                <telerik:GridButtonColumn HeaderText="Dar de baja" CommandName="Delete"  />
+                                                            </Columns>    
+                                                        </MasterTableView>
+                                                    </telerik:RadGrid>
+                                                    <asp:SqlDataSource ID="PaInterface" ConnectionString="<%$ ConnectionStrings:SqlServices %>" ProviderName="System.Data.SqlClient" 
+                                                        InsertCommand="INSERT INTO [TBTIPOREGISTRO_EXPORTACION] ([NOMBRE_INTERFAZ], [TIPO_INTERFAZ], [REGLAS_REGISTRO], [ID_SESION_OPERATION], [LOG_REG]) VALUES (@NOMBRE_INTERFAZ, @TIPO_INTERFAZ, @REGLAS_REGISTRO, @IDSES, @LOG_REG)" 
+                                                        SelectCommand="SELECT * FROM [TBTIPOREGISTRO_EXPORTACION]" 
+                                                        UpdateCommand="UPDATE [TBTIPOREGISTRO_EXPORTACION] SET [NOMBRE_INTERFAZ] = @NOMBRE_INTERFAZ, [TIPO_INTERFAZ] = @TIPO_INTERFAZ, [REGLAS_REGISTRO] = @REGLAS_REGISTRO, [LOG_REG] = @LOG_REG WHERE [CODIGO_INTERFAZ] = @CODIGO_INTERFAZ" 
+                                                        DeleteCommand="UPDATE [TBTIPOREGISTRO_EXPORTACION] SET [LOG_REG] = 0 WHERE [CODIGO_INTERFAZ] = @CODIGO_INTERFAZ" 
+                                                        runat="server">
+                                                        <DeleteParameters>
+                                                            <asp:Parameter Name="CODIGO_INTERFAZ" Type="Int64"/>
+                                                        </DeleteParameters>
+                                                        <InsertParameters>
+                                                            <asp:Parameter Name="NOMBRE_INTERFAZ" Type="String"/>
+                                                            <asp:Parameter Name="TIPO_INTERFAZ" Type="Int32"></asp:Parameter>
+                                                            <asp:Parameter Name="REGLAS_REGISTRO" Type="String"></asp:Parameter>
+                                                            <asp:Parameter Name="IDSES" Type="String" DefaultValue="asdeeca"></asp:Parameter>
+                                                            <asp:Parameter Name="LOG_REG" Type="Boolean"></asp:Parameter>
+                                                        </InsertParameters>
+                                                        <UpdateParameters>
+                                                            <asp:Parameter Name="NOMBRE_INTERFAZ" Type="String"/>
+                                                            <asp:Parameter Name="TIPO_INTERFAZ" Type="Int32"></asp:Parameter>
+                                                            <asp:Parameter Name="REGLAS_REGISTRO" Type="String"></asp:Parameter>
+                                                            <asp:Parameter Name="CODIGO_INTERFAZ" Type="Int64"/>
+                                                            <asp:Parameter Name="LOG_REG" Type="Boolean"></asp:Parameter>
+                                                        </UpdateParameters>
+                                                    </asp:SqlDataSource>
+
                                             </telerik:RadPageView>
-                                            <telerik:RadPageView runat="server" ID="RadPageView3">
+                                            <telerik:RadPageView runat="server" ID="RadPageView4">
                                                 <telerik:CardBodyComponent runat="server" CardActionsAlignment="Stretched">
-                                                    <telerik:RadTabStrip RenderMode="Lightweight" runat="server" ID="RadTabStrip1" MultiPageID="RadMultiPage2"
+                                                    <telerik:RadTabStrip RenderMode="Lightweight" runat="server" ID="RadTabStrip1" MultiPageID="RadMultiPage2" SelectedIndex="0"
                                                     Orientation="HorizontalTop" Skin="Silk" >
                                                         <Tabs>
-                                                            <telerik:RadTab Text="Ver todas las interfaces"></telerik:RadTab>
-                                                            <telerik:RadTab Text="Ver interfaz seleccionada"></telerik:RadTab>
+                                                            <telerik:RadTab Text="Estructura de salida"></telerik:RadTab>
                                                         </Tabs>
                                                     </telerik:RadTabStrip>
                                                 </telerik:CardBodyComponent>
                                                 <telerik:CardBodyComponent runat="server" CardActionsAlignment="Stretched">
                                                     <telerik:RadMultiPage runat="server" ID="RadMultiPage2"  SelectedIndex="0" CssClass="innerMultiPage">
-                                                        <telerik:RadPageView runat="server" ID="PageView1">
-                                                            <telerik:RadButton RenderMode="Lightweight" ID="RadButton1" CssClass="btnvalid" runat="server" OnClick="generateCompleteView" Text="Ver"></telerik:RadButton>
-                                                            <telerik:RadGrid RenderMode="Lightweight" runat="server" ID="RadGridVis" AllowPaging="True" AllowSorting="true"
-                                                            OnSortCommand="RadGrid1_SortCommand" OnPageIndexChanged="RadGrid1_PageIndexChanged" OnPageSizeChanged="RadGrid1_PageSizeChanged">
-                                                                <ClientSettings>
-                                                                    <Scrolling AllowScroll="true" ScrollHeight="" UseStaticHeaders="false"></Scrolling>
-                                                                </ClientSettings>
-                                                            </telerik:RadGrid>
-                                                        </telerik:RadPageView>
                                                         <telerik:RadPageView runat="server" ID="PageView2">
-                                                            chao
+                                                            <div runat="server" id="Lay2">
+
+                                                            </div>
                                                         </telerik:RadPageView>
                                                     </telerik:RadMultiPage>
                                                 </telerik:CardBodyComponent>
                                             </telerik:RadPageView>
+                                            <telerik:RadPageView runat="server" ID="RadPageView5">
+                                            
+                                            </telerik:RadPageView>
                                         </telerik:RadMultiPage>
                                     </telerik:CardBodyComponent>
-
                                 </telerik:RadCard>
+
 
                             </div>
                         </telerik:LayoutColumn>

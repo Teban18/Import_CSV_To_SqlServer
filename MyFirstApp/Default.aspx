@@ -74,11 +74,78 @@
                 </telerik:LayoutRow>
                 <telerik:LayoutRow>
                     <Columns>
+                        <telerik:LayoutColumn Span="12" SpanXs="12" SpanSm="12">
+                            <div class="col" style="margin-bottom:2rem;">
+                                <telerik:RadCard runat="server">
+                                    <telerik:CardBodyComponent runat="server">
+                                        <telerik:RadTabStrip RenderMode="Lightweight" runat="server" ID="RadTabStrip2"  MultiPageID="RadMultiPage1" SelectedIndex="0" Skin="Silk">
+                                            <Tabs>
+                                                <telerik:RadTab Text="Estructura esperada de datos" Width="200px"></telerik:RadTab>
+                                                <telerik:RadTab Text="Cargar datos" Width="200px"></telerik:RadTab>
+                                            </Tabs>
+                                        </telerik:RadTabStrip>
+                                        <telerik:RadMultiPage runat="server" ID="RadMultiPage1"  SelectedIndex="0" CssClass="outerMultiPage">
+                                            <telerik:RadPageView runat="server" ID="RadPageView1">
+                                                <telerik:CardBodyComponent runat="server" CardActionsAlignment="Stretched">
+                                                    <telerik:RadButton runat="server" ID="RadButton6" OnClick="btn_Structure_Click" Text="Ver estructura del cargue" Enabled="true"></telerik:RadButton>
+                                                </telerik:CardBodyComponent>
+                                                <telerik:CardBodyComponent runat="server" CardActionsAlignment="Stretched">
+                                                    <telerik:RadGrid RenderMode="Lightweight" ID="RadGrid3" runat="server" DataSourceID="SqlDataSource1" AutoGenerateColumns="false" AllowFilteringByColumn="true" AllowPaging="true" PageSize="5" Visible="false">
+                                                        <ClientSettings>
+                                                            <Scrolling AllowScroll="true" ScrollHeight="" UseStaticHeaders="false"></Scrolling>
+                                                        </ClientSettings>
+                                                        <MasterTableView DataSourceID="SqlDataSource1">
+                                                            <Columns>
+                                                                <telerik:GridBoundColumn DataField="CAMP_DESCRIPCION" FilterControlAltText="Filter column column" HeaderText="Campo esperado" ReadOnly="True" UniqueName="Supplier">
+                                                                </telerik:GridBoundColumn>
+                                                                <telerik:GridBoundColumn DataField="alias_tipo_dato" FilterControlAltText="Filter column column" HeaderText="Tipo de dato permitido" UniqueName="Prime">
+                                                                </telerik:GridBoundColumn>
+                                                                <telerik:GridBoundColumn DataField="CAMP_LONGITUD" FilterControlAltText="Filter column1 column" HeaderText="Longitud maxima permitida" UniqueName="RSDCSv">
+                                                                </telerik:GridBoundColumn>
+                                                                <telerik:GridBoundColumn DataField="CAMP_NULO" FilterControlAltText="Filter column2 column" HeaderText="Recibe nulos" UniqueName="Mill">
+                                                                </telerik:GridBoundColumn>
+                                                                <telerik:GridBoundColumn DataField="CAMP_FORMATO" FilterControlAltText="Filter column3 column" HeaderText="Formato esperado" UniqueName="Eng">
+                                                                </telerik:GridBoundColumn>
+                                                            </Columns>
+                                                        </MasterTableView>
+                                                    </telerik:RadGrid>
+                                                    <asp:SqlDataSource ID="SqlDataSource1" ConnectionString="<%$ ConnectionStrings:SqlServices %>"
+                                                        ProviderName="System.Data.SqlClient" SelectCommand="SELECT * FROM TBCAMPOS_CARGUE c INNER JOIN TBOPCION_CARGUE o on c.OP_CODIGO = o.OPC_CODIGO INNER JOIN TBTIPO_DATO t on c.CAMP_TIPO = t.id_tipo_dato WHERE o.OPC_CODIGO = @tables" runat="server">
+                                                        <SelectParameters>
+                                                            <asp:ControlParameter Name="tables" ControlID="RadDropDownTables" />
+                                                        </SelectParameters>
+                                                    </asp:SqlDataSource>
+                                                </telerik:CardBodyComponent>
+                                            </telerik:RadPageView>
+                                            <telerik:RadPageView runat="server" ID="RadPageView2">
+                                                <telerik:CardBodyComponent runat="server" CardActionsAlignment="Stretched">
+                                                    
+                                                </telerik:CardBodyComponent>
+                                            </telerik:RadPageView>
+                                        </telerik:RadMultiPage>
+                                    </telerik:CardBodyComponent>
+                                </telerik:RadCard>
+                            </div>
+                        </telerik:LayoutColumn>
+                        <telerik:LayoutColumn Span="12" SpanXs="12" SpanSm="12">
+                            <div class="col" style="margin-bottom:2rem;">
+                                <telerik:RadCard runat="server">
+                                    <telerik:CardBodyComponent runat="server">
+
+                                    </telerik:CardBodyComponent>
+                                </telerik:RadCard>
+                            </div>
+                        </telerik:LayoutColumn>
+                    </Columns>
+                </telerik:LayoutRow>
+                <telerik:LayoutRow>
+                    <Columns>
+
                         <telerik:LayoutColumn Span="4" SpanXs="12" SpanSm="12">
                             <div class="col" style="margin-bottom:2rem;">
                                 <telerik:RadCard runat="server">
                                     <telerik:CardHeaderComponent runat="server">
-                                        <telerik:RadButton runat="server" ID="RadButton6" OnClick="btn_Structure_Click" Text="Ver estructura del cargue" Enabled="true"></telerik:RadButton>
+                                       
                                     </telerik:CardHeaderComponent>
                                     <telerik:CardBodyComponent runat="server">
                                         <telerik:RadAsyncUpload RenderMode="Lightweight"  runat="server" ID="RadAsyncUpload1" MaxFileInputsCount="1"  HideFileInput="true" Localization-Select="Cargar archivo o arrastrar" overwriteexistingfiles="true" TargetFolder="~/MyFiles"></telerik:RadAsyncUpload>
@@ -149,31 +216,7 @@
                         </telerik:LayoutColumn>
                         <telerik:LayoutColumn Span="8" SpanXs="12" SpanSm="12">
                             <div class="col">
-                                <telerik:RadGrid RenderMode="Lightweight" ID="RadGrid3" runat="server" DataSourceID="SqlDataSource1" AutoGenerateColumns="false" AllowFilteringByColumn="true" AllowPaging="true" PageSize="5" Visible="false">
-                                    <ClientSettings>
-                                        <Scrolling AllowScroll="true" ScrollHeight="" UseStaticHeaders="false"></Scrolling>
-                                    </ClientSettings>
-                                    <MasterTableView DataSourceID="SqlDataSource1">
-                                        <Columns>
-                                            <telerik:GridBoundColumn DataField="CAMP_DESCRIPCION" FilterControlAltText="Filter column column" HeaderText="Campo esperado" ReadOnly="True" UniqueName="Supplier">
-                                            </telerik:GridBoundColumn>
-                                            <telerik:GridBoundColumn DataField="alias_tipo_dato" FilterControlAltText="Filter column column" HeaderText="Tipo de dato permitido" UniqueName="Prime">
-                                            </telerik:GridBoundColumn>
-                                            <telerik:GridBoundColumn DataField="CAMP_LONGITUD" FilterControlAltText="Filter column1 column" HeaderText="Longitud maxima permitida" UniqueName="RSDCSv">
-                                            </telerik:GridBoundColumn>
-                                            <telerik:GridBoundColumn DataField="CAMP_NULO" FilterControlAltText="Filter column2 column" HeaderText="Recibe nulos" UniqueName="Mill">
-                                            </telerik:GridBoundColumn>
-                                            <telerik:GridBoundColumn DataField="CAMP_FORMATO" FilterControlAltText="Filter column3 column" HeaderText="Formato esperado" UniqueName="Eng">
-                                            </telerik:GridBoundColumn>
-                                        </Columns>
-                                    </MasterTableView>
-                                </telerik:RadGrid>
-                                <asp:SqlDataSource ID="SqlDataSource1" ConnectionString="<%$ ConnectionStrings:SqlServices %>"
-                                    ProviderName="System.Data.SqlClient" SelectCommand="SELECT * FROM TBCAMPOS_CARGUE c INNER JOIN TBOPCION_CARGUE o on c.OP_CODIGO = o.OPC_CODIGO INNER JOIN TBTIPO_DATO t on c.CAMP_TIPO = t.id_tipo_dato WHERE o.OPC_CODIGO = @tables" runat="server">
-                                    <SelectParameters>
-                                        <asp:ControlParameter Name="tables" ControlID="RadDropDownTables" />
-                                    </SelectParameters>
-                                </asp:SqlDataSource>
+                               
                                 <telerik:RadGrid RenderMode="Lightweight" runat="server" ID="RadGrid2" AutoGenerateColumns="true" AllowFilteringByColumn="true" AllowPaging="true" OnNeedDataSource="RadGrid2_NeedDataSource1" PageSize="5" Visible="false">
                                     <ClientSettings>
                                         <Scrolling AllowScroll="true" ScrollHeight="" UseStaticHeaders="false"></Scrolling>
