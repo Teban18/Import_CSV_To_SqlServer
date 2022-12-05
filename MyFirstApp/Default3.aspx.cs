@@ -16,15 +16,16 @@ public partial class Default3 : System.Web.UI.Page
     {
         if (!IsPostBack)
         {
-            GetInterfazName("SqlServices");
+            //GetInterfazName("SqlServices");
         }
     }
 
-    private void GetInterfazName(string connsrt)
+    /*private void GetInterfazName(string connsrt)
     {
         SqlConnection conn = new SqlConnection(ConfigurationManager.ConnectionStrings[connsrt].ConnectionString);
-        SqlCommand comm = new SqlCommand("SELECT * FROM dbo.TBINTERFAZ_EXPORTACION", conn);
+        SqlCommand comm = new SqlCommand("SELECT * FROM dbo.TBDEF_EXPORTACION WHERE LOG_REGISTRO = @LOG_REG", conn);
         conn.Open();
+        comm.Parameters.AddWithValue("@LOG_REG", 1);
         using (SqlDataReader reader = comm.ExecuteReader())
         {
             while (reader.Read())
@@ -33,7 +34,7 @@ public partial class Default3 : System.Web.UI.Page
             }
         }
         conn.Close();
-    }
+    }*/
 
     private string insertGeneralDataInterface(string connsrt, string interfacename, int interfacetype, string interfacerules, string idsession)
     {
@@ -69,21 +70,21 @@ public partial class Default3 : System.Web.UI.Page
         }
     }*/
 
-    protected void RadDropDownInterSelectedIndexChanged(object sender, EventArgs e)
+    /*protected void RadDropDownInterSelectedIndexChanged(object sender, EventArgs e)
     {
-        RadButton4.Enabled = true;
+        //RadButton4.Enabled = true;
         try
         {
             for (int i = 0; i < GetInterfaceRegType("SqlServices", Int32.Parse(RadDropDownInter.SelectedItem.Value)).Item1.Count; i++)
             {
-                DefineGridStructure(GetInterfaceRegType("SqlServices", Int32.Parse(RadDropDownInter.SelectedItem.Value)).Item2[i].ToString(), Lay2);
+                //DefineGridStructure(GetInterfaceRegType("SqlServices", Int32.Parse(RadDropDownInter.SelectedItem.Value)).Item2[i].ToString(), Lay2);
             }
         }
         catch (Exception ex)
         {
             
         }
-    }
+    }*/
 
     private Tuple<List<object>, List<object>> GetInterfaceRegType(string connsrt, int intcode)
     {
@@ -118,7 +119,7 @@ public partial class Default3 : System.Web.UI.Page
         return "Cargado con éxito";
     }
 
-    protected void generateInterfaceColumn(object sender, EventArgs e)
+    /*protected void generateInterfaceColumn(object sender, EventArgs e)
     {
         try
         {
@@ -129,9 +130,9 @@ public partial class Default3 : System.Web.UI.Page
         {
             RadLabel19.Text = ex.Message;
         }
-    }
+    }*/
 
-    protected void radtxtSerachDocument_TextChanged(object sender, EventArgs e)
+    /*protected void radtxtSerachDocument_TextChanged(object sender, EventArgs e)
     {
         try
         {
@@ -143,7 +144,7 @@ public partial class Default3 : System.Web.UI.Page
             RadLabel3.Text = "Hay errores en la sentecia : "+ex.Message;
         }
         
-    }
+    }*/
 
     private void sqlSentenceValidator(string connsrt, string sentence)
     {

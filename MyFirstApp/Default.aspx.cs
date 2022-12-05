@@ -28,8 +28,7 @@ public partial class Default : System.Web.UI.Page
     protected void btn_Prevalidate_Click(object sender, EventArgs e)
     {  
         strtxt = "Bind";
-        RadGrid2.Rebind();
-        cardesc.Visible = true;      
+        RadGrid2.Rebind();     
     }
 
     protected Tuple<DataTable, int> Load_Prevalidation_Table(string[] filedata, Tuple<List<object>, List<object>, List<object>, List<object>, List<object>, List<object>> data)
@@ -148,16 +147,11 @@ public partial class Default : System.Web.UI.Page
         if (status == 0)
         {
             RadButton5.Enabled = true;
-            Progress1.Value = 1;
-            RadLabel3.Text = "Prevalidación";
-            RadLabel3.OptionalMark = " (ok)";
         }
         else
         {
             RadButton5.Enabled = false;
-            Progress1.Value = 0;
-            RadLabel3.Text = "Prevalidación";
-            RadLabel3.OptionalMark = " (hay errores en los datos)";
+            paneldesc.InnerHtml = "La prevalidación tiene que estar bien";
         }
     }
 
@@ -198,9 +192,7 @@ public partial class Default : System.Web.UI.Page
             errlist.Add(ex.Message);
             RadGrid2.DataSource = errlist;
             RadButton5.Enabled = false;
-            Progress1.Value = 0;
-            RadLabel3.Text = "Prevalidación";
-            RadLabel3.OptionalMark = " (Hay errores en las opciones)";
+            paneldesc.InnerHtml = "La prevalidación tiene que estar bien";
         }
     }
 
@@ -241,6 +233,7 @@ public partial class Default : System.Web.UI.Page
             while (reader.Read())
             {
                 RadDropDownTables.Items.Add(new DropDownListItem(reader[1].ToString(), reader[0].ToString()));
+                RadDropDownList2.Items.Add(new DropDownListItem(reader[1].ToString(), reader[0].ToString()));
             }
         }
         conn.Close();   
@@ -261,17 +254,12 @@ public partial class Default : System.Web.UI.Page
 
     private bool Store_Data()
     {
-        cardesc.Visible = true;
         DataTable table = Load_Prevalidation_Table(File.ReadAllLines(Server.MapPath("~/MyFiles/" + RadAsyncUpload1.UploadedFiles[0].GetName())), Get_Option_Types("SqlServices")).Item1;
-        paneldesc.InnerHtml = "";
         for (int i = 0; i < table.Rows.Count; i++)
         {
             StringBuilder sb = new StringBuilder();
             paneldesc.InnerHtml += "Línea "+(i+1)+" "+ Store_Data_Into_Loadtable("SqlServices", "asdas34324", "ayycomo", sb.AppendLine(string.Join(",", table.Rows[i].ItemArray)).ToString(), Get_Procedures("SqlServices").Item4[0].ToString(), Get_Procedures("SqlServices").Item3[0].ToString())+"<br>";
         }
-        Progress1.Value = 2;
-        RadLabel3.Text = "Cargue de datos";
-        RadLabel3.OptionalMark = " (ok)";
         return true;   
     }
 
